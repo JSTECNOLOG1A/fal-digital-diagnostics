@@ -1,0 +1,87 @@
+{
+  "name": "FalImpactSimulation",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "snapshot_id": {
+      "type": "string"
+    },
+    "simulation_label": {
+      "type": "string",
+      "description": "Ex: Cen\u00e1rio 1 \u2014 Top 3 clusters"
+    },
+    "scenario": {
+      "type": "string",
+      "enum": [
+        "cenario_1",
+        "cenario_2",
+        "cenario_3",
+        "custom"
+      ]
+    },
+    "clusters_simulated": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista de cluster_keys simulados"
+    },
+    "current_overall_score": {
+      "type": "number"
+    },
+    "simulated_overall_score": {
+      "type": "number"
+    },
+    "delta_score": {
+      "type": "number"
+    },
+    "expected_dimension_scores": {
+      "type": "object",
+      "description": "dimension_key -> { current, simulated, delta }"
+    },
+    "estimated_financial_impact": {
+      "type": "string",
+      "enum": [
+        "BAIXO",
+        "M\u00c9DIO",
+        "ALTO"
+      ]
+    },
+    "estimated_risk_reduction": {
+      "type": "string",
+      "enum": [
+        "BAIXO",
+        "M\u00c9DIO",
+        "ALTO"
+      ]
+    },
+    "estimated_operational_gain": {
+      "type": "string",
+      "enum": [
+        "BAIXO",
+        "M\u00c9DIO",
+        "ALTO"
+      ]
+    },
+    "impact_index": {
+      "type": "number"
+    },
+    "cluster_details": {
+      "type": "object",
+      "description": "cluster_key -> { current_score, simulated_score, delta, impact_index }"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

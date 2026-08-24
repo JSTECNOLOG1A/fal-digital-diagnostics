@@ -1,0 +1,77 @@
+{
+  "name": "FalAssessmentCycle",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "parent_cycle_id": {
+      "type": "string",
+      "description": "ID do ciclo anterior (para compara\u00e7\u00e3o)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Ex: Diagn\u00f3stico Inicial, Revis\u00e3o 90 dias"
+    },
+    "code": {
+      "type": "string",
+      "description": "Ex: C1, C2, R90"
+    },
+    "cycle_number": {
+      "type": "number",
+      "default": 1
+    },
+    "cycle_type": {
+      "type": "string",
+      "enum": [
+        "initial",
+        "followup",
+        "review_90",
+        "review_180",
+        "review_365",
+        "custom"
+      ],
+      "default": "initial"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "open",
+        "closed",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "reference_date": {
+      "type": "string",
+      "description": "Data-base do ciclo no formato MM/AAAA"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "group_id",
+    "name",
+    "cycle_number"
+  ]
+}

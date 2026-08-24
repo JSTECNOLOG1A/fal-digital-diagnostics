@@ -1,0 +1,135 @@
+{
+  "name": "FalMethodologyConfig",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Use 'global' para configura\u00e7\u00e3o padr\u00e3o do sistema"
+    },
+    "methodology_version": {
+      "type": "string",
+      "description": "Vers\u00e3o sem\u00e2ntica da configura\u00e7\u00e3o metodol\u00f3gica. Ex: 3.0.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "Apenas configs com status=active s\u00e3o usadas pelo motor"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o leg\u00edvel das mudan\u00e7as nesta vers\u00e3o"
+    },
+    "activated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando esta vers\u00e3o foi ativada"
+    },
+    "activated_by": {
+      "type": "string",
+      "description": "Email do respons\u00e1vel pela ativa\u00e7\u00e3o"
+    },
+    "score_range_max": {
+      "type": "number",
+      "default": 3,
+      "description": "Valor m\u00e1ximo da escala de score (default: 3)"
+    },
+    "score_range_min": {
+      "type": "number",
+      "default": 0,
+      "description": "Valor m\u00ednimo da escala de score (default: 0)"
+    },
+    "killer_question_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Habilita o mecanismo de killer question cap"
+    },
+    "killer_question_threshold": {
+      "type": "number",
+      "default": 2,
+      "description": "Score <= este valor em killer question aciona o cap"
+    },
+    "killer_question_cap": {
+      "type": "number",
+      "default": 2.0,
+      "description": "Teto m\u00e1ximo de score do cluster quando killer question falha"
+    },
+    "risk_dominance_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Habilita o mecanismo de domin\u00e2ncia de risco (cluster_min < threshold \u2192 cap de dimens\u00e3o)"
+    },
+    "risk_dominance_cluster_threshold": {
+      "type": "number",
+      "default": 2.0,
+      "description": "Se qualquer cluster da dimens\u00e3o estiver abaixo deste valor, aplica cap na dimens\u00e3o"
+    },
+    "risk_dominance_dimension_cap": {
+      "type": "number",
+      "default": 2.5,
+      "description": "Teto m\u00e1ximo de score da dimens\u00e3o quando domin\u00e2ncia de risco \u00e9 acionada"
+    },
+    "concentration_penalty_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Habilita penalidade por concentra\u00e7\u00e3o de clusters com score baixo"
+    },
+    "concentration_penalty_cluster_threshold": {
+      "type": "number",
+      "default": 2.5,
+      "description": "Clusters abaixo deste score s\u00e3o contados para a penalidade"
+    },
+    "concentration_penalty_min_clusters": {
+      "type": "number",
+      "default": 3,
+      "description": "N\u00famero m\u00ednimo de clusters abaixo do threshold para acionar penalidade"
+    },
+    "concentration_penalty_value": {
+      "type": "number",
+      "default": 0.3,
+      "description": "Valor subtra\u00eddo do score da dimens\u00e3o quando penalidade \u00e9 acionada"
+    },
+    "cluster_min_questions_for_scoring": {
+      "type": "number",
+      "default": 1,
+      "description": "N\u00famero m\u00ednimo de perguntas respondidas para cluster entrar no c\u00e1lculo"
+    },
+    "overall_score_method": {
+      "type": "string",
+      "enum": [
+        "weighted_by_dimension",
+        "weighted_by_questions",
+        "simple_average"
+      ],
+      "default": "weighted_by_dimension",
+      "description": "M\u00e9todo de c\u00e1lculo do score geral"
+    },
+    "dimension_weights": {
+      "type": "object",
+      "description": "Pesos por tipo de entidade. Ex: { 'company': { 'governanca': 2, 'financeiro': 2 }, 'group': { 'governanca': 3 } }. Dimens\u00f5es n\u00e3o listadas usam peso 1."
+    },
+    "level_thresholds": {
+      "type": "object",
+      "description": "Limiares de classifica\u00e7\u00e3o de n\u00edvel. Ex: { 'critico': 1.0, 'basico': 1.8, 'estruturado': 2.5 }. Acima de 'estruturado' = Avan\u00e7ado.",
+      "default": {
+        "critico": 1.0,
+        "basico": 1.8,
+        "estruturado": 2.5
+      }
+    },
+    "critical_cluster_threshold": {
+      "type": "number",
+      "default": 1.0,
+      "description": "Clusters com score abaixo deste valor s\u00e3o contados como cr\u00edticos nos KPIs"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "methodology_version",
+    "status"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Consulting firm name"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly identifier"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Logo file URL"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "license_expires_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "active_method_version_id": {
+      "type": "string",
+      "description": "ID of the active MethodVersion for this tenant"
+    }
+  },
+  "required": [
+    "name",
+    "slug"
+  ]
+}

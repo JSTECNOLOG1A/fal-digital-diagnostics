@@ -1,0 +1,187 @@
+{
+  "name": "AssessmentFlowState",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string",
+      "description": "FK Assessment \u2014 one record per assessment"
+    },
+    "flow_version": {
+      "type": "number",
+      "default": 1,
+      "description": "Version of the pipeline logic"
+    },
+    "source_response_version": {
+      "type": "number",
+      "default": 0
+    },
+    "diagnostic_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "priorities_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "intelligence_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "action_plan_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "simulation_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "report_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "running",
+        "done",
+        "stale",
+        "error"
+      ],
+      "default": "not_started"
+    },
+    "diagnostic_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "priorities_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "intelligence_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "action_plan_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "simulation_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "report_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "snapshot_id": {
+      "type": "string"
+    },
+    "priorities_snapshot_id": {
+      "type": "string"
+    },
+    "intelligence_snapshot_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "action_plan_operation_id": {
+      "type": "string"
+    },
+    "action_plan_operation_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "invalid"
+      ]
+    },
+    "action_plan_operation_invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "action_plan_operation_invalidation_reason": {
+      "type": "string"
+    },
+    "simulation_id": {
+      "type": "string"
+    },
+    "report_id": {
+      "type": "string"
+    },
+    "stale_from_step": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "diagnostic",
+        "priorities",
+        "intelligence",
+        "action_plan",
+        "simulation",
+        "report",
+        null
+      ]
+    },
+    "last_error_step": {
+      "type": "string"
+    },
+    "last_error_message": {
+      "type": "string"
+    },
+    "last_run_mode": {
+      "type": "string",
+      "enum": [
+        "full",
+        "single_step",
+        "resume"
+      ]
+    },
+    "next_best_step": {
+      "type": "string"
+    },
+    "updated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

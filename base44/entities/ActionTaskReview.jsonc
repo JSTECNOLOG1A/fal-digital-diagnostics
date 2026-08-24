@@ -1,0 +1,107 @@
+{
+  "name": "ActionTaskReview",
+  "type": "object",
+  "properties": {
+    "action_plan_review_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "action_task_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "operation_id": {
+      "type": "string"
+    },
+    "commit_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidation_reason": {
+      "type": "string"
+    },
+    "previous_status": {
+      "type": "string"
+    },
+    "new_status": {
+      "type": "string"
+    },
+    "previous_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "new_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "previous_owner_name": {
+      "type": "string"
+    },
+    "new_owner_name": {
+      "type": "string"
+    },
+    "previous_progress_percentage": {
+      "type": "number"
+    },
+    "new_progress_percentage": {
+      "type": "number"
+    },
+    "consultant_comment": {
+      "type": "string"
+    },
+    "client_comment": {
+      "type": "string"
+    },
+    "evidence_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "no_change",
+        "status_change",
+        "date_change",
+        "owner_change",
+        "progress_update",
+        "scope_change",
+        "cancelled",
+        "completed",
+        "new_task_added"
+      ]
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_plan_review_id",
+    "action_plan_id",
+    "action_task_id",
+    "tenant_id",
+    "change_type",
+    "operation_id",
+    "commit_status"
+  ]
+}

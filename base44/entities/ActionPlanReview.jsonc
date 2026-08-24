@@ -1,0 +1,146 @@
+{
+  "name": "ActionPlanReview",
+  "type": "object",
+  "properties": {
+    "action_plan_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "review_key": {
+      "type": "string"
+    },
+    "operation_key": {
+      "type": "string"
+    },
+    "commit_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "review_number": {
+      "type": "number"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "visit_type": {
+      "type": "string",
+      "enum": [
+        "intermediate",
+        "final",
+        "extraordinary"
+      ],
+      "default": "intermediate"
+    },
+    "consultant_id": {
+      "type": "string"
+    },
+    "consultant_name": {
+      "type": "string"
+    },
+    "client_participants": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "executive_summary": {
+      "type": "string"
+    },
+    "overall_progress_before": {
+      "type": "number"
+    },
+    "overall_progress_after": {
+      "type": "number"
+    },
+    "fal_score_snapshot": {
+      "type": "number"
+    },
+    "fal_level_snapshot": {
+      "type": "string"
+    },
+    "fal_dimension_scores_snapshot": {
+      "type": "object"
+    },
+    "key_advances": {
+      "type": "string"
+    },
+    "key_delays": {
+      "type": "string"
+    },
+    "new_risks": {
+      "type": "string"
+    },
+    "next_steps": {
+      "type": "string"
+    },
+    "opening_snapshot": {
+      "type": "object"
+    },
+    "closing_snapshot": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "committing",
+        "completed",
+        "cancelled",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_by": {
+      "type": "string"
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancelled_by": {
+      "type": "string"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "action_plan_id",
+    "assessment_id",
+    "tenant_id",
+    "review_number",
+    "review_date",
+    "visit_type",
+    "status",
+    "review_key",
+    "commit_status"
+  ]
+}

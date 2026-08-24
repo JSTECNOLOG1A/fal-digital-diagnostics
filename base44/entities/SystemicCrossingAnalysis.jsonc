@@ -1,0 +1,121 @@
+{
+  "name": "SystemicCrossingAnalysis",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "computed_by": {
+      "type": "string"
+    },
+    "crossing_key": {
+      "type": "string",
+      "description": "Ex: financeiro_x_contabil"
+    },
+    "crossing_label": {
+      "type": "string",
+      "description": "Ex: Financeiro \u00d7 Cont\u00e1bil"
+    },
+    "crossing_type": {
+      "type": "string",
+      "enum": [
+        "strategic",
+        "institutional",
+        "financial",
+        "operational",
+        "integrity"
+      ],
+      "description": "N\u00facleo metodol\u00f3gico do cruzamento"
+    },
+    "dimension_a_key": {
+      "type": "string"
+    },
+    "dimension_a_label": {
+      "type": "string"
+    },
+    "dimension_b_key": {
+      "type": "string"
+    },
+    "dimension_b_label": {
+      "type": "string"
+    },
+    "dimension_a_score_raw": {
+      "type": "number",
+      "description": "Score 0\u20133 da dimens\u00e3o A"
+    },
+    "dimension_b_score_raw": {
+      "type": "number",
+      "description": "Score 0\u20133 da dimens\u00e3o B"
+    },
+    "mqe_score_raw": {
+      "type": "number",
+      "description": "Score MQE 0\u20133, se dispon\u00edvel"
+    },
+    "has_mqe_data": {
+      "type": "boolean",
+      "default": false
+    },
+    "cross_score_base_raw": {
+      "type": "number",
+      "description": "Score base 0\u20133 antes de peso e normaliza\u00e7\u00e3o"
+    },
+    "cross_weight": {
+      "type": "number",
+      "description": "Peso do cruzamento por tipo"
+    },
+    "cross_score_final": {
+      "type": "number",
+      "description": "Score final normalizado 0\u2013100"
+    },
+    "tension_level": {
+      "type": "string",
+      "enum": [
+        "madura",
+        "funcional",
+        "alerta",
+        "fragilidade",
+        "ruptura"
+      ],
+      "description": "Classifica\u00e7\u00e3o de tens\u00e3o"
+    },
+    "tension_rank": {
+      "type": "number",
+      "description": "Posi\u00e7\u00e3o no ranking de tens\u00f5es (1 = mais fr\u00e1gil)"
+    },
+    "is_fragile": {
+      "type": "boolean",
+      "default": false,
+      "description": "Score final < 40"
+    },
+    "is_critical": {
+      "type": "boolean",
+      "default": false,
+      "description": "Score final < 20"
+    },
+    "interpretation_text": {
+      "type": "string"
+    },
+    "risk_summary": {
+      "type": "string"
+    },
+    "recommended_focus": {
+      "type": "string"
+    },
+    "systemic_weight": {
+      "type": "number",
+      "description": "Peso sist\u00eamico derivado para uso futuro no plano de a\u00e7\u00e3o (metadado anal\u00edtico)"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "crossing_key"
+  ]
+}

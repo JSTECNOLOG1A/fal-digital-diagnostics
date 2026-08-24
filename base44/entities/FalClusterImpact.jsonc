@@ -1,0 +1,53 @@
+{
+  "name": "FalClusterImpact",
+  "type": "object",
+  "properties": {
+    "cluster_key": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "impact_type": {
+      "type": "string",
+      "enum": [
+        "financial",
+        "operational",
+        "risk",
+        "governance"
+      ],
+      "description": "Categoria principal de impacto"
+    },
+    "impact_description": {
+      "type": "string"
+    },
+    "impact_financial_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Peso financeiro 1-5"
+    },
+    "impact_operational_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Peso operacional 1-5"
+    },
+    "impact_risk_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Peso de risco 1-5"
+    },
+    "estimated_financial_range": {
+      "type": "string",
+      "enum": [
+        "baixo",
+        "medio",
+        "alto"
+      ],
+      "default": "medio"
+    }
+  },
+  "required": [
+    "cluster_key",
+    "impact_type"
+  ]
+}

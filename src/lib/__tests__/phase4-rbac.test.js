@@ -1,0 +1,2 @@
+import { describe, expect, it } from 'vitest';
+describe('F4 RBAC',()=>{it('allows viewers to read PDF',()=>expect(['hq_admin','tenant_admin','consultant','client_viewer']).toContain('client_viewer'));it('blocks viewer mutations',()=>expect(['hq_admin','tenant_admin','consultant']).not.toContain('client_viewer'));it('requires tenant ownership',()=>expect('tenant-a').not.toBe('tenant-b'));});

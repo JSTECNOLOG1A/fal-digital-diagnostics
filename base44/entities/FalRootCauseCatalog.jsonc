@@ -1,0 +1,47 @@
+{
+  "name": "FalRootCauseCatalog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "cause_id": {
+      "type": "string",
+      "description": "Chave \u00fanica ex: RC_FIN_NO_DRE"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "driver_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "playbook_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "typical_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Perfis que costumam gerar esta causa"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Chave da dimens\u00e3o (ex: financeiro, governanca)"
+    }
+  },
+  "required": [
+    "cause_id",
+    "name",
+    "driver_ids"
+  ]
+}

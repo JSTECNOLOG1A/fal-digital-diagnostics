@@ -1,0 +1,124 @@
+{
+  "name": "FinancialLifecycleMigrationManifest",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "migration_key": {
+      "type": "string"
+    },
+    "migration_run_id": {
+      "type": "string"
+    },
+    "attempt": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "partial",
+        "completed",
+        "completed_with_ambiguities",
+        "failed"
+      ]
+    },
+    "current_entity": {
+      "type": "string"
+    },
+    "current_diagnosis_id": {
+      "type": "string"
+    },
+    "last_cursor": {
+      "type": "string"
+    },
+    "last_completed_cursor": {
+      "type": "string"
+    },
+    "completed_diagnoses_count": {
+      "type": "number"
+    },
+    "lifecycle_mutation_skipped": {
+      "type": "boolean"
+    },
+    "before_counts": {
+      "type": "object"
+    },
+    "after_counts": {
+      "type": "object"
+    },
+    "before_by_entity_status": {
+      "type": "object"
+    },
+    "after_by_entity_status": {
+      "type": "object"
+    },
+    "pages_read": {
+      "type": "number"
+    },
+    "rows_read": {
+      "type": "number"
+    },
+    "rows_updated": {
+      "type": "number"
+    },
+    "rows_unchanged": {
+      "type": "number"
+    },
+    "rows_ambiguous": {
+      "type": "number"
+    },
+    "rows_failed": {
+      "type": "number"
+    },
+    "ambiguous_rows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "diagnostics_migrated": {
+      "type": "number"
+    },
+    "source_heads_created": {
+      "type": "number"
+    },
+    "source_heads_updated": {
+      "type": "number"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "migration_key",
+    "migration_run_id",
+    "attempt",
+    "status",
+    "before_counts",
+    "after_counts",
+    "ambiguous_rows",
+    "diagnostics_migrated",
+    "errors",
+    "created_at"
+  ]
+}

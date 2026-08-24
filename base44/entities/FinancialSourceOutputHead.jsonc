@@ -1,0 +1,72 @@
+{
+  "name": "FinancialSourceOutputHead",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "source_entity_id": {
+      "type": "string"
+    },
+    "source_period": {
+      "type": "string"
+    },
+    "source_key": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "current_processing_run_id": {
+      "type": "string"
+    },
+    "current_processing_snapshot_id": {
+      "type": "string"
+    },
+    "current_input_checksum": {
+      "type": "string"
+    },
+    "current_output_checksum": {
+      "type": "string"
+    },
+    "mapping_checksum": {
+      "type": "string"
+    },
+    "registry_hash": {
+      "type": "string"
+    },
+    "formula_version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "blocked",
+        "invalid"
+      ]
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "source_entity_id",
+    "source_period",
+    "source_key",
+    "financial_upload_id",
+    "current_processing_run_id",
+    "current_processing_snapshot_id",
+    "current_output_checksum",
+    "status"
+  ]
+}

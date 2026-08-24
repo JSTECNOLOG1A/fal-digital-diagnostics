@@ -1,0 +1,103 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string",
+      "description": "FK obrigat\u00f3ria \u2014 relat\u00f3rio sempre vinculado a um ciclo"
+    },
+    "assessment_id": {
+      "type": "string",
+      "description": "FK opcional \u2014 para compatibilidade legada"
+    },
+    "report_scope": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "Escopo do relat\u00f3rio: grupo, empresa ou unidade"
+    },
+    "report_mode": {
+      "type": "string",
+      "enum": [
+        "executive",
+        "full_scope",
+        "tactical",
+        "operational"
+      ],
+      "description": "Modo de apresenta\u00e7\u00e3o: executivo, consolidado, t\u00e1tico ou operacional"
+    },
+    "title": {
+      "type": "string",
+      "description": "T\u00edtulo do relat\u00f3rio"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Subt\u00edtulo ou contexto adicional"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "generated",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "is_partial_coverage": {
+      "type": "boolean",
+      "default": false,
+      "description": "true se a cobertura do ciclo \u00e9 parcial"
+    },
+    "pdf_url": {
+      "type": "string"
+    },
+    "preview_url": {
+      "type": "string"
+    },
+    "payload_version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "template_version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "coverage_summary": {
+      "type": "object",
+      "description": "Resumo de cobertura: assessed_companies, total_companies, etc."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadados adicionais do relat\u00f3rio"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "cycle_id",
+    "report_scope",
+    "report_mode",
+    "title"
+  ]
+}

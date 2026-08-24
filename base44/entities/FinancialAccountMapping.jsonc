@@ -1,0 +1,92 @@
+{
+  "name": "FinancialAccountMapping",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "account_code": {
+      "type": "string"
+    },
+    "account_description": {
+      "type": "string"
+    },
+    "mapping_type": {
+      "type": "string",
+      "enum": [
+        "client_specific",
+        "sector_default"
+      ],
+      "default": "client_specific",
+      "description": "sector_default reservado para V2"
+    },
+    "managerial_group": {
+      "type": "string"
+    },
+    "managerial_rubric": {
+      "type": "string"
+    },
+    "statement_family": {
+      "type": "string",
+      "enum": [
+        "dre",
+        "balance_sheet",
+        "cash_flow",
+        "operational_support"
+      ]
+    },
+    "statement_section": {
+      "type": "string"
+    },
+    "sign_rule": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "inverted"
+      ],
+      "default": "normal"
+    },
+    "include_in_dre": {
+      "type": "boolean",
+      "default": false
+    },
+    "include_in_balance": {
+      "type": "boolean",
+      "default": false
+    },
+    "include_in_cash_flow": {
+      "type": "boolean",
+      "default": false
+    },
+    "indicator_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "materiality_class": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "tenant_id",
+    "account_code",
+    "managerial_rubric",
+    "statement_family"
+  ]
+}

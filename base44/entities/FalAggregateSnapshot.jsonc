@@ -1,0 +1,56 @@
+{
+  "name": "FalAggregateSnapshot",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "level_type": {
+      "type": "string",
+      "description": "group | company"
+    },
+    "level_id": {
+      "type": "string",
+      "description": "ID do group ou company"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "computed_by": {
+      "type": "string"
+    },
+    "overall_score": {
+      "type": "number"
+    },
+    "overall_level": {
+      "type": "string"
+    },
+    "dimension_scores": {
+      "type": "object",
+      "description": "Map dimension -> {score, level}"
+    },
+    "radar_points": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_assessments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Lista de assessments/snapshots usados"
+    },
+    "aggregation_rule": {
+      "type": "string",
+      "default": "mean"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "level_type",
+    "level_id"
+  ]
+}

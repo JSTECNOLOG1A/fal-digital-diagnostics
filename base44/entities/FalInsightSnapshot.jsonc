@@ -1,0 +1,81 @@
+{
+  "name": "FalInsightSnapshot",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "unit",
+        "company",
+        "group"
+      ]
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "driver_scores": {
+      "type": "object",
+      "description": "driver_id -> { score: 0-100, hit_count, severity_sum, evidence_question_ids }"
+    },
+    "top_driver_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "driver_ids ordenados por pior score"
+    },
+    "root_causes_ranked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cause_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "playbook_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "recommended_playbooks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "question_id -> { score, signal_severity, driver_ids, bad }"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

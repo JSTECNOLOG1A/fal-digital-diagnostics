@@ -1,0 +1,60 @@
+{
+  "name": "MQEQuestion",
+  "type": "object",
+  "properties": {
+    "method_version_id": {
+      "type": "string"
+    },
+    "crossing_key": {
+      "type": "string",
+      "description": "Key of the crossing e.g. GxF"
+    },
+    "code": {
+      "type": "string",
+      "description": "e.g. GxF-01"
+    },
+    "text": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number",
+      "default": 1
+    },
+    "order": {
+      "type": "number"
+    },
+    "guidance": {
+      "type": "string"
+    },
+    "sector_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sectors this question applies to. Use [\"all\"] for universal questions.",
+      "default": [
+        "all"
+      ]
+    },
+    "sector_type": {
+      "type": "string",
+      "enum": [
+        "core",
+        "sector",
+        "optional"
+      ],
+      "default": "core"
+    },
+    "evidence_hint": {
+      "type": "string"
+    },
+    "risk_tag": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "method_version_id",
+    "crossing_key",
+    "text"
+  ]
+}

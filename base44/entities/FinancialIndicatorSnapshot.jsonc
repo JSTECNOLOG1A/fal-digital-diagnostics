@@ -1,0 +1,180 @@
+{
+  "name": "FinancialIndicatorSnapshot",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_code": {
+      "type": "string"
+    },
+    "entity_level": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ]
+    },
+    "period": {
+      "type": "string"
+    },
+    "column_key": {
+      "type": "string"
+    },
+    "column_label": {
+      "type": "string"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual",
+        "ytd"
+      ]
+    },
+    "indicator_code": {
+      "type": "string"
+    },
+    "indicator_name": {
+      "type": "string"
+    },
+    "indicator_family": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "previous_value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "variation_value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "variation_percent": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "signal": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "atencao",
+        "relevante",
+        "critico"
+      ]
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "formula_version": {
+      "type": "string"
+    },
+    "source_snapshot_id": {
+      "type": "string"
+    },
+    "formula": {
+      "type": "string"
+    },
+    "numerator": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "denominator": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "canonical_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_code": {
+      "type": "string"
+    },
+    "dataset_scope": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "combined",
+        "parent",
+        "consolidated"
+      ]
+    },
+    "reporting_entity_id": {
+      "type": "string"
+    },
+    "preparation_run_id": {
+      "type": "string"
+    },
+    "processing_run_id": {
+      "type": "string"
+    },
+    "publication_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "superseded",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "superseded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "tenant_id",
+    "entity_code",
+    "period",
+    "indicator_code",
+    "value"
+  ]
+}

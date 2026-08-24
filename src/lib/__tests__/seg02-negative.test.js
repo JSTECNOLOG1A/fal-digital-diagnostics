@@ -1,0 +1,2 @@
+import { describe,it,expect } from 'vitest'; import { spawnSync } from 'node:child_process'; import process from 'node:process';
+describe('R4-SEG-02 negativo',()=>{it('falha para function sem matriz',()=>{const r=spawnSync(process.execPath,['scripts/audit-seg02-functions.mjs','--inject-unclassified-function'],{encoding:'utf8'});expect(r.status).not.toBe(0);expect(r.stdout).toContain('Missing from matrix: __seg02_unclassified_probe__');expect(r.stdout).toContain('SEG-02 audit FAILED')})});

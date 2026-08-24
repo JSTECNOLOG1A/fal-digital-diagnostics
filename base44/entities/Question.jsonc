@@ -1,0 +1,65 @@
+{
+  "name": "Question",
+  "type": "object",
+  "properties": {
+    "method_version_id": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Key of the dimension this question belongs to"
+    },
+    "code": {
+      "type": "string",
+      "description": "e.g. GOV-01"
+    },
+    "text": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number",
+      "default": 1,
+      "description": "Internal weight (1, 2, or 3)"
+    },
+    "order": {
+      "type": "number"
+    },
+    "guidance": {
+      "type": "string",
+      "description": "Help text for the consultant"
+    },
+    "sector_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sectors this question applies to. Use [\"all\"] for universal questions.",
+      "default": [
+        "all"
+      ]
+    },
+    "sector_type": {
+      "type": "string",
+      "enum": [
+        "core",
+        "sector",
+        "optional"
+      ],
+      "default": "core",
+      "description": "core=universal, sector=sector-specific, optional=not auto-loaded"
+    },
+    "evidence_hint": {
+      "type": "string",
+      "description": "Example document or evidence to look for"
+    },
+    "risk_tag": {
+      "type": "string",
+      "description": "Risk category tag for AI interpretation"
+    }
+  },
+  "required": [
+    "method_version_id",
+    "dimension_key",
+    "text"
+  ]
+}

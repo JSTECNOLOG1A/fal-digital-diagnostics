@@ -1,0 +1,36 @@
+{
+  "name": "FinancialJourneyPosition",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Tenant do usu\u00e1rio"
+    },
+    "financial_diagnosis_id": {
+      "type": "string",
+      "description": "FK para FinancialDiagnosis"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID do usu\u00e1rio dono desta prefer\u00eancia de navega\u00e7\u00e3o"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email desnormalizado para auditoria"
+    },
+    "step": {
+      "type": "string",
+      "description": "Etapa ativa da jornada para este usu\u00e1rio (estrutura|fontes|combinacao|conciliacao|cedula|preparacao|validacao|analise)"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "user_id",
+    "step"
+  ]
+}

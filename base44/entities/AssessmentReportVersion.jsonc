@@ -1,0 +1,171 @@
+{
+  "name": "AssessmentReportVersion",
+  "type": "object",
+  "properties": {
+    "assessment_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "review_id": {
+      "type": "string"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "initial_diagnostic",
+        "approved_action_plan",
+        "review_cycle",
+        "consolidated_evolution",
+        "executive_summary",
+        "action_scope",
+        "financial_diagnostic",
+        "synthetic_integrated",
+        "custom"
+      ]
+    },
+    "report_title": {
+      "type": "string"
+    },
+    "report_version_number": {
+      "type": "number",
+      "default": 1
+    },
+    "report_code": {
+      "type": "string"
+    },
+    "previous_report_version_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "generated",
+        "active",
+        "archived",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "action_plan_review_id": {
+      "type": "string"
+    },
+    "assessment_revision_number": {
+      "type": "number"
+    },
+    "preset_id": {
+      "type": "string"
+    },
+    "report_parameters": {
+      "type": "object"
+    },
+    "payload_snapshot": {
+      "type": "object"
+    },
+    "payload_checksum": {
+      "type": "string"
+    },
+    "source_manifest": {
+      "type": "object"
+    },
+    "diagnostic_snapshot_id": {
+      "type": "string"
+    },
+    "priority_snapshot_id": {
+      "type": "string"
+    },
+    "action_plan_snapshot_id": {
+      "type": "string"
+    },
+    "pdf_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "generated",
+        "failed"
+      ]
+    },
+    "pdf_file_url": {
+      "type": "string"
+    },
+    "pdf_upload_identifier": {
+      "type": "string"
+    },
+    "pdf_checksum": {
+      "type": "string"
+    },
+    "pdf_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pdf_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pdf_started_by": {
+      "type": "string"
+    },
+    "pdf_operation_id": {
+      "type": "string"
+    },
+    "pdf_generator_version": {
+      "type": "string"
+    },
+    "pdf_page_count": {
+      "type": "number"
+    },
+    "pdf_file_size": {
+      "type": "number"
+    },
+    "pdf_storage_provider": {
+      "type": "string"
+    },
+    "pdf_storage_key": {
+      "type": "string"
+    },
+    "pdf_error": {
+      "type": "string"
+    },
+    "html_snapshot_url": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "mark_as_official": {
+      "type": "boolean",
+      "default": false
+    },
+    "archived_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "archived_by": {
+      "type": "string"
+    },
+    "archive_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "assessment_id",
+    "tenant_id",
+    "report_type",
+    "report_title"
+  ]
+}

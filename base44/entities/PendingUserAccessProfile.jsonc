@@ -1,0 +1,67 @@
+{
+  "name": "PendingUserAccessProfile",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio convidado"
+    },
+    "app_role": {
+      "type": "string",
+      "enum": [
+        "hq_admin",
+        "tenant_admin",
+        "consultant",
+        "client_viewer"
+      ],
+      "description": "Papel operacional FAL a ser aplicado ap\u00f3s primeiro login"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Tenant de destino (null para hq_admin)"
+    },
+    "expected_built_in_role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "description": "Papel t\u00e9cnico Base44 esperado (admin para hq_admin, user para demais)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "applied",
+        "cancelled",
+        "error"
+      ],
+      "default": "pending"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "created_by_email": {
+      "type": "string"
+    },
+    "applied_user_id": {
+      "type": "string",
+      "description": "ID do User ap\u00f3s aplica\u00e7\u00e3o"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "email",
+    "app_role",
+    "expected_built_in_role",
+    "status",
+    "created_by_user_id",
+    "created_by_email"
+  ]
+}

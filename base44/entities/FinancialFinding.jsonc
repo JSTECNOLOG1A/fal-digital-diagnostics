@@ -1,0 +1,153 @@
+{
+  "name": "FinancialFinding",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "finding_type": {
+      "type": "string"
+    },
+    "financial_indicator": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "action_plan_status": {
+      "type": "string",
+      "enum": [
+        "not_sent",
+        "suggested",
+        "needs_classification",
+        "converted_to_task",
+        "rejected"
+      ],
+      "default": "not_sent"
+    },
+    "action_recommendation_id": {
+      "type": "string"
+    },
+    "action_task_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "sent_to_action_plan_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_to_action_plan_by": {
+      "type": "string"
+    },
+    "converted_to_task_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "converted_to_task_by": {
+      "type": "string"
+    },
+    "rejected_reason": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string",
+      "description": "Upload financeiro de origem do achado, quando aplic\u00e1vel."
+    },
+    "finding_key": {
+      "type": "string",
+      "description": "Chave est\u00e1vel para deduplica\u00e7\u00e3o do achado."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "financial_indicator",
+        "financial_validation",
+        "financial_statement",
+        "dfc",
+        "kanitz",
+        "manual"
+      ]
+    },
+    "source_ref_id": {
+      "type": "string",
+      "description": "ID do indicador, valida\u00e7\u00e3o, linha ou origem que gerou o achado."
+    },
+    "origin": {
+      "type": "string",
+      "enum": [
+        "auto_interpretation",
+        "manual"
+      ],
+      "default": "manual"
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "ignored",
+        "converted_to_recommendation"
+      ],
+      "default": "open"
+    },
+    "finding_scope": {
+      "type": "string",
+      "enum": [
+        "period_snapshot",
+        "period_comparison",
+        "structural_validation"
+      ],
+      "default": "period_snapshot",
+      "description": "Classifica a \u00f3tica do achado: leitura do per\u00edodo, compara\u00e7\u00e3o entre per\u00edodos ou valida\u00e7\u00e3o estrutural."
+    },
+    "comparison_period": {
+      "type": "string",
+      "description": "Per\u00edodo anterior usado como base comparativa, apenas para achados period_comparison."
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "group_id",
+    "title",
+    "severity"
+  ]
+}

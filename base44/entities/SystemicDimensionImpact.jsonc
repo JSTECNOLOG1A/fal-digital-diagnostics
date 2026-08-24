@@ -1,0 +1,54 @@
+{
+  "name": "SystemicDimensionImpact",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "dimension_label": {
+      "type": "string"
+    },
+    "related_crossings_count": {
+      "type": "number"
+    },
+    "fragile_crossings_count": {
+      "type": "number",
+      "description": "Cruzamentos com score final < 40"
+    },
+    "critical_crossings_count": {
+      "type": "number",
+      "description": "Cruzamentos com score final < 20"
+    },
+    "average_cross_score": {
+      "type": "number",
+      "description": "M\u00e9dia dos scores finais dos cruzamentos desta dimens\u00e3o (0\u2013100)"
+    },
+    "leverage_score": {
+      "type": "number",
+      "description": "\u00cdndice de alavanca sist\u00eamica"
+    },
+    "is_systemic_leverage_point": {
+      "type": "boolean",
+      "default": false
+    },
+    "systemic_summary": {
+      "type": "string",
+      "description": "Texto interpretativo da posi\u00e7\u00e3o sist\u00eamica desta dimens\u00e3o"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "dimension_key"
+  ]
+}

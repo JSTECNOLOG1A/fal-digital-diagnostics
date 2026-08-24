@@ -1,0 +1,107 @@
+{
+  "name": "FinancialAccountPlanLine",
+  "type": "object",
+  "properties": {
+    "account_plan_id": {
+      "type": "string",
+      "description": "FK para FinancialAccountPlan"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Desnormalizado para facilitar queries"
+    },
+    "account_code": {
+      "type": "string",
+      "description": "C\u00f3digo da conta normalizado SEM pontos (ex: 1101010001). Sempre armazenado sem pontos independente do formato de entrada."
+    },
+    "account_code_display": {
+      "type": "string",
+      "description": "C\u00f3digo da conta com formata\u00e7\u00e3o original para exibi\u00e7\u00e3o (ex: 1.1.01.01.0001)"
+    },
+    "account_name": {
+      "type": "string",
+      "description": "Nome/descri\u00e7\u00e3o da conta anal\u00edtica"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "analitica",
+        "sintetica"
+      ],
+      "default": "analitica",
+      "description": "Tipo da conta \u2014 apenas anal\u00edticas participam do mapeamento gerencial"
+    },
+    "classification": {
+      "type": "string",
+      "description": "Classifica\u00e7\u00e3o gerencial (texto livre ou rubrica \u2014 para compatibilidade com Excel)"
+    },
+    "statement_code": {
+      "type": "string",
+      "enum": [
+        "BP",
+        "DRE",
+        "DFC",
+        "NAO_CLASSIFICADO"
+      ],
+      "description": "Demonstrativo de destino"
+    },
+    "bp_group": {
+      "type": "string",
+      "enum": [
+        "ativo_circulante",
+        "ativo_nao_circulante",
+        "passivo_circulante",
+        "passivo_nao_circulante",
+        "patrimonio_liquido"
+      ],
+      "description": "Grupo no Balan\u00e7o Patrimonial. Obrigat\u00f3rio para contas BP \u2014 define se \u00e9 circulante ou n\u00e3o circulante e o lado (ativo/passivo/PL)."
+    },
+    "ebitda_component": {
+      "type": "string",
+      "enum": [
+        "receita_bruta",
+        "deducoes_receita",
+        "custos",
+        "despesas_operacionais",
+        "outras_receitas_despesas",
+        "excluir"
+      ],
+      "description": "Componente EBITDA: define se/como esta conta entra no c\u00e1lculo do EBITDA gerencial. Deixar vazio = n\u00e3o participa."
+    },
+    "canonical_key": {
+      "type": "string",
+      "description": "Chave can\u00f4nica da rubrica gerencial (ex: ativo_circulante_caixa, receita_bruta)"
+    },
+    "dfc_classification": {
+      "type": "string",
+      "description": "Classifica\u00e7\u00e3o para Fluxo de Caixa \u2014 define o tipo de movimento DFC (ex: dfc_op_resultado_liquido, dfc_op_var_contas_receber, dfc_inv_imobilizado, dfc_fin_divida)"
+    },
+    "sign_rule": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "inverted"
+      ],
+      "default": "normal",
+      "description": "Regra de sinal: normal = d\u00e9bito positivo; inverted = cr\u00e9dito positivo (para passivos e receitas)"
+    },
+    "display_order": {
+      "type": "number",
+      "description": "Ordem de exibi\u00e7\u00e3o dentro do grupo"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es sobre o mapeamento"
+    }
+  },
+  "required": [
+    "account_plan_id",
+    "tenant_id",
+    "account_code",
+    "account_name"
+  ]
+}

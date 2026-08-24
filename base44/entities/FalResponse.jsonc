@@ -1,0 +1,89 @@
+{
+  "name": "FalResponse",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "fal_question_id": {
+      "type": "string",
+      "description": "ID da FalQuestion respondida"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number",
+      "description": "Score 0\u20133"
+    },
+    "justification": {
+      "type": "string"
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "auto_declarada",
+        "confirmada",
+        "auditada"
+      ],
+      "default": "auto_declarada",
+      "description": "N\u00edvel de confian\u00e7a da resposta"
+    },
+    "flag": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "revisar",
+        "conflito",
+        null
+      ],
+      "description": "Marca\u00e7\u00e3o especial da resposta pelo consultor"
+    },
+    "evidence_notes": {
+      "type": "string"
+    },
+    "evidence_file_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assessment_scope_id": {
+      "type": "string",
+      "description": "FK para AssessmentScope. Obrigat\u00f3rio em assessment_mode=multi_entity_master (fase futura). Opcional em diagn\u00f3sticos legados."
+    },
+    "evaluated_entity_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "Tipo da entidade avaliada nesta resposta. Copiado do AssessmentScope."
+    },
+    "evaluated_entity_id": {
+      "type": "string",
+      "description": "ID da entidade avaliada nesta resposta. Copiado do AssessmentScope."
+    },
+    "evaluated_entity_name": {
+      "type": "string",
+      "description": "Nome da entidade avaliada (desnormalizado para exibi\u00e7\u00e3o e relat\u00f3rio)."
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "fal_question_id",
+    "dimension_key",
+    "score"
+  ]
+}

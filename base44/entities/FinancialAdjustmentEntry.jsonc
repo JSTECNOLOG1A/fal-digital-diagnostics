@@ -1,0 +1,92 @@
+{
+  "name": "FinancialAdjustmentEntry",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string",
+      "description": "FK para FinancialDiagnosis"
+    },
+    "financial_upload_id": {
+      "type": "string",
+      "description": "FK para FinancialUpload \u2014 vincula ao upload/vers\u00e3o espec\u00edfica"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Desnormalizado para facilitar queries"
+    },
+    "period": {
+      "type": "string",
+      "description": "Per\u00edodo de compet\u00eancia do ajuste no formato YYYY-MM"
+    },
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "ajuste",
+        "reclassificacao"
+      ],
+      "description": "ajuste = impacta resultado/PL atravessando fronteiras entre demonstrativos; reclassificacao = move saldo dentro do mesmo universo sem alterar resultado l\u00edquido"
+    },
+    "debit_account_code": {
+      "type": "string",
+      "description": "C\u00f3digo da conta debitada (normalizado sem pontos)"
+    },
+    "debit_account_name": {
+      "type": "string",
+      "description": "Nome da conta debitada \u2014 desnormalizado para hist\u00f3rico"
+    },
+    "credit_account_code": {
+      "type": "string",
+      "description": "C\u00f3digo da conta creditada (normalizado sem pontos)"
+    },
+    "credit_account_name": {
+      "type": "string",
+      "description": "Nome da conta creditada \u2014 desnormalizado para hist\u00f3rico"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Valor do lan\u00e7amento \u2014 sempre positivo. O sistema aplica d\u00e9bito/cr\u00e9dito conforme debit/credit account."
+    },
+    "description": {
+      "type": "string",
+      "description": "Hist\u00f3rico do lan\u00e7amento \u2014 motivo do ajuste ou reclassifica\u00e7\u00e3o"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposto",
+        "aceito",
+        "rejeitado"
+      ],
+      "default": "proposto",
+      "description": "Apenas lan\u00e7amentos com status aceito comp\u00f5em o saldo ajustado"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "Email de quem aprovou ou rejeitou o lan\u00e7amento"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp da revis\u00e3o"
+    },
+    "review_notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00e3o do revisor ao aceitar ou rejeitar"
+    },
+    "entry_number": {
+      "type": "number",
+      "description": "N\u00famero sequencial do lan\u00e7amento dentro do diagn\u00f3stico (para refer\u00eancia)"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "financial_upload_id",
+    "tenant_id",
+    "period",
+    "entry_type",
+    "debit_account_code",
+    "credit_account_code",
+    "amount",
+    "description"
+  ]
+}

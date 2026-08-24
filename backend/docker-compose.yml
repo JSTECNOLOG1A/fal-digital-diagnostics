@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fal
+      POSTGRES_PASSWORD: fal_dev_only_change_me
+      POSTGRES_DB: fal
+    ports:
+      - "5433:5432"
+    volumes:
+      - fal_pg_data:/var/lib/postgresql/data
+      - ./docker/init-fal-app-role.sql:/docker-entrypoint-initdb.d/01-fal-app-role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fal -d fal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: fal-redis
+    restart: unless-stopped
+    ports:
+      - "6381:6379"
+    volumes:
+      - fal_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: fal-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: fal
+      MINIO_ROOT_PASSWORD: fal_minio_dev_secret
+    ports:
+      - "9100:9000"
+      - "9101:9001"
+    volumes:
+      - fal_minio_data:/data
+
+volumes:
+  fal_pg_data:
+  fal_redis_data:
+  fal_minio_data:

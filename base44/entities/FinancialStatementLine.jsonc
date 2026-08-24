@@ -1,0 +1,157 @@
+{
+  "name": "FinancialStatementLine",
+  "type": "object",
+  "properties": {
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_code": {
+      "type": "string"
+    },
+    "entity_level": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ]
+    },
+    "period": {
+      "type": "string"
+    },
+    "column_key": {
+      "type": "string"
+    },
+    "column_label": {
+      "type": "string"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual",
+        "ytd"
+      ]
+    },
+    "statement_code": {
+      "type": "string",
+      "enum": [
+        "BP",
+        "DRE",
+        "DFC"
+      ]
+    },
+    "statement_family": {
+      "type": "string",
+      "enum": [
+        "dre",
+        "balance_sheet",
+        "cash_flow",
+        "operational_support"
+      ]
+    },
+    "group_label": {
+      "type": "string"
+    },
+    "rubric_label": {
+      "type": "string"
+    },
+    "canonical_key": {
+      "type": "string"
+    },
+    "line_type": {
+      "type": "string",
+      "enum": [
+        "composed",
+        "calculated",
+        "total",
+        "subtotal"
+      ]
+    },
+    "display_order": {
+      "type": "number"
+    },
+    "note_reference": {
+      "type": "string"
+    },
+    "statement_section": {
+      "type": "string"
+    },
+    "managerial_group": {
+      "type": "string"
+    },
+    "managerial_rubric": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number"
+    },
+    "is_consolidated": {
+      "type": "boolean",
+      "default": false
+    },
+    "composition_account_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dataset_scope": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "combined",
+        "parent",
+        "consolidated"
+      ]
+    },
+    "reporting_entity_id": {
+      "type": "string"
+    },
+    "preparation_run_id": {
+      "type": "string"
+    },
+    "processing_run_id": {
+      "type": "string"
+    },
+    "publication_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "superseded",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "superseded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "tenant_id",
+    "entity_code",
+    "period",
+    "statement_family",
+    "canonical_key",
+    "line_type",
+    "value"
+  ]
+}

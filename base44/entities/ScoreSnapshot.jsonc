@@ -1,0 +1,71 @@
+{
+  "name": "ScoreSnapshot",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dimension_scores": {
+      "type": "object",
+      "description": "Map of dimension_key -> {raw_score, weighted_score}"
+    },
+    "ifme_base": {
+      "type": "number"
+    },
+    "penalties": {
+      "type": "object",
+      "description": "{fde: number, fag: number, fas: number, total: number, details: string}"
+    },
+    "ifme_final": {
+      "type": "number"
+    },
+    "ifme_classification": {
+      "type": "string"
+    },
+    "mqe_scores": {
+      "type": "object",
+      "description": "Map of crossing_key -> {score, classification}"
+    },
+    "igi": {
+      "type": "number"
+    },
+    "igi_classification": {
+      "type": "string"
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "quadrant": {
+      "type": "string",
+      "description": "FAL 2D Matrix quadrant"
+    },
+    "quadrant_label": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "name": "ActionTaskActivity",
+  "type": "object",
+  "properties": {
+    "action_task_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "operation_id": {
+      "type": "string"
+    },
+    "commit_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidation_reason": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "note",
+        "status_change",
+        "progress_update",
+        "owner_change",
+        "due_date_change",
+        "priority_change",
+        "evidence_update",
+        "blocker_update",
+        "checkin",
+        "execution_guidance_update",
+        "consultant_notes_update"
+      ]
+    },
+    "before": {
+      "type": "object"
+    },
+    "after": {
+      "type": "object"
+    },
+    "changed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_id": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "string"
+    },
+    "previous_value": {
+      "type": "string"
+    },
+    "new_value": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_task_id",
+    "action_plan_id",
+    "tenant_id",
+    "type",
+    "operation_id",
+    "commit_status"
+  ]
+}

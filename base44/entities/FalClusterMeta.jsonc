@@ -1,0 +1,60 @@
+{
+  "name": "FalClusterMeta",
+  "type": "object",
+  "properties": {
+    "cluster_key": {
+      "type": "string",
+      "description": "Chave do cluster (ex: acordo_socios)"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Chave da dimens\u00e3o pai"
+    },
+    "subdimension_key": {
+      "type": "string",
+      "description": "Chave da subdimens\u00e3o pai"
+    },
+    "impact_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Peso de impacto no neg\u00f3cio (1\u20135)"
+    },
+    "legal_risk_weight": {
+      "type": "number",
+      "default": 2,
+      "description": "Peso de risco jur\u00eddico/regulat\u00f3rio (1\u20135)"
+    },
+    "operational_risk_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Peso de criticidade operacional (1\u20135)"
+    },
+    "financial_impact_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Impacto financeiro potencial (1\u20135)"
+    },
+    "implementation_effort_weight": {
+      "type": "number",
+      "default": 3,
+      "description": "Esfor\u00e7o estimado de implementa\u00e7\u00e3o (1\u20135)"
+    },
+    "priority_category": {
+      "type": "string",
+      "enum": [
+        "juridico",
+        "financeiro",
+        "operacional",
+        "governanca",
+        "tecnologia",
+        "contabil",
+        "tributario"
+      ],
+      "description": "Categoria de prioriza\u00e7\u00e3o"
+    }
+  },
+  "required": [
+    "cluster_key",
+    "dimension_key"
+  ]
+}

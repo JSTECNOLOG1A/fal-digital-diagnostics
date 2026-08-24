@@ -1,0 +1,44 @@
+{
+  "name": "FinancialAccountPlan",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Tenant propriet\u00e1rio do plano"
+    },
+    "group_id": {
+      "type": "string",
+      "description": "Opcional \u2014 vincula o plano a um grupo espec\u00edfico"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nome do plano (ex: Padr\u00e3o Agro 2024)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o e contexto de uso do plano"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se o plano est\u00e1 ativo e dispon\u00edvel para sele\u00e7\u00e3o"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se \u00e9 o plano padr\u00e3o do tenant"
+    },
+    "version": {
+      "type": "string",
+      "description": "Vers\u00e3o do plano (ex: v1.0)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notas internas"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ]
+}

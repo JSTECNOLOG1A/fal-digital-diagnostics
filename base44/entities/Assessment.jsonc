@@ -1,0 +1,328 @@
+{
+  "name": "Assessment",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "method_version_id": {
+      "type": "string"
+    },
+    "penalty_profile_key": {
+      "type": "string",
+      "default": "equilibrado"
+    },
+    "title": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Nome padronizado exibido na interface. Ex: Diagn\u00f3stico Inicial \u2014 01/2026"
+    },
+    "assessment_type": {
+      "type": "string",
+      "enum": [
+        "diagnostico_inicial",
+        "monitoramento",
+        "revisao_estrategica",
+        "diagnostico_especifico"
+      ],
+      "default": "diagnostico_inicial",
+      "description": "Tipo do diagn\u00f3stico"
+    },
+    "assessment_mode": {
+      "type": "string",
+      "enum": [
+        "single_entity",
+        "fal_scoped",
+        "multi_entity_master",
+        "financial"
+      ],
+      "default": "single_entity",
+      "description": "Modo operacional. single_entity = comportamento legado. fal_scoped / multi_entity_master = Diagn\u00f3stico FAL com escopo por dimens\u00e3o. financial = financeiro."
+    },
+    "linked_entities": {
+      "type": "array",
+      "description": "Universo de entidades vinculadas ao Diagn\u00f3stico FAL. Cada item descreve uma entidade e sua posi\u00e7\u00e3o na hierarquia.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "group",
+              "company",
+              "unit"
+            ]
+          },
+          "entity_id": {
+            "type": "string"
+          },
+          "entity_name": {
+            "type": "string"
+          },
+          "parent_entity_type": {
+            "type": "string",
+            "enum": [
+              "group",
+              "company",
+              "unit"
+            ]
+          },
+          "parent_entity_id": {
+            "type": "string",
+            "description": "ID da entidade pai direta (empresa para unidade, grupo para empresa)"
+          },
+          "group_id": {
+            "type": "string",
+            "description": "ID do grupo raiz ao qual esta entidade pertence"
+          },
+          "company_id": {
+            "type": "string",
+            "description": "ID da empresa \u00e0 qual esta unidade pertence (apenas para units)"
+          },
+          "sort_order": {
+            "type": "number",
+            "description": "Ordem de exibi\u00e7\u00e3o dentro da hierarquia"
+          }
+        }
+      }
+    },
+    "dimension_target_mapping": {
+      "type": "object",
+      "description": "Configura\u00e7\u00e3o de escopo por dimens\u00e3o FAL. Chave = dimension_key, valor = array de targets com level, entity_id, entity_name, weight, sampling_mode, include_in_consolidated_score, methodological_note."
+    },
+    "scope_hash": {
+      "type": "string",
+      "description": "Hash est\u00e1vel do dimension_target_mapping (inclui weight). Usado para detectar mudan\u00e7as de configura\u00e7\u00e3o."
+    },
+    "configuration_status": {
+      "type": "string",
+      "enum": [
+        "not_configured",
+        "draft",
+        "configured",
+        "stale"
+      ],
+      "default": "not_configured",
+      "description": "Status da configura\u00e7\u00e3o do diagn\u00f3stico FAL com escopo."
+    },
+    "coverage_mode": {
+      "type": "string",
+      "enum": [
+        "full",
+        "mixed",
+        "sample"
+      ],
+      "description": "Modo de cobertura: full = todas entidades, mixed = misto, sample = amostral."
+    },
+    "report_status": {
+      "type": "string",
+      "enum": [
+        "not_generated",
+        "stale",
+        "generating",
+        "generated",
+        "failed"
+      ],
+      "default": "not_generated",
+      "description": "Status do relat\u00f3rio gerado para este diagn\u00f3stico."
+    },
+    "diagnostic_cycle": {
+      "type": "string",
+      "description": "Identificador do ciclo diagn\u00f3stico (ex: 2026, Q1/2026)."
+    },
+    "competence": {
+      "type": "string",
+      "description": "Data-base do diagn\u00f3stico no formato MM/AAAA (ex: 01/2026)"
+    },
+    "cycle_number": {
+      "type": "number",
+      "default": 1,
+      "description": "N\u00famero sequencial do ciclo do diagn\u00f3stico para o mesmo target"
+    },
+    "context_note": {
+      "type": "string",
+      "description": "Observa\u00e7\u00e3o opcional sobre o contexto do ciclo"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "diagnostic_depth": {
+      "type": "string",
+      "enum": [
+        "rapid",
+        "standard",
+        "deep"
+      ],
+      "default": "rapid"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_progress",
+        "scoring",
+        "review",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "current_response_version": {
+      "type": "number",
+      "default": 0,
+      "description": "Incremented every time a FalResponse is created or meaningfully changed."
+    },
+    "progress_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "last_question_id": {
+      "type": "string"
+    },
+    "last_subdimension_key": {
+      "type": "string"
+    },
+    "last_saved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Email of assigned consultant"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "sector_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope_mode": {
+      "type": "string",
+      "enum": [
+        "full",
+        "template",
+        "custom",
+        "suggested"
+      ],
+      "default": "full"
+    },
+    "scope_template_id": {
+      "type": "string"
+    },
+    "active_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope_locked": {
+      "type": "boolean",
+      "default": false
+    },
+    "question_set": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dimension_status": {
+      "type": "object"
+    },
+    "crossing_status": {
+      "type": "object"
+    },
+    "executive_summary": {
+      "type": "string"
+    },
+    "top_vulnerabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roadmap_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quarter": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "N\u00edvel hier\u00e1rquico do diagn\u00f3stico"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID da entidade avaliada (group_id, company_id ou unit_id)"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string"
+    },
+    "parent_assessment_id": {
+      "type": "string"
+    },
+    "parent_entity_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company"
+      ]
+    },
+    "parent_entity_id": {
+      "type": "string"
+    },
+    "child_assessment_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope_id": {
+      "type": "string",
+      "description": "FK para AssessmentScope (legado)."
+    }
+  },
+  "required": [
+    "tenant_id",
+    "method_version_id",
+    "title"
+  ]
+}

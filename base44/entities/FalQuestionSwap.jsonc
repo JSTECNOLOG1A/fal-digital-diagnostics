@@ -1,0 +1,74 @@
+{
+  "name": "FalQuestionSwap",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string",
+      "description": "ID do assessment onde ocorreu a troca"
+    },
+    "original_question_id": {
+      "type": "string",
+      "description": "ID da pergunta substitu\u00edda"
+    },
+    "replacement_question_id": {
+      "type": "string",
+      "description": "ID da pergunta substituta"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Dimens\u00e3o da pergunta"
+    },
+    "subdimension_key": {
+      "type": "string",
+      "description": "Subdimens\u00e3o da pergunta"
+    },
+    "cluster_key": {
+      "type": "string",
+      "description": "Cluster da pergunta"
+    },
+    "swap_reason": {
+      "type": "string",
+      "enum": [
+        "nao_aplicavel",
+        "redacao_inadequada",
+        "informacao_indisponivel",
+        "duplicada_parecida",
+        "outro"
+      ],
+      "description": "Motivo da troca"
+    },
+    "swap_reason_label": {
+      "type": "string",
+      "description": "Label leg\u00edvel do motivo"
+    },
+    "fallback_level": {
+      "type": "string",
+      "enum": [
+        "cluster",
+        "subdimension",
+        "dimension"
+      ],
+      "description": "N\u00edvel de fallback usado para encontrar a substituta"
+    },
+    "swapped_by": {
+      "type": "string",
+      "description": "Email do consultor que realizou a troca"
+    },
+    "swapped_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data/hora da troca"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "original_question_id",
+    "replacement_question_id",
+    "swap_reason",
+    "swapped_by"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "name": "Group",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "group_order_number": {
+      "type": "number",
+      "description": "N\u00famero sequencial operacional do grupo dentro do tenant. \u00danico por tenant. Imut\u00e1vel ap\u00f3s cria\u00e7\u00e3o."
+    },
+    "description": {
+      "type": "string"
+    },
+    "structure_type": {
+      "type": "string",
+      "enum": [
+        "Grupo empresarial",
+        "Holding",
+        "Condom\u00ednio rural",
+        "Grupo familiar",
+        "Cooperativa",
+        "Joint venture",
+        "Outro"
+      ],
+      "description": "Tipo de estrutura organizacional"
+    },
+    "entity_nature": {
+      "type": "string",
+      "enum": [
+        "Operacional",
+        "N\u00e3o operacional",
+        "Mista"
+      ],
+      "description": "Natureza da entidade para defini\u00e7\u00e3o de escopo do diagn\u00f3stico"
+    },
+    "main_sector": {
+      "type": "string",
+      "enum": [
+        "Agricultura",
+        "Pecu\u00e1ria",
+        "Agropecu\u00e1ria",
+        "Revenda de insumos",
+        "Ind\u00fastria agro",
+        "Distribui\u00e7\u00e3o",
+        "Holding patrimonial",
+        "Diversificado"
+      ],
+      "description": "Setor principal de atua\u00e7\u00e3o"
+    },
+    "foundation_year": {
+      "type": "number",
+      "description": "Ano de funda\u00e7\u00e3o"
+    },
+    "city_headquarters": {
+      "type": "string",
+      "description": "Cidade da sede"
+    },
+    "state_headquarters": {
+      "type": "string",
+      "description": "Estado da sede"
+    },
+    "recipient_name": {
+      "type": "string",
+      "description": "Nome do destinat\u00e1rio principal dos relat\u00f3rios"
+    },
+    "recipient_title": {
+      "type": "string",
+      "description": "Fun\u00e7\u00e3o/cargo do destinat\u00e1rio principal dos relat\u00f3rios"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es internas"
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, o grupo est\u00e1 arquivado e oculto das listas ativas"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ]
+}

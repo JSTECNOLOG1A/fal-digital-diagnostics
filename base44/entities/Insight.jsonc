@@ -1,0 +1,57 @@
+{
+  "name": "Insight",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "executive_summary": {
+      "type": "string"
+    },
+    "top_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "top_risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_actions_30d": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quadrant_explanation": {
+      "type": "string"
+    },
+    "confidence_note": {
+      "type": "string"
+    },
+    "snapshot_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

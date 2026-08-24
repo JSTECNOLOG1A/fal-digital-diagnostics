@@ -1,0 +1,62 @@
+{
+  "name": "FalEntityDimensionOverride",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID da entidade (group, company ou unit)"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ]
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Chave da dimens\u00e3o (ex: financeiro, governanca)"
+    },
+    "manually_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Usu\u00e1rio ativou manualmente (motor n\u00e3o sugeria)"
+    },
+    "manually_disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Usu\u00e1rio desativou manualmente (motor sugeria)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Motivo opcional da altera\u00e7\u00e3o"
+    },
+    "changed_by": {
+      "type": "string",
+      "description": "Email do consultor que fez a altera\u00e7\u00e3o"
+    },
+    "changed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "previous_state": {
+      "type": "string",
+      "enum": [
+        "auto_active",
+        "auto_inactive"
+      ],
+      "description": "Estado anterior \u00e0 altera\u00e7\u00e3o manual"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "entity_id",
+    "entity_type",
+    "dimension_key",
+    "changed_by"
+  ]
+}

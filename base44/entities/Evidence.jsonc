@@ -1,0 +1,55 @@
+{
+  "name": "Evidence",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_type": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "checklist_item_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Which checklist items this evidence satisfies"
+    },
+    "linked_question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "uploaded_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "file_url",
+    "file_name"
+  ]
+}

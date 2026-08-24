@@ -1,0 +1,101 @@
+{
+  "name": "ActionPlanGenerationOperation",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "action_plan_id": {
+      "type": "string"
+    },
+    "operation_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "committing",
+        "active",
+        "invalid"
+      ]
+    },
+    "input_fingerprint": {
+      "type": "string"
+    },
+    "previous_plan_snapshot": {
+      "type": "object"
+    },
+    "previous_task_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "previous_recommendation_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "previous_flow_state_snapshot": {
+      "type": "object"
+    },
+    "candidate_task_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "started_by": {
+      "type": "string"
+    },
+    "committed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_code": {
+      "type": "string"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "rollback_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "running",
+        "completed",
+        "failed"
+      ]
+    },
+    "rollback_completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rollback_errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "operation_id",
+    "status",
+    "input_fingerprint"
+  ]
+}

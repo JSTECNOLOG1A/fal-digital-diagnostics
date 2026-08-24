@@ -1,0 +1,26 @@
+import * as React from 'react';
+
+export const Sidebar: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarContent: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarFooter: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarGroup: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarGroupAction: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarGroupContent: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarGroupLabel: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarHeader: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarInput: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarInset: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenu: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuAction: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuBadge: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuButton: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuItem: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuSkeleton: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuSub: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuSubButton: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarMenuSubItem: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarProvider: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarRail: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarSeparator: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const SidebarTrigger: React.ForwardRefExoticComponent<Record<string, any> & React.RefAttributes<any>>;
+export const useSidebar: (...args: any[]) => any;

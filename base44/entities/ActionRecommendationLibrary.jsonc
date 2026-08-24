@@ -1,0 +1,115 @@
+{
+  "name": "ActionRecommendationLibrary",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "null = entrada global da biblioteca"
+    },
+    "method_version_id": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "question_id": {
+      "type": "string"
+    },
+    "maturity_trigger": {
+      "type": "string",
+      "description": "N\u00edvel de maturidade que dispara esta recomenda\u00e7\u00e3o (ex: Cr\u00edtico, B\u00e1sico)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "recommendation_title": {
+      "type": "string"
+    },
+    "recommendation_text": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "practical_steps": {
+      "type": "string"
+    },
+    "evidence_required": {
+      "type": "string"
+    },
+    "expected_deliverable": {
+      "type": "string"
+    },
+    "expected_result": {
+      "type": "string"
+    },
+    "suggested_owner_area": {
+      "type": "string"
+    },
+    "suggested_deadline_days": {
+      "type": "number"
+    },
+    "impact_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "effort_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "complexity_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "quick_win",
+        "structural",
+        "foundational",
+        "compliance",
+        "operational"
+      ]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_draft": {
+      "type": "boolean",
+      "default": false,
+      "description": "Sugest\u00e3o pendente de aprova\u00e7\u00e3o para publica\u00e7\u00e3o"
+    },
+    "suggested_by": {
+      "type": "string",
+      "description": "Email de quem sugeriu esta entrada"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "dimension_key",
+    "recommendation_title",
+    "recommendation_text"
+  ]
+}

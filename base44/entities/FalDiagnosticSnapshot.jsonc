@@ -1,0 +1,241 @@
+{
+  "name": "FalDiagnosticSnapshot",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string"
+    },
+    "target_type": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "computed_by": {
+      "type": "string"
+    },
+    "question_set": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs das FalQuestions usadas neste diagn\u00f3stico"
+    },
+    "dimension_scores": {
+      "type": "object",
+      "description": "Map dimension -> { score, level, weight_sum, response_count, active, subdimension_scores, cluster_scores }"
+    },
+    "overall_score": {
+      "type": "number",
+      "description": "Score geral 0\u20133"
+    },
+    "overall_level": {
+      "type": "string",
+      "enum": [
+        "Cr\u00edtico",
+        "B\u00e1sico",
+        "Estruturado",
+        "Avan\u00e7ado"
+      ]
+    },
+    "radar_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "type": "string"
+          },
+          "dimension": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "level": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "gaps_top": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string"
+          },
+          "axis": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "level": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Top 3 dimens\u00f5es com menor score"
+    },
+    "sector_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "active_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dimension_risk_summary": {
+      "type": "object",
+      "description": "Map dimension_key -> { dimension_score, critical_cluster_key, critical_cluster_score }"
+    },
+    "maturity_index": {
+      "type": "number",
+      "description": "\u00cdndice de maturidade percentual (overall_score / score_max * 100)"
+    },
+    "total_evolution": {
+      "type": "number",
+      "description": "Evolu\u00e7\u00e3o total desde o primeiro diagn\u00f3stico do mesmo target. Null se for o primeiro."
+    },
+    "critical_clusters_count": {
+      "type": "number",
+      "description": "Quantidade de clusters com score abaixo do threshold cr\u00edtico"
+    },
+    "total_clusters_count": {
+      "type": "number"
+    },
+    "action_execution_rate": {
+      "type": "number"
+    },
+    "impact_potential": {
+      "type": "number"
+    },
+    "value_lever_summary": {
+      "type": "object",
+      "description": "Mapa de alavancas de valor com potencial de melhoria por cluster"
+    },
+    "methodology_log": {
+      "type": "object",
+      "description": "Log metodol\u00f3gico: vers\u00e3o, regras e penalidades aplicadas",
+      "properties": {
+        "methodology_version": {
+          "type": "string"
+        },
+        "config_id": {
+          "type": "string"
+        },
+        "engine_version": {
+          "type": "string"
+        },
+        "overall_score_method": {
+          "type": "string"
+        },
+        "rules_applied": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "penalties_applied": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "dimension_key": {
+                "type": "string"
+              },
+              "cluster_key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              },
+              "detail": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "dimension_weights_used": {
+          "type": "object"
+        }
+      }
+    },
+    "clusters_criticos": {
+      "type": "array",
+      "description": "Clusters com prioridade CR\u00cdTICA \u2014 gerado por computeFalPriority",
+      "items": {
+        "type": "object"
+      }
+    },
+    "clusters_alta_prioridade": {
+      "type": "array",
+      "description": "Clusters com prioridade ALTA",
+      "items": {
+        "type": "object"
+      }
+    },
+    "clusters_media_prioridade": {
+      "type": "array",
+      "description": "Clusters com prioridade M\u00c9DIA",
+      "items": {
+        "type": "object"
+      }
+    },
+    "clusters_baixa_prioridade": {
+      "type": "array",
+      "description": "Clusters com prioridade BAIXA",
+      "items": {
+        "type": "object"
+      }
+    },
+    "priority_computed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp do \u00faltimo c\u00e1lculo de prioridades"
+    },
+    "priority_computed_by": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio que calculou as prioridades"
+    },
+    "cluster_analysis": {
+      "type": "object",
+      "description": "Mapa de an\u00e1lise inteligente por cluster \u2014 gerado por computeClusterIntelligence. Key: subdim:cluster"
+    },
+    "intelligence_computed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp do \u00faltimo c\u00e1lculo de intelig\u00eancia"
+    },
+    "intelligence_benchmark_group": {
+      "type": "string",
+      "description": "Grupo de benchmark usado na \u00faltima an\u00e1lise de intelig\u00eancia"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

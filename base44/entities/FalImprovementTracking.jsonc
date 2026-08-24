@@ -1,0 +1,49 @@
+{
+  "name": "FalImprovementTracking",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "before_score": {
+      "type": "number"
+    },
+    "after_score": {
+      "type": "number"
+    },
+    "improvement_delta": {
+      "type": "number"
+    },
+    "actions_taken": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "recommendation_keys aplicadas"
+    },
+    "time_to_improve_days": {
+      "type": "number"
+    },
+    "measured_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "cluster_key",
+    "before_score"
+  ]
+}

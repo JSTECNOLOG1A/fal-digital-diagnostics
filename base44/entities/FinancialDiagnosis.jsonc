@@ -1,0 +1,178 @@
+{
+  "name": "FinancialDiagnosis",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "scope_level": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "N\u00edvel hier\u00e1rquico do diagn\u00f3stico"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "uploaded",
+        "validating",
+        "validation_failed",
+        "validated",
+        "processing",
+        "processed",
+        "prepared",
+        "reviewed",
+        "approved",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "sector": {
+      "type": "string"
+    },
+    "client_profile_type": {
+      "type": "string",
+      "enum": [
+        "holding",
+        "fazenda",
+        "agroindustria",
+        "revenda",
+        "industria",
+        "servicos",
+        "outros"
+      ]
+    },
+    "periodicidade": {
+      "type": "string",
+      "enum": [
+        "mensal",
+        "trimestral",
+        "anual"
+      ],
+      "description": "Periodicidade padr\u00e3o dos demonstrativos deste diagn\u00f3stico"
+    },
+    "data_base_abertura": {
+      "type": "string",
+      "description": "Data de abertura do per\u00edodo analisado no formato MM/AAAA"
+    },
+    "data_base_fechamento": {
+      "type": "string",
+      "description": "Data-base (fechamento) do per\u00edodo analisado no formato MM/AAAA"
+    },
+    "first_period": {
+      "type": "string",
+      "description": "Primeiro per\u00edodo analisado, ex: 2024-01"
+    },
+    "last_period": {
+      "type": "string",
+      "description": "\u00daltimo per\u00edodo analisado, ex: 2024-12"
+    },
+    "months_count": {
+      "type": "number"
+    },
+    "current_upload_id": {
+      "type": "string",
+      "description": "FK para o upload ativo"
+    },
+    "current_version_number": {
+      "type": "number",
+      "default": 0
+    },
+    "account_plan_id": {
+      "type": "string",
+      "description": "FK para FinancialAccountPlan \u2014 plano de contas gerencial usado neste diagn\u00f3stico"
+    },
+    "analysis_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "combined",
+        "consolidated"
+      ],
+      "default": "individual",
+      "description": "Tipo de an\u00e1lise: individual (uma entidade), combined (agrega\u00e7\u00e3o simples), consolidated (com elimina\u00e7\u00f5es)"
+    },
+    "parent_entity_id": {
+      "type": "string",
+      "description": "Entidade controladora (para consolidated)"
+    },
+    "presenting_entity_id": {
+      "type": "string",
+      "description": "Entidade apresentadora (para combined)"
+    },
+    "current_preparation_run_id": {
+      "type": "string",
+      "description": "FK para FinancialPreparationRun ativo"
+    },
+    "current_processing_snapshot_id": {
+      "type": "string",
+      "description": "FK para FinancialProcessingSnapshot ativo (cadeia imut\u00e1vel)"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_active_step": {
+      "type": "string",
+      "description": "\u00daltima etapa ativa da jornada financeira (persistida para retomada)"
+    },
+    "journey_updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp da \u00faltima atualiza\u00e7\u00e3o da jornada"
+    },
+    "integrity_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "healthy",
+        "warning",
+        "blocked"
+      ],
+      "default": "unknown",
+      "description": "Status da integridade do diagn\u00f3stico (gate produtivo)"
+    },
+    "integrity_blocking_count": {
+      "type": "number",
+      "default": 0,
+      "description": "N\u00famero de issues bloqueantes na \u00faltima verifica\u00e7\u00e3o de integridade"
+    },
+    "integrity_warning_count": {
+      "type": "number",
+      "default": 0,
+      "description": "N\u00famero de warnings na \u00faltima verifica\u00e7\u00e3o de integridade"
+    },
+    "integrity_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp da \u00faltima execu\u00e7\u00e3o do integrity check"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "scope_level",
+    "title"
+  ]
+}

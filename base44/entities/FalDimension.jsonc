@@ -1,0 +1,48 @@
+{
+  "name": "FalDimension",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string",
+      "description": "Chave \u00fanica da dimens\u00e3o (ex: governanca, financeiro)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nome da dimens\u00e3o"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o da dimens\u00e3o"
+    },
+    "order": {
+      "type": "number",
+      "default": 0,
+      "description": "Ordem de apresenta\u00e7\u00e3o"
+    },
+    "level_applicability": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "group",
+          "company",
+          "unit"
+        ]
+      },
+      "default": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "N\u00edveis onde a dimens\u00e3o \u00e9 aplic\u00e1vel"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "key",
+    "name"
+  ]
+}

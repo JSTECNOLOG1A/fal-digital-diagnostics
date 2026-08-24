@@ -1,0 +1,210 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "cnpj": {
+      "type": "string"
+    },
+    "sector_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sectors for this client. Use [\"general_business\"] as default.",
+      "default": [
+        "general_business"
+      ]
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "trade_name": {
+      "type": "string",
+      "description": "Nome fantasia"
+    },
+    "foundation_year": {
+      "type": "number",
+      "description": "Ano de funda\u00e7\u00e3o"
+    },
+    "website": {
+      "type": "string"
+    },
+    "sector": {
+      "type": "string",
+      "enum": [
+        "Agricultura",
+        "Pecu\u00e1ria",
+        "Agropecu\u00e1ria",
+        "Revenda de insumos",
+        "Ind\u00fastria",
+        "Com\u00e9rcio",
+        "Servi\u00e7os",
+        "Outro"
+      ],
+      "description": "Setor principal de atua\u00e7\u00e3o"
+    },
+    "subsector": {
+      "type": "string",
+      "description": "Subsetor (ex: Soja, Bovinos, Fertilizantes)"
+    },
+    "primary_activity_description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o da atividade principal"
+    },
+    "annual_revenue": {
+      "type": "number",
+      "description": "Faturamento anual em R$"
+    },
+    "employees": {
+      "type": "number",
+      "description": "N\u00famero de funcion\u00e1rios"
+    },
+    "company_size": {
+      "type": "string",
+      "enum": [
+        "Micro",
+        "Pequena",
+        "M\u00e9dia",
+        "Grande"
+      ],
+      "description": "Porte da empresa"
+    },
+    "legal_type": {
+      "type": "string",
+      "enum": [
+        "LTDA",
+        "S/A",
+        "Holding",
+        "Cooperativa",
+        "MEI",
+        "EIRELI",
+        "Outro"
+      ],
+      "description": "Natureza jur\u00eddica"
+    },
+    "number_of_partners": {
+      "type": "number"
+    },
+    "number_of_entities": {
+      "type": "number",
+      "description": "N\u00famero de empresas no grupo"
+    },
+    "holding_structure": {
+      "type": "boolean",
+      "default": false
+    },
+    "family_business": {
+      "type": "boolean",
+      "default": false
+    },
+    "locations": {
+      "type": "number",
+      "description": "N\u00famero de unidades f\u00edsicas"
+    },
+    "operational_units": {
+      "type": "number",
+      "description": "N\u00famero de unidades operacionais"
+    },
+    "states_of_operation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Estados onde opera"
+    },
+    "international_operations": {
+      "type": "boolean",
+      "default": false
+    },
+    "erp_system": {
+      "type": "string",
+      "enum": [
+        "SAP",
+        "TOTVS",
+        "Senior",
+        "Sankhya",
+        "Omie",
+        "Nenhum",
+        "Outro"
+      ],
+      "description": "Sistema ERP utilizado"
+    },
+    "uses_bi": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_crm": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_wms": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_industry_systems": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_board_of_directors": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_advisory_board": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_formal_strategy": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_kpi_dashboard": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_budget": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_cash_flow_projection": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_bank_debt": {
+      "type": "boolean",
+      "default": false
+    },
+    "number_of_banking_relationships": {
+      "type": "number"
+    },
+    "diagnostic_objective": {
+      "type": "string",
+      "description": "Objetivo do diagn\u00f3stico"
+    },
+    "consulting_notes": {
+      "type": "string",
+      "description": "Notas internas do consultor"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ]
+}

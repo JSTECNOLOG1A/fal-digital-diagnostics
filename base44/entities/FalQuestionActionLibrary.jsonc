@@ -1,0 +1,116 @@
+{
+  "name": "FalQuestionActionLibrary",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "question_id": {
+      "type": "string",
+      "description": "ID da FalQuestion que dispara esta a\u00e7\u00e3o"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "sector_group": {
+      "type": "string",
+      "enum": [
+        "agronegocio",
+        "fazenda_grande",
+        "fazenda_media",
+        "grupo_familiar",
+        "revenda_insumos",
+        "geral"
+      ],
+      "default": "geral"
+    },
+    "trigger_score_max": {
+      "type": "number",
+      "description": "Score m\u00e1ximo da pergunta para ativar esta a\u00e7\u00e3o (ex: 1 = ativa se score <= 1)"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "implantacao",
+        "correcao",
+        "melhoria",
+        "compliance"
+      ],
+      "description": "Tipo da a\u00e7\u00e3o operacional"
+    },
+    "action_title": {
+      "type": "string",
+      "description": "T\u00edtulo pr\u00e1tico e espec\u00edfico da a\u00e7\u00e3o"
+    },
+    "action_description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o do que fazer"
+    },
+    "how_to_execute": {
+      "type": "string",
+      "description": "Passo a passo de execu\u00e7\u00e3o (ex: '1. Criar template. 2. Treinar equipe. 3. Aplicar na pr\u00f3xima contrata\u00e7\u00e3o.')"
+    },
+    "expected_evidence": {
+      "type": "string",
+      "description": "Evid\u00eancia esperada ap\u00f3s conclus\u00e3o (ex: checklist preenchido, planilha validada)"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "once",
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "event"
+      ],
+      "description": "Frequ\u00eancia da rotina criada por esta a\u00e7\u00e3o"
+    },
+    "reason_template": {
+      "type": "string",
+      "description": "Template da raz\u00e3o (ex: 'Aus\u00eancia confirmada por score {score} \u2014 risco de {risco}')"
+    },
+    "suggested_routine": {
+      "type": "string",
+      "description": "Rotina sugerida descritiva (legado)"
+    },
+    "impact_level": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "effort_level": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "priority_weight": {
+      "type": "number",
+      "description": "Peso de prioridade desta a\u00e7\u00e3o (1-5). Combinado com score para calcular prioridade final."
+    },
+    "responsible_role": {
+      "type": "string"
+    },
+    "evidence_requirement": {
+      "type": "string",
+      "description": "Legado \u2014 use expected_evidence"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "tenant_id",
+    "question_id",
+    "cluster_key",
+    "trigger_score_max",
+    "action_title"
+  ]
+}

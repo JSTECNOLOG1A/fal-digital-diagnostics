@@ -1,0 +1,72 @@
+{
+  "name": "OnboardingProgress",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "onboarding_key": {
+      "type": "string"
+    },
+    "current_step": {
+      "type": "string",
+      "enum": [
+        "tenant",
+        "group",
+        "company",
+        "unit",
+        "diagnostic",
+        "complete"
+      ]
+    },
+    "completed_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "skipped"
+      ],
+      "default": "active"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "required": [
+    "tenant_id",
+    "user_id",
+    "onboarding_key",
+    "current_step",
+    "completed_steps",
+    "status",
+    "started_at",
+    "version"
+  ]
+}

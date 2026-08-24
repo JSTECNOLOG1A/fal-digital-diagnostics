@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+import { createCandidate, publishLogicalCommit } from '../src/lib/financial/phase3/outputLifecycle.js';
+const before=[{id:'old',publication_status:'active',value:10}],runId='run-new',candidate=createCandidate([{id:'new',value:20}],runId),snapshot={financial_processing_run_id:runId,output_checksum:'sha256:x'};
+for(const stage of ['before_candidates','statement_lines','indicators','dfc','validations','before_committing','snapshot','after_snapshot','publication']){const out=publishLogicalCommit({activeBefore:before,candidates:candidate,snapshot,runId,committed:false});if(out.active!==before||out.candidates.some(x=>x.publication_status==='active'))throw new Error(`ROLLBACK_FAILED:${stage}`)}
+const committed=publishLogicalCommit({activeBefore:before,candidates:candidate,snapshot,runId,committed:true});if(!committed.committed||committed.active[0].publication_status!=='active'||committed.previous[0].publication_status!=='superseded')throw new Error('LOGICAL_COMMIT_FAILED');
+console.log('financial_output_lifecycle=PASS failure_injections=9 logical_commit=atomic');

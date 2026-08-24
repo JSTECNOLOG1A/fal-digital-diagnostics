@@ -1,0 +1,8 @@
+import { describe,it,expect } from 'vitest';
+import { prepareProductionSeries } from '@/lib/financial/phase3/productionAdapter';
+import { PHASE3_FIXTURE } from '@/lib/financial/phase3/phase3Fixture';
+import { SOURCE_RUBRICS } from '@/lib/financial/phase3/canonicalRegistry';
+const gross=Object.values(PHASE3_FIXTURE.entities).reduce((out,entity)=>{for(const[key,value]of Object.entries(entity))out[key]=(out[key]||0)+value;return out;},{});
+const contract={perimeter:['A','B'],periods:['2025'],canonicalKeys:Object.keys(SOURCE_RUBRICS),analysisType:'consolidated',parentEntityId:'A'};
+describe('prepareProductionSeries produtivo',()=>{it('aceita fixture real',()=>{const result=prepareProductionSeries({gross,eliminations:PHASE3_FIXTURE.eliminations,contract});expect(result.valid).toBe(true);expect(result.statements).toEqual(expect.objectContaining(PHASE3_FIXTURE.expected.consolidated));});
+for(const[name,patch]of [['debit total',{debit_canonical_key:'total_ativo'}],['credit calculada',{credit_canonical_key:'ebitda'}],['inexistente',{debit_canonical_key:'x'}],['mesma entidade',{destination_entity_id:'A',counterparty_entity_id:'A'}],['valor zero',{amount:0}],['sem justificativa',{justification:'',rationale:''}],['statement incompatível',{credit_canonical_key:'receita_bruta'}],['mixed sem regra',{debit_canonical_key:'outras_receitas_despesas'}]])it(`rejeita ${name}`,()=>{const result=prepareProductionSeries({gross,eliminations:[{...PHASE3_FIXTURE.eliminations[0],...patch}],contract});expect(result.valid).toBe(false);});});

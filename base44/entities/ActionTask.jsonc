@@ -1,0 +1,252 @@
+{
+  "name": "ActionTask",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "target_type": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "root_cause_id": {
+      "type": "string"
+    },
+    "task_key": {
+      "type": "string"
+    },
+    "operation_id": {
+      "type": "string"
+    },
+    "operation_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "invalid"
+      ],
+      "default": "active"
+    },
+    "operation_invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operation_invalidation_reason": {
+      "type": "string"
+    },
+    "action_library_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "horizon": {
+      "type": "string",
+      "enum": [
+        "30d",
+        "60d",
+        "90d",
+        "180d"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "quick_win",
+        "structural",
+        "foundational",
+        "compliance",
+        "operational"
+      ]
+    },
+    "task_layer": {
+      "type": "string",
+      "enum": [
+        "strategic",
+        "operational"
+      ],
+      "default": "strategic"
+    },
+    "typical_owner": {
+      "type": "string"
+    },
+    "impact_score": {
+      "type": "number"
+    },
+    "effort_score": {
+      "type": "number"
+    },
+    "evidence_severity": {
+      "type": "number"
+    },
+    "evidence_missing": {
+      "type": "boolean",
+      "default": false
+    },
+    "priority_score": {
+      "type": "number"
+    },
+    "origin_score": {
+      "type": "number"
+    },
+    "origin_type": {
+      "type": "string",
+      "enum": [
+        "cluster",
+        "subdimension",
+        "dimension",
+        "killer_question",
+        "question",
+        "manual"
+      ]
+    },
+    "origin_key": {
+      "type": "string"
+    },
+    "origin_detail": {
+      "type": "string"
+    },
+    "question_action_id": {
+      "type": "string"
+    },
+    "how_to_execute": {
+      "type": "string"
+    },
+    "execution_guidance": {
+      "type": "string"
+    },
+    "expected_evidence": {
+      "type": "string"
+    },
+    "completion_evidence": {
+      "type": "string"
+    },
+    "blocked_reason": {
+      "type": "string"
+    },
+    "last_checkin_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_checkin_comment": {
+      "type": "string"
+    },
+    "last_updated_by": {
+      "type": "string"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "once",
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "event"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "dependency_task_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_blocked": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "todo",
+        "in_progress",
+        "blocked",
+        "done",
+        "cancelled"
+      ],
+      "default": "todo"
+    },
+    "progress_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "assigned_to": {
+      "type": "string"
+    },
+    "owner_name": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_manual": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_system_generated": {
+      "type": "boolean",
+      "default": true
+    },
+    "consultant_notes": {
+      "type": "string"
+    },
+    "evidence_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "playbook_key": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "plan_id",
+    "title"
+  ]
+}

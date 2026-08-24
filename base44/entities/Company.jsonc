@@ -1,0 +1,247 @@
+{
+  "name": "Company",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string",
+      "description": "FK Group (opcional)"
+    },
+    "parent_company_id": {
+      "type": "string",
+      "description": "ID da empresa controladora/matriz dentro do grupo (principal s\u00f3cio). Permite hierarquia multin\u00edvel."
+    },
+    "societary_composition": {
+      "type": "array",
+      "description": "Composi\u00e7\u00e3o societ\u00e1ria: lista de todos os s\u00f3cios da empresa",
+      "items": {
+        "type": "object",
+        "properties": {
+          "partner_type": {
+            "type": "string",
+            "enum": [
+              "group_company",
+              "third_party"
+            ],
+            "description": "Tipo de s\u00f3cio: empresa do grupo ou terceiro"
+          },
+          "company_id": {
+            "type": "string",
+            "description": "ID da empresa s\u00f3cia (se partner_type=group_company)"
+          },
+          "partner_name": {
+            "type": "string",
+            "description": "Nome do s\u00f3cio (preenchido automaticamente para group_company ou inserido para third_party)"
+          },
+          "equity_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Percentual de participa\u00e7\u00e3o deste s\u00f3cio"
+          }
+        },
+        "required": [
+          "partner_type",
+          "equity_percentage"
+        ]
+      }
+    },
+    "company_role": {
+      "type": "string",
+      "enum": [
+        "matriz",
+        "holding",
+        "sub_holding",
+        "filial",
+        "investida",
+        "joint_venture",
+        "coligada"
+      ],
+      "description": "Papel societ\u00e1rio desta empresa na estrutura do grupo"
+    },
+    "equity_stake_percentage": {
+      "type": "number",
+      "description": "% de participa\u00e7\u00e3o que a empresa controladora det\u00e9m nesta empresa (0-100) [LEGADO]"
+    },
+    "share_capital": {
+      "type": "number",
+      "description": "Capital Social registrado (R$)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Raz\u00e3o Social"
+    },
+    "trade_name": {
+      "type": "string",
+      "description": "Nome Fantasia"
+    },
+    "tax_id": {
+      "type": "string",
+      "description": "CNPJ"
+    },
+    "state_registration": {
+      "type": "string",
+      "description": "Inscri\u00e7\u00e3o Estadual"
+    },
+    "sector": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string",
+      "description": "Munic\u00edpio"
+    },
+    "state": {
+      "type": "string",
+      "description": "Estado (UF)"
+    },
+    "subsector": {
+      "type": "string"
+    },
+    "primary_activity_description": {
+      "type": "string"
+    },
+    "annual_revenue": {
+      "type": "number"
+    },
+    "employees": {
+      "type": "number"
+    },
+    "company_size": {
+      "type": "string",
+      "enum": [
+        "Micro",
+        "Pequena",
+        "M\u00e9dia",
+        "Grande"
+      ]
+    },
+    "legal_type": {
+      "type": "string",
+      "enum": [
+        "LTDA",
+        "S/A",
+        "Holding",
+        "Cooperativa",
+        "MEI",
+        "EIRELI",
+        "Outro"
+      ]
+    },
+    "number_of_partners": {
+      "type": "number"
+    },
+    "number_of_entities": {
+      "type": "number"
+    },
+    "holding_structure": {
+      "type": "boolean",
+      "default": false
+    },
+    "family_business": {
+      "type": "boolean",
+      "default": false
+    },
+    "locations": {
+      "type": "number"
+    },
+    "operational_units": {
+      "type": "number"
+    },
+    "states_of_operation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "international_operations": {
+      "type": "boolean",
+      "default": false
+    },
+    "erp_system": {
+      "type": "string"
+    },
+    "uses_bi": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_crm": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_wms": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_industry_systems": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_board_of_directors": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_advisory_board": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_formal_strategy": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_kpi_dashboard": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_budget": {
+      "type": "boolean",
+      "default": false
+    },
+    "uses_cash_flow_projection": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_bank_debt": {
+      "type": "boolean",
+      "default": false
+    },
+    "number_of_banking_relationships": {
+      "type": "number"
+    },
+    "diagnostic_objective": {
+      "type": "string"
+    },
+    "consulting_notes": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "foundation_year": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, a empresa est\u00e1 arquivada e oculta das listas ativas"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name",
+    "tax_id"
+  ]
+}

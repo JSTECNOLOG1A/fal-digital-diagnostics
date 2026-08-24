@@ -1,0 +1,28 @@
+{
+  "name": "Note",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "group | company | unit | assessment"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "note_text": {
+      "type": "string"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "entity_type",
+    "entity_id",
+    "note_text"
+  ]
+}

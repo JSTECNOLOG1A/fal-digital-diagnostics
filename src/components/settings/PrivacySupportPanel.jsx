@@ -1,0 +1,11 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+
+function download(data) { const href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); const link = document.createElement('a'); link.href = href; link.download = 'fal-meus-dados.json'; link.click(); URL.revokeObjectURL(href); }
+
+export default function PrivacySupportPanel({ canOperate }) {
+  const [status, setStatus] = useState(''); const [busy, setBusy] = useState(false);
+  const run = async (action) => { setBusy(true); setStatus(''); try { const response = await action(); setStatus(response); } finally { setBusy(false); } };
+  return <section className="fal-card p-5 space-y-4"><div><h2 className="fal-title">Privacidade e suporte</h2><p className="fal-muted text-sm">Operações pessoais e ferramentas administrativas com dados redigidos.</p></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy} onClick={() => run(async () => { const response = await base44.functions.invoke('exportDataSubjectData', {}); download(response.data); return 'Exportação dos seus dados concluída.'; })}>Exportar meus dados</Button><Button variant="outline" disabled={busy} onClick={() => run(async () => { const response = await base44.functions.invoke('exportDataSubjectData', { operation: 'request' }); return response.data.message; })}>Solicitar atendimento LGPD</Button>{canOperate && <Button variant="outline" disabled={busy} onClick={() => run(async () => { const response = await base44.functions.invoke('getOperationalHealthcheck', {}); return `Healthcheck: ${response.data.status} · build ${response.data.build_sha}`; })}>Consultar healthcheck</Button>}{canOperate && <Button variant="outline" disabled={busy} onClick={() => run(async () => { const response = await base44.functions.invoke('createSupportBundle', { context: { source: 'SystemSettings' } }); return `Support bundle gerado: ${response.data.bundle.build_sha}`; })}>Gerar support bundle</Button>}</div>{status && <p className="text-sm" style={{ color: 'var(--fal-success-text)' }}>{status}</p>}</section>;
+}

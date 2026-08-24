@@ -1,0 +1,92 @@
+{
+  "name": "FalActionLibrary",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "action_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "driver_ids": {
+      "type": "string",
+      "description": "Comma or pipe-separated list of driver IDs"
+    },
+    "score_trigger_max": {
+      "type": "number",
+      "default": 2.5
+    },
+    "killer_question_trigger": {
+      "type": "string",
+      "description": "String representation of boolean (True/False or true/false)"
+    },
+    "impact_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "effort_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "quick_win",
+        "structural",
+        "foundational",
+        "compliance"
+      ]
+    },
+    "default_horizon": {
+      "type": "string",
+      "enum": [
+        "30d",
+        "60d",
+        "90d",
+        "180d"
+      ]
+    },
+    "typical_owner": {
+      "type": "string"
+    },
+    "dependency_action_keys": {
+      "type": "string",
+      "description": "Comma or pipe-separated list of action keys"
+    },
+    "level_applicability": {
+      "type": "string",
+      "description": "Pipe-separated list (company|unit|group)"
+    },
+    "sector_tags": {
+      "type": "string",
+      "description": "Sector tags for applicability"
+    },
+    "active": {
+      "type": "string",
+      "description": "String representation of boolean"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "action_key",
+    "title",
+    "dimension_key"
+  ]
+}

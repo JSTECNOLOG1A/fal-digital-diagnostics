@@ -1,0 +1,54 @@
+{
+  "finished_at": "2026-08-14T01:29:30.000Z",
+  "mode": "local-offline + unit/integration suites",
+  "note": "Relatório consolidado após correções de smoke/typecheck locais",
+  "suites": {
+    "total": 15,
+    "passed": 12,
+    "failed": 3,
+    "timeout": 0
+  },
+  "vitest_tests": {
+    "passed": 336,
+    "failed": 5,
+    "breakdown": {
+      "phase2": { "passed": 146, "failed": 4 },
+      "phase3": { "passed": 134, "failed": 0 },
+      "phase4": { "passed": 35, "failed": 0 },
+      "phase5": { "passed": 19, "failed": 0 },
+      "rc1": { "passed": 2, "failed": 1 }
+    }
+  },
+  "smoke_local": { "passed": 17, "failed": 0 },
+  "results": [
+    { "id": "smoke-local", "status": "PASS", "detail": "17/17 checks (auth, tenants, CRUD, frontend)" },
+    { "id": "audit-backend-compile", "status": "PASS" },
+    { "id": "audit-seg02", "status": "PASS" },
+    { "id": "audit-rbac-functions", "status": "PASS" },
+    { "id": "audit-phase5-routes", "status": "PASS" },
+    { "id": "audit-phase5-query-scope", "status": "PASS" },
+    { "id": "audit-phase5-production-surface", "status": "PASS" },
+    { "id": "audit-phase5-product-readiness", "status": "PASS" },
+    { "id": "test-phase2", "status": "FAIL", "detail": "4 falhas em FinancialDefinitionForm (ainda usa entities diretas)" },
+    { "id": "test-phase3", "status": "PASS", "detail": "134 testes" },
+    { "id": "test-phase4", "status": "PASS", "detail": "35 testes" },
+    { "id": "test-phase5", "status": "PASS", "detail": "19 testes" },
+    { "id": "test-rc1", "status": "FAIL", "detail": "App.jsx sem contrato onboarding operation:get / navigate" },
+    { "id": "lint", "status": "PASS" },
+    { "id": "typecheck", "status": "FAIL", "detail": "1 erro pré-existente em CreateFirstClientDialog.jsx:436" }
+  ],
+  "open_gaps": [
+    {
+      "id": "P2-FIN-DEF",
+      "severity": "FinancialDefinitionForm ainda faz update/deleteMany/bulkCreate direto em entities; contrato Residual3 exige saveFinancialAnalysisDefinition"
+    },
+    {
+      "id": "RC1-ONBOARD",
+      "severity": "Contrato RC-1 espera onboarding automático em App.jsx (operation:get + navigate('/onboarding'))"
+    },
+    {
+      "id": "TS-CREATE-CLIENT",
+      "severity": "CreateFirstClientDialog.jsx:436 — Property 'id' does not exist on type 'unknown'"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "name": "FalQuestion",
+  "type": "object",
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "description": "Identificador \u00fanico da pergunta (ex: gov_decision_process_001)"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "process_stage": {
+      "type": "string",
+      "enum": [
+        "existence",
+        "request",
+        "analysis",
+        "approval",
+        "execution",
+        "record",
+        "control",
+        "monitoring",
+        "audit"
+      ]
+    },
+    "sequence_order": {
+      "type": "number"
+    },
+    "diagnostic_depth": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "rapid",
+          "standard",
+          "deep"
+        ]
+      }
+    },
+    "level_applicability": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "group",
+          "company",
+          "unit"
+        ]
+      }
+    },
+    "question_weight": {
+      "type": "number",
+      "default": 1.0
+    },
+    "question_text": {
+      "type": "string"
+    },
+    "guidance": {
+      "type": "string",
+      "description": "Orienta\u00e7\u00e3o para o consultor: por que esta pergunta importa, o que observar."
+    },
+    "evidence_hint": {
+      "type": "string",
+      "description": "Exemplo de documento ou evid\u00eancia esperada. Ex: 'DRE dos \u00faltimos 3 meses', 'Ata de reuni\u00e3o de s\u00f3cios'"
+    },
+    "is_killer_question": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, score \u2264 2 aplica cap no cluster inteiro"
+    },
+    "is_critical": {
+      "type": "boolean",
+      "default": false,
+      "description": "Pergunta de alta criticidade diagn\u00f3stica \u2014 exige justificativa obrigat\u00f3ria"
+    },
+    "dependency": {
+      "type": "string",
+      "description": "ID de pergunta da qual esta depende (opcional)"
+    }
+  },
+  "required": [
+    "question_id",
+    "dimension_key",
+    "subdimension_key",
+    "cluster_key",
+    "process_stage",
+    "diagnostic_depth",
+    "level_applicability",
+    "question_text"
+  ]
+}

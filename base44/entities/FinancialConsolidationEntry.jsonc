@@ -1,0 +1,202 @@
+{
+  "name": "FinancialConsolidationEntry",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "preparation_run_id": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "entry_number": {
+      "type": "number"
+    },
+    "entry_nature": {
+      "type": "string",
+      "enum": [
+        "elimination",
+        "consolidation_adjustment",
+        "reclassification"
+      ]
+    },
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "intercompany_balance",
+        "intercompany_revenue_expense",
+        "investment_equity",
+        "intercompany_loan",
+        "dividend",
+        "interest_on_equity",
+        "unrealized_profit_inventory",
+        "unrealized_profit_fixed_asset",
+        "equity_method",
+        "non_controlling_interest",
+        "goodwill",
+        "accounting_policy_adjustment",
+        "manual_adjustment"
+      ]
+    },
+    "source_entity_id": {
+      "type": "string"
+    },
+    "source_entity_name": {
+      "type": "string"
+    },
+    "counterparty_entity_id": {
+      "type": "string"
+    },
+    "counterparty_entity_name": {
+      "type": "string"
+    },
+    "origin_entity_id": {
+      "type": "string"
+    },
+    "destination_entity_id": {
+      "type": "string"
+    },
+    "debit_account_code": {
+      "type": "string"
+    },
+    "debit_account_name": {
+      "type": "string"
+    },
+    "debit_canonical_key": {
+      "type": "string"
+    },
+    "credit_account_code": {
+      "type": "string"
+    },
+    "credit_account_name": {
+      "type": "string"
+    },
+    "credit_canonical_key": {
+      "type": "string"
+    },
+    "canonical_key": {
+      "type": "string"
+    },
+    "statement_code": {
+      "type": "string",
+      "enum": [
+        "BP",
+        "DRE",
+        "DFC"
+      ]
+    },
+    "dataset_scope": {
+      "type": "string",
+      "enum": [
+        "combined",
+        "consolidated"
+      ]
+    },
+    "amount": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "justification": {
+      "type": "string"
+    },
+    "supporting_document": {
+      "type": "string"
+    },
+    "logical_key": {
+      "type": "string"
+    },
+    "origin_value": {
+      "type": "number"
+    },
+    "destination_value": {
+      "type": "number"
+    },
+    "difference_value": {
+      "type": "number"
+    },
+    "eliminated_value": {
+      "type": "number"
+    },
+    "residual_difference": {
+      "type": "number"
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "matched",
+        "warning",
+        "blocking",
+        "pending"
+      ]
+    },
+    "origin_type": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "reconciliation",
+        "system"
+      ],
+      "default": "manual"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_review",
+        "approved",
+        "posted",
+        "reversed"
+      ],
+      "default": "draft"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reversed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reversal_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "entry_nature",
+    "entry_type",
+    "period",
+    "debit_canonical_key",
+    "credit_canonical_key",
+    "amount",
+    "status"
+  ]
+}

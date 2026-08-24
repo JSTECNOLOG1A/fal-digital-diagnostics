@@ -1,0 +1,46 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "app_role": {
+      "type": "string",
+      "enum": [
+        "hq_admin",
+        "tenant_admin",
+        "consultant",
+        "client_viewer"
+      ]
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "access_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "revoked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revoked_by": {
+      "type": "string"
+    },
+    "access_revocation_reason": {
+      "type": "string"
+    }
+  },
+  "required": []
+}

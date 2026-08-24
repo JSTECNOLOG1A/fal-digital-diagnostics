@@ -1,0 +1,513 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_OWNER")
+}
+
+enum AppRole {
+  hq_admin
+  tenant_admin
+  consultant
+  client_viewer
+}
+
+enum AccessStatus {
+  active
+  invited
+  revoked
+  suspended
+}
+
+enum SyncJobStatus {
+  pending
+  running
+  succeeded
+  failed
+  cancelled
+}
+
+enum AssessmentStatus {
+  draft
+  in_progress
+  completed
+  archived
+}
+
+enum DataSubjectRequestType {
+  access
+  rectification
+  erasure
+  portability
+  objection
+}
+
+enum DataSubjectRequestStatus {
+  received
+  in_progress
+  completed
+  rejected
+}
+
+enum IntegrationDirection {
+  outbound
+  inbound
+  bidirectional
+}
+
+enum WebhookDeliveryStatus {
+  pending
+  delivered
+  failed
+  skipped
+}
+
+model Tenant {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String    @unique
+  logoUrl   String?   @map("logo_url")
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  users               User[]
+  groups              Group[]
+  companies           Company[]
+  operationalUnits    OperationalUnit[]
+  auditLogs           AuditLog[]
+  invites             UserInvite[]
+  protheusConnections ProtheusConnection[]
+  protheusSyncJobs    ProtheusSyncJob[]
+  protheusStagingRows ProtheusStagingRow[]
+  clients             Client[]
+  methodVersions      MethodVersion[]
+  assessments         Assessment[]
+  dataSubjectRequests DataSubjectRequest[]
+  integrationConnections     IntegrationConnection[]
+  integrationApiKeys         IntegrationApiKey[]
+  integrationWebhookEndpoints IntegrationWebhookEndpoint[]
+  integrationWebhookDeliveries IntegrationWebhookDelivery[]
+  integrationInboundEvents   IntegrationInboundEvent[]
+  integrationJobs            IntegrationJob[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String       @id @default(uuid()) @db.Uuid
+  email        String       @unique
+  name         String
+  passwordHash String       @map("password_hash")
+  role         AppRole      @default(consultant)
+  tenantId     String?      @map("tenant_id") @db.Uuid
+  clientId     String?      @map("client_id") @db.Uuid
+  accessStatus AccessStatus @default(active) @map("access_status")
+  lastLoginAt  DateTime?    @map("last_login_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  deletedAt    DateTime?    @map("deleted_at")
+
+  tenant              Tenant?              @relation(fields: [tenantId], references: [id])
+  refreshTokens       RefreshToken[]
+  auditLogs           AuditLog[]           @relation("AuditActor")
+  invitesSent         UserInvite[]         @relation("InviteSender")
+  assessmentsCreated  Assessment[]         @relation("AssessmentCreator")
+  dataSubjectRequests DataSubjectRequest[] @relation("DsrHandler")
+
+  @@index([tenantId])
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  userAgent String?   @map("user_agent")
+  ipAddress String?   @map("ip_address")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String?  @map("tenant_id") @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  metadata   Json?
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+  actor  User?   @relation("AuditActor", fields: [actorId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([actorId])
+  @@map("audit_logs")
+}
+
+model UserInvite {
+  id                String       @id @default(uuid()) @db.Uuid
+  tenantId          String       @map("tenant_id") @db.Uuid
+  email             String
+  name              String
+  role              AppRole
+  clientId          String?      @map("client_id") @db.Uuid
+  invitedById       String?      @map("invited_by_id") @db.Uuid
+  status            AccessStatus @default(invited)
+  temporaryPassword String?      @map("temporary_password")
+  expiresAt         DateTime     @map("expires_at")
+  acceptedAt        DateTime?    @map("accepted_at")
+  revokedAt         DateTime?    @map("revoked_at")
+  createdAt         DateTime     @default(now()) @map("created_at")
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  invitedBy User?  @relation("InviteSender", fields: [invitedById], references: [id])
+
+  @@index([tenantId, email])
+  @@map("user_invites")
+}
+
+model Group {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  companies Company[]
+
+  @@index([tenantId])
+  @@map("groups")
+}
+
+model Company {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  groupId   String    @map("group_id") @db.Uuid
+  name      String
+  cnpj      String?
+  sector    String?
+  erpSystem String?   @map("erp_system")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant Tenant            @relation(fields: [tenantId], references: [id])
+  group  Group             @relation(fields: [groupId], references: [id])
+  units  OperationalUnit[]
+
+  @@index([tenantId])
+  @@index([groupId])
+  @@map("companies")
+}
+
+model OperationalUnit {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  companyId String    @map("company_id") @db.Uuid
+  name      String
+  code      String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@index([tenantId])
+  @@index([companyId])
+  @@map("operational_units")
+}
+
+model ProtheusConnection {
+  id                String    @id @default(uuid()) @db.Uuid
+  tenantId          String    @map("tenant_id") @db.Uuid
+  baseUrl           String    @map("base_url")
+  username          String
+  encryptedPassword String    @map("encrypted_password")
+  companyCode       String    @map("company_code")
+  branchCode        String?   @map("branch_code")
+  isActive          Boolean   @default(true) @map("is_active")
+  lastSyncAt        DateTime? @map("last_sync_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  tenant Tenant            @relation(fields: [tenantId], references: [id])
+  jobs   ProtheusSyncJob[]
+
+  @@unique([tenantId])
+  @@map("protheus_connections")
+}
+
+model ProtheusSyncJob {
+  id           String        @id @default(uuid()) @db.Uuid
+  tenantId     String        @map("tenant_id") @db.Uuid
+  connectionId String        @map("connection_id") @db.Uuid
+  resource     String
+  status       SyncJobStatus @default(pending)
+  startedAt    DateTime?     @map("started_at")
+  finishedAt   DateTime?     @map("finished_at")
+  errorMessage String?       @map("error_message")
+  stats        Json?
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  tenant     Tenant               @relation(fields: [tenantId], references: [id])
+  connection ProtheusConnection   @relation(fields: [connectionId], references: [id])
+  staging    ProtheusStagingRow[]
+
+  @@index([tenantId, status])
+  @@map("protheus_sync_jobs")
+}
+
+model ProtheusStagingRow {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  jobId      String   @map("job_id") @db.Uuid
+  resource   String
+  externalId String   @map("external_id")
+  payload    Json
+  syncedAt   DateTime @default(now()) @map("synced_at")
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  job    ProtheusSyncJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, resource, externalId, jobId])
+  @@index([tenantId, resource])
+  @@map("protheus_staging_rows")
+}
+
+/// Catálogo do Método FAL (versão imutável após publish)
+model MethodVersion {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String?   @map("tenant_id") @db.Uuid
+  code        String
+  name        String
+  version     String
+  isPublished Boolean   @default(false) @map("is_published")
+  payload     Json?
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  tenant      Tenant?      @relation(fields: [tenantId], references: [id])
+  assessments Assessment[]
+
+  @@unique([tenantId, code, version])
+  @@index([tenantId])
+  @@map("method_versions")
+}
+
+model Client {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  name      String
+  document  String?
+  email     String?
+  phone     String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  assessments Assessment[]
+
+  @@index([tenantId])
+  @@map("clients")
+}
+
+model Assessment {
+  id              String           @id @default(uuid()) @db.Uuid
+  tenantId        String           @map("tenant_id") @db.Uuid
+  clientId        String?          @map("client_id") @db.Uuid
+  methodVersionId String?          @map("method_version_id") @db.Uuid
+  title           String
+  status          AssessmentStatus @default(draft)
+  createdById     String?          @map("created_by_id") @db.Uuid
+  startedAt       DateTime?        @map("started_at")
+  completedAt     DateTime?        @map("completed_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  deletedAt       DateTime?        @map("deleted_at")
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id])
+  client        Client?        @relation(fields: [clientId], references: [id])
+  methodVersion MethodVersion? @relation(fields: [methodVersionId], references: [id])
+  createdBy     User?          @relation("AssessmentCreator", fields: [createdById], references: [id])
+
+  @@index([tenantId, status])
+  @@index([clientId])
+  @@map("assessments")
+}
+
+/// Solicitações do titular (LGPD / ISO 27701-aligned)
+model DataSubjectRequest {
+  id           String                    @id @default(uuid()) @db.Uuid
+  tenantId     String                    @map("tenant_id") @db.Uuid
+  type         DataSubjectRequestType
+  status       DataSubjectRequestStatus  @default(received)
+  subjectEmail String                    @map("subject_email")
+  subjectName  String?                   @map("subject_name")
+  details      String?
+  handledById  String?                   @map("handled_by_id") @db.Uuid
+  dueAt        DateTime?                 @map("due_at")
+  completedAt  DateTime?                 @map("completed_at")
+  createdAt    DateTime                  @default(now()) @map("created_at")
+  updatedAt    DateTime                  @updatedAt @map("updated_at")
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  handledBy User?  @relation("DsrHandler", fields: [handledById], references: [id])
+
+  @@index([tenantId, status])
+  @@index([subjectEmail])
+  @@map("data_subject_requests")
+}
+
+/// Conexão genérica FAL ↔ sistema externo (credenciais criptografadas)
+model IntegrationConnection {
+  id                 String               @id @default(uuid()) @db.Uuid
+  tenantId           String               @map("tenant_id") @db.Uuid
+  provider           String               /// ex: protheus, sap, custom
+  name               String
+  direction          IntegrationDirection @default(outbound)
+  baseUrl            String?              @map("base_url")
+  authType           String               @default("api_key") @map("auth_type") /// api_key | basic | oauth2 | none
+  encryptedSecrets   String?              @map("encrypted_secrets") /// JSON cifrado
+  config             Json?                /// metadados não-sensíveis
+  isActive           Boolean              @default(true) @map("is_active")
+  lastSuccessAt      DateTime?            @map("last_success_at")
+  lastErrorAt        DateTime?            @map("last_error_at")
+  lastErrorMessage   String?              @map("last_error_message")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  deletedAt          DateTime?            @map("deleted_at")
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id])
+  jobs   IntegrationJob[]
+
+  @@unique([tenantId, provider, name])
+  @@index([tenantId, provider])
+  @@map("integration_connections")
+}
+
+/// API Key para sistemas parceiros chamarem o FAL (inbound)
+model IntegrationApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  name        String
+  keyPrefix   String    @map("key_prefix") /// fal_live_xxxx (visível)
+  keyHash     String    @unique @map("key_hash") /// sha256
+  scopes      String[]  @default([]) /// ex: groups:read, companies:write, webhooks:receive
+  isActive    Boolean   @default(true) @map("is_active")
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([keyPrefix])
+  @@map("integration_api_keys")
+}
+
+/// Endpoint de webhook que o FAL chama (outbound)
+model IntegrationWebhookEndpoint {
+  id               String    @id @default(uuid()) @db.Uuid
+  tenantId         String    @map("tenant_id") @db.Uuid
+  name             String
+  targetUrl        String    @map("target_url")
+  encryptedSecret  String?   @map("encrypted_secret") /// HMAC signing secret
+  events           String[]  @default([]) /// group.created, company.updated, ...
+  isActive         Boolean   @default(true) @map("is_active")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  tenant     Tenant                       @relation(fields: [tenantId], references: [id])
+  deliveries IntegrationWebhookDelivery[]
+
+  @@index([tenantId])
+  @@map("integration_webhook_endpoints")
+}
+
+model IntegrationWebhookDelivery {
+  id           String                @id @default(uuid()) @db.Uuid
+  tenantId     String                @map("tenant_id") @db.Uuid
+  endpointId   String                @map("endpoint_id") @db.Uuid
+  event        String
+  payload      Json
+  status       WebhookDeliveryStatus @default(pending)
+  attempts     Int                   @default(0)
+  responseCode Int?                  @map("response_code")
+  errorMessage String?               @map("error_message")
+  deliveredAt  DateTime?             @map("delivered_at")
+  createdAt    DateTime              @default(now()) @map("created_at")
+
+  tenant   Tenant                     @relation(fields: [tenantId], references: [id])
+  endpoint IntegrationWebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+  @@index([endpointId])
+  @@map("integration_webhook_deliveries")
+}
+
+/// Eventos recebidos de sistemas externos (inbound webhook / push)
+model IntegrationInboundEvent {
+  id           String    @id @default(uuid()) @db.Uuid
+  tenantId     String    @map("tenant_id") @db.Uuid
+  provider     String
+  eventType    String    @map("event_type")
+  externalId   String?   @map("external_id")
+  payload      Json
+  headers      Json?
+  processedAt  DateTime? @map("processed_at")
+  errorMessage String?   @map("error_message")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, provider, createdAt])
+  @@index([tenantId, externalId])
+  @@map("integration_inbound_events")
+}
+
+/// Job genérico de sync/processamento de integração
+model IntegrationJob {
+  id             String        @id @default(uuid()) @db.Uuid
+  tenantId       String        @map("tenant_id") @db.Uuid
+  connectionId   String?       @map("connection_id") @db.Uuid
+  provider       String
+  jobType        String        @map("job_type") /// sync | push | pull | webhook_dispatch
+  status         SyncJobStatus @default(pending)
+  startedAt      DateTime?     @map("started_at")
+  finishedAt     DateTime?     @map("finished_at")
+  errorMessage   String?       @map("error_message")
+  stats          Json?
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  tenant     Tenant                 @relation(fields: [tenantId], references: [id])
+  connection IntegrationConnection? @relation(fields: [connectionId], references: [id])
+
+  @@index([tenantId, status])
+  @@index([connectionId])
+  @@map("integration_jobs")
+}

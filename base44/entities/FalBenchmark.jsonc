@@ -1,0 +1,53 @@
+{
+  "name": "FalBenchmark",
+  "type": "object",
+  "properties": {
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "benchmark_group": {
+      "type": "string",
+      "enum": [
+        "agronegocio",
+        "revenda_insumos",
+        "fazenda_grande",
+        "fazenda_media",
+        "grupo_familiar",
+        "holding",
+        "industria_agro",
+        "geral"
+      ],
+      "description": "Grupo de benchmark"
+    },
+    "avg_score": {
+      "type": "number",
+      "description": "M\u00e9dia do mercado"
+    },
+    "median_score": {
+      "type": "number"
+    },
+    "p75_score": {
+      "type": "number",
+      "description": "Percentil 75"
+    },
+    "p90_score": {
+      "type": "number",
+      "description": "Percentil 90"
+    },
+    "sample_size": {
+      "type": "number",
+      "description": "N\u00famero de assessments na base"
+    }
+  },
+  "required": [
+    "cluster_key",
+    "benchmark_group",
+    "avg_score"
+  ]
+}

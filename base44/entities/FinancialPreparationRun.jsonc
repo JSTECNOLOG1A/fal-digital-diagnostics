@@ -1,0 +1,106 @@
+{
+  "name": "FinancialPreparationRun",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "run_number": {
+      "type": "number",
+      "default": 1
+    },
+    "analysis_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "combined",
+        "consolidated"
+      ]
+    },
+    "dataset_scope": {
+      "type": "string",
+      "enum": [
+        "combined",
+        "parent",
+        "consolidated"
+      ],
+      "description": "Scope do dataset produzido por este run"
+    },
+    "reporting_entity_id": {
+      "type": "string",
+      "description": "Entidade representada (parent_entity_id para parent/consolidated; presenting_entity_id ou 'COMBINED' para combined)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "processing",
+        "prepared",
+        "validation_failed",
+        "approved",
+        "superseded"
+      ],
+      "default": "draft"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_count": {
+      "type": "number",
+      "description": "N\u00famero de fontes (uploads) consumidas"
+    },
+    "source_line_count": {
+      "type": "number"
+    },
+    "prepared_line_count": {
+      "type": "number"
+    },
+    "elimination_entry_count": {
+      "type": "number"
+    },
+    "adjustment_entry_count": {
+      "type": "number"
+    },
+    "gross_total": {
+      "type": "number"
+    },
+    "elimination_total": {
+      "type": "number"
+    },
+    "adjustment_total": {
+      "type": "number"
+    },
+    "final_total": {
+      "type": "number"
+    },
+    "checksum": {
+      "type": "string",
+      "description": "Hash determin\u00edstico para detectar mudan\u00e7as de fonte"
+    },
+    "processing_log": {
+      "type": "string"
+    },
+    "superseded_by_run_id": {
+      "type": "string",
+      "description": "FK para o run que substituiu este (quando status=superseded)"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "analysis_type",
+    "dataset_scope",
+    "status"
+  ]
+}

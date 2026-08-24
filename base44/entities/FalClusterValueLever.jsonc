@@ -1,0 +1,30 @@
+{
+  "name": "FalClusterValueLever",
+  "type": "object",
+  "properties": {
+    "cluster_key": {
+      "type": "string",
+      "description": "Chave do cluster (ex: fluxo_caixa)"
+    },
+    "value_lever_key": {
+      "type": "string",
+      "enum": [
+        "geracao_caixa",
+        "preservacao_margem",
+        "reducao_risco",
+        "eficiencia_operacional",
+        "protecao_patrimonial"
+      ],
+      "description": "Alavanca de valor associada"
+    },
+    "impact_weight": {
+      "type": "number",
+      "description": "Peso do impacto desta alavanca neste cluster (1\u20135)"
+    }
+  },
+  "required": [
+    "cluster_key",
+    "value_lever_key",
+    "impact_weight"
+  ]
+}

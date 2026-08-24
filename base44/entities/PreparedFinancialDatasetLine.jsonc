@@ -1,0 +1,162 @@
+{
+  "name": "PreparedFinancialDatasetLine",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "preparation_run_id": {
+      "type": "string"
+    },
+    "dataset_scope": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "combined",
+        "parent",
+        "consolidated"
+      ]
+    },
+    "reporting_entity_id": {
+      "type": "string"
+    },
+    "source_entity_id": {
+      "type": "string"
+    },
+    "source_entity_name": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "column_key": {
+      "type": "string"
+    },
+    "column_label": {
+      "type": "string"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual",
+        "ytd"
+      ]
+    },
+    "account_code": {
+      "type": "string"
+    },
+    "account_description": {
+      "type": "string"
+    },
+    "canonical_key": {
+      "type": "string"
+    },
+    "rubric_label": {
+      "type": "string"
+    },
+    "group_label": {
+      "type": "string"
+    },
+    "statement_code": {
+      "type": "string",
+      "enum": [
+        "BP",
+        "DRE",
+        "DFC",
+        "NAO_CLASSIFICADO"
+      ]
+    },
+    "display_order": {
+      "type": "number"
+    },
+    "sign_rule": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "inverted"
+      ],
+      "default": "normal"
+    },
+    "note_reference": {
+      "type": "string"
+    },
+    "opening_balance": {
+      "type": "number"
+    },
+    "debits": {
+      "type": "number"
+    },
+    "credits": {
+      "type": "number"
+    },
+    "gross_value": {
+      "type": "number"
+    },
+    "elimination_value": {
+      "type": "number"
+    },
+    "adjustment_value": {
+      "type": "number"
+    },
+    "reclassification_value": {
+      "type": "number",
+      "default": 0
+    },
+    "final_value": {
+      "type": "number"
+    },
+    "line_origin": {
+      "type": "string",
+      "enum": [
+        "source_aggregation",
+        "elimination",
+        "consolidation_adjustment",
+        "reclassification"
+      ],
+      "default": "source_aggregation"
+    },
+    "consolidation_entry_id": {
+      "type": "string"
+    },
+    "processing_run_id": {
+      "type": "string"
+    },
+    "publication_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "active",
+        "superseded",
+        "invalid"
+      ],
+      "default": "candidate"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "superseded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "invalidated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "preparation_run_id",
+    "dataset_scope",
+    "period",
+    "canonical_key",
+    "statement_code",
+    "final_value"
+  ]
+}

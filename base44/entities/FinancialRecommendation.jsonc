@@ -1,0 +1,73 @@
+{
+  "name": "FinancialRecommendation",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "diagnostic_thesis": {
+      "type": "string"
+    },
+    "probable_cause": {
+      "type": "string"
+    },
+    "suggested_action": {
+      "type": "string"
+    },
+    "expected_impact": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critica",
+        "alta",
+        "media",
+        "baixa"
+      ],
+      "default": "media"
+    },
+    "editable_text": {
+      "type": "string",
+      "description": "Texto narrativo edit\u00e1vel pelo consultor"
+    },
+    "consultant_comment": {
+      "type": "string"
+    },
+    "is_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "related_alert_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related_indicator_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "tenant_id",
+    "title",
+    "priority"
+  ]
+}

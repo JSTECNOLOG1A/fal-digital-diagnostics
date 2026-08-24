@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+import { buildOperationIdentity } from '../src/lib/financial/phase3/canonicalHash.js';
+const base={diagnosis_id:'d1',analysis_type:'consolidated',parent_entity_id:'A',perimeter:[{entity_id:'B'},{entity_id:'A'}],uploads:[{id:'u1',input_checksum:'abc',period:'2025'}],posted_entries:[{id:'e1',period:'2025',debit_canonical_key:'a',credit_canonical_key:'b',amount:100,status:'posted',updated_at:'v1'}],registry_version:'3.0.0',registry_hash:'rh',formula_version:'FAL-FIN-3.0.0',mapping_checksum:'mh',dfc_adjustments:[],overrides:[]};
+const same=await buildOperationIdentity('prepare',JSON.parse(JSON.stringify(base)));const reordered=await buildOperationIdentity('prepare',{...base,perimeter:[...base.perimeter].reverse()});
+if(same.operation_key!==reordered.operation_key)throw new Error('SAME_INPUT_NOT_REUSED');
+const changes=[['entry_amount',{...base,posted_entries:[{...base.posted_entries[0],amount:101}]}],['debit_key',{...base,posted_entries:[{...base.posted_entries[0],debit_canonical_key:'c'}]}],['perimeter',{...base,perimeter:[{entity_id:'A'}]}],['parent',{...base,parent_entity_id:'B'}],['analysis',{...base,analysis_type:'combined'}],['dfc',{...base,dfc_adjustments:[{period:'2025',value:1}]}],['override',{...base,overrides:[{rubric_key:'a',manual_bucket:'investing'}]}],['mapping',{...base,mapping_checksum:'mh2'}],['registry',{...base,registry_hash:'rh2'}],['formula',{...base,formula_version:'FAL-FIN-3.0.1'}]];
+for(const[name,input]of changes){const changed=await buildOperationIdentity('prepare',input);if(changed.operation_key===same.operation_key)throw new Error(`MATERIAL_CHANGE_REUSED:${name}`)}
+const full=await buildOperationIdentity('build_full',base),dfc=await buildOperationIdentity('build_dfc',base);if(full.operation_key===dfc.operation_key)throw new Error('BUILD_MODES_COLLIDE');
+console.log(`financial_input_fingerprint=PASS reuse=1 changes=${changes.length} build_modes=distinct`);

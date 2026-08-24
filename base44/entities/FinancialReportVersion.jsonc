@@ -1,0 +1,52 @@
+{
+  "name": "FinancialReportVersion",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "version_number": {
+      "type": "number",
+      "default": 1
+    },
+    "executive_opinion_text": {
+      "type": "string"
+    },
+    "executive_summary_text": {
+      "type": "string"
+    },
+    "full_report_markdown": {
+      "type": "string"
+    },
+    "pdf_url": {
+      "type": "string"
+    },
+    "report_json": {
+      "type": "object",
+      "description": "Payload estruturado do relat\u00f3rio"
+    },
+    "comparison_summary": {
+      "type": "object",
+      "description": "{ improved: [], worsened: [], maintained: [] }"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "financial_upload_id",
+    "tenant_id",
+    "version_number"
+  ]
+}

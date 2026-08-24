@@ -1,0 +1,34 @@
+{
+  "name": "ActionRecommendationReview",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "action_plan_review_id": {
+      "type": "string",
+      "description": "FK para ActionPlanReview"
+    },
+    "action_recommendation_id": {
+      "type": "string",
+      "description": "FK para ActionRecommendation"
+    },
+    "previous_status": {
+      "type": "string"
+    },
+    "new_status": {
+      "type": "string"
+    },
+    "consultant_comment": {
+      "type": "string"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "action_plan_review_id",
+    "action_recommendation_id"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "name": "ActionPlan",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string"
+    },
+    "insight_snapshot_id": {
+      "type": "string"
+    },
+    "diagnostic_snapshot_id": {
+      "type": "string"
+    },
+    "baseline_priority_snapshot_id": {
+      "type": "string"
+    },
+    "baseline_diagnostic_score": {
+      "type": "number"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "unit",
+        "company",
+        "group",
+        "holding"
+      ]
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "plan_key": {
+      "type": "string"
+    },
+    "generation_fingerprint": {
+      "type": "string"
+    },
+    "source_diagnostic_snapshot_id": {
+      "type": "string"
+    },
+    "source_insight_snapshot_id": {
+      "type": "string"
+    },
+    "source_financial_snapshot_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "current_revision_id": {
+      "type": "string"
+    },
+    "last_review_number": {
+      "type": "number",
+      "default": 0
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "completed",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "overall_progress_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "total_tasks": {
+      "type": "number",
+      "default": 0
+    },
+    "done_tasks": {
+      "type": "number",
+      "default": 0
+    },
+    "blocked_tasks": {
+      "type": "number",
+      "default": 0
+    },
+    "overdue_tasks": {
+      "type": "number",
+      "default": 0
+    },
+    "critical_open_tasks": {
+      "type": "number",
+      "default": 0
+    },
+    "next_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "generation_diff_summary": {
+      "type": "object"
+    },
+    "engine_version": {
+      "type": "string"
+    },
+    "generation_config": {
+      "type": "object"
+    },
+    "generation_summary": {
+      "type": "object"
+    },
+    "roadmap": {
+      "type": "object"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id"
+  ]
+}

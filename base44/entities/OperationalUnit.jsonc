@@ -1,0 +1,45 @@
+{
+  "name": "OperationalUnit",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "company_id": {
+      "type": "string",
+      "description": "FK Company"
+    },
+    "name": {
+      "type": "string"
+    },
+    "unit_type": {
+      "type": "string",
+      "enum": [
+        "Fazenda",
+        "Filial / Revenda",
+        "Unidade Operacional"
+      ]
+    },
+    "unit_cnpj": {
+      "type": "string",
+      "description": "CNPJ da filial/revenda"
+    },
+    "city": {
+      "type": "string",
+      "description": "Munic\u00edpio"
+    },
+    "location_state": {
+      "type": "string",
+      "description": "Estado (UF)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "tenant_id",
+    "company_id",
+    "name"
+  ]
+}

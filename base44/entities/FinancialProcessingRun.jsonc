@@ -1,0 +1,118 @@
+{
+  "name": "FinancialProcessingRun",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "validate",
+        "validate_upload",
+        "build",
+        "prepare",
+        "build_statements",
+        "calculate_indicators",
+        "build_dfc",
+        "combine_entities",
+        "consolidate_entities",
+        "apply_eliminations",
+        "reconcile_intercompany",
+        "replace_source",
+        "reprocess",
+        "purge_derived",
+        "purge_diagnosis",
+        "delete_upload",
+        "integrity_check",
+        "finalize_insights",
+        "save_definition"
+      ]
+    },
+    "operation_key": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "committing",
+        "succeeded",
+        "failed",
+        "partial_failed",
+        "cancelled"
+      ],
+      "default": "queued"
+    },
+    "concurrency_guarantee": {
+      "type": "string",
+      "enum": [
+        "best_effort"
+      ],
+      "default": "best_effort"
+    },
+    "attempt_count": {
+      "type": "number",
+      "default": 1
+    },
+    "source_entity_id": {
+      "type": "string"
+    },
+    "source_period": {
+      "type": "string"
+    },
+    "input_checksum": {
+      "type": "string"
+    },
+    "output_checksum": {
+      "type": "string"
+    },
+    "formula_version": {
+      "type": "string"
+    },
+    "registry_version": {
+      "type": "string"
+    },
+    "manifest_before": {
+      "type": "object"
+    },
+    "manifest_after": {
+      "type": "object"
+    },
+    "result_summary": {
+      "type": "object"
+    },
+    "error_details": {
+      "type": "object"
+    },
+    "cleanup_pending": {
+      "type": "boolean",
+      "default": false
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "triggered_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "financial_diagnosis_id",
+    "operation_type",
+    "operation_key",
+    "status"
+  ]
+}

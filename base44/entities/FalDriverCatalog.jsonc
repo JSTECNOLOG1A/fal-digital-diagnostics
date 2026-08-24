@@ -1,0 +1,53 @@
+{
+  "name": "FalDriverCatalog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Chave \u00fanica ex: FIN_VISIBILITY"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Chave da dimens\u00e3o (ex: financeiro, governanca)"
+    },
+    "subdimension_key": {
+      "type": "string",
+      "description": "Chave da subdimens\u00e3o"
+    },
+    "level_applicability": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "unit",
+          "company",
+          "group"
+        ]
+      }
+    },
+    "industry_applicability": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "default_weight": {
+      "type": "number",
+      "default": 1.0
+    }
+  },
+  "required": [
+    "driver_id",
+    "name",
+    "dimension_key"
+  ]
+}

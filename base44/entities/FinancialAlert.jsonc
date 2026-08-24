@@ -1,0 +1,77 @@
+{
+  "name": "FinancialAlert",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "financial_upload_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_code": {
+      "type": "string"
+    },
+    "entity_level": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ]
+    },
+    "period": {
+      "type": "string"
+    },
+    "nature": {
+      "type": "string",
+      "enum": [
+        "performance",
+        "liquidez",
+        "endividamento",
+        "eficiencia",
+        "consistencia_dados"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "informativo",
+        "atencao",
+        "relevante",
+        "critico"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "technical_basis": {
+      "type": "string"
+    },
+    "is_displayed_in_summary": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_displayed_in_report": {
+      "type": "boolean",
+      "default": true
+    },
+    "related_indicator_code": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "financial_upload_id",
+    "tenant_id",
+    "nature",
+    "severity",
+    "title",
+    "message"
+  ]
+}

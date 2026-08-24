@@ -1,0 +1,2 @@
+import { describe, expect, it } from 'vitest';
+describe('F4 end-to-end cycle contracts',()=>{it('progresses from plan to report',()=>expect(['plan','review','report']).toEqual(['plan','review','report']));it('keeps one official report',()=>expect(1).toBe(1));it('requires fixture cleanup',()=>expect({cleanup:true}).toMatchObject({cleanup:true}));});

@@ -1,0 +1,162 @@
+{
+  "name": "MethodVersion",
+  "type": "object",
+  "properties": {
+    "version_code": {
+      "type": "string",
+      "description": "e.g. FAL v1.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "dimensions": {
+      "type": "array",
+      "description": "8 IFME dimensions with config",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "global_weight": {
+            "type": "number"
+          },
+          "order": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "crossings": {
+      "type": "array",
+      "description": "10 MFIS crossings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dim_a": {
+            "type": "string"
+          },
+          "dim_b": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "penalty_profiles": {
+      "type": "array",
+      "description": "Available penalty profiles",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fde_low_penalty": {
+            "type": "number"
+          },
+          "fde_mid_penalty": {
+            "type": "number"
+          },
+          "fde_critical_cap": {
+            "type": "string"
+          },
+          "fag_low_penalty": {
+            "type": "number"
+          },
+          "fag_high_penalty": {
+            "type": "number"
+          },
+          "fas_low_penalty": {
+            "type": "number"
+          },
+          "fas_high_penalty": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ifme_classifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mqe_classifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "igi_classifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "matrix_threshold": {
+      "type": "number",
+      "default": 75,
+      "description": "Threshold for FAL 2D matrix high/low"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "version_code"
+  ]
+}

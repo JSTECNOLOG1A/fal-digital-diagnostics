@@ -1,0 +1,31 @@
+{
+  "name": "EvidenceChecklist",
+  "type": "object",
+  "properties": {
+    "method_version_id": {
+      "type": "string"
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "item_id": {
+      "type": "string",
+      "description": "Unique ID for this checklist item"
+    },
+    "label": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean",
+      "default": true
+    },
+    "order": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "method_version_id",
+    "dimension_key",
+    "label"
+  ]
+}

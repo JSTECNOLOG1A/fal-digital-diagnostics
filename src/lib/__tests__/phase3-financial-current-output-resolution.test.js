@@ -1,0 +1,2 @@
+import {describe,it,expect} from 'vitest';import {readFileSync} from 'node:fs';
+describe('current output resolver production contract',()=>{const s=readFileSync('base44/functions/resolveCurrentFinancialOutputScope/entry.ts','utf8');for(const code of ['CURRENT_FINANCIAL_SNAPSHOT_REQUIRED','CURRENT_FINANCIAL_SNAPSHOT_INVALID','CURRENT_FINANCIAL_RUN_MISMATCH','CURRENT_FINANCIAL_OUTPUT_CHECKSUM_REQUIRED'])it(code,()=>expect(s).toContain(code));it('returns run scoped contract',()=>expect(s).toContain('processing_run_id:run.id'));});

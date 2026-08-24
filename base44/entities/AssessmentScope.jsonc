@@ -1,0 +1,111 @@
+{
+  "name": "AssessmentScope",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string",
+      "description": "FK para o Assessment (Diagn\u00f3stico Mestre Multi-Entidade)"
+    },
+    "dimension_key": {
+      "type": "string",
+      "description": "Chave da dimens\u00e3o FAL avaliada neste scope (ex: governanca, controles_internos)"
+    },
+    "evaluated_entity_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ],
+      "description": "Tipo da entidade avaliada neste scope"
+    },
+    "evaluated_entity_id": {
+      "type": "string",
+      "description": "ID da entidade avaliada (group_id, company_id ou unit_id)"
+    },
+    "evaluated_entity_name": {
+      "type": "string",
+      "description": "Nome da entidade avaliada (desnormalizado para exibi\u00e7\u00e3o)"
+    },
+    "weight": {
+      "type": "number",
+      "default": 1,
+      "description": "Peso deste scope na consolida\u00e7\u00e3o da dimens\u00e3o"
+    },
+    "sampling_mode": {
+      "type": "string",
+      "enum": [
+        "full",
+        "sample",
+        "not_applicable"
+      ],
+      "default": "full",
+      "description": "Modo de amostragem: full = cobertura completa, sample = amostral"
+    },
+    "include_in_consolidated_score": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se true, este scope contribui para o IFME\u2122 consolidado"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed",
+        "blocked"
+      ],
+      "default": "not_started"
+    },
+    "question_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total de perguntas neste scope"
+    },
+    "answered_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total de perguntas respondidas"
+    },
+    "required_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total de perguntas obrigat\u00f3rias"
+    },
+    "completion_ratio": {
+      "type": "number",
+      "default": 0,
+      "description": "Percentual de conclus\u00e3o (0-1)"
+    },
+    "score": {
+      "type": "number",
+      "description": "Score calculado deste scope (0-3). Nullable at\u00e9 o c\u00e1lculo."
+    },
+    "maturity_level": {
+      "type": "string",
+      "description": "N\u00edvel de maturidade calculado (Cr\u00edtico, B\u00e1sico, Estruturado, Avan\u00e7ado)"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00e3o metodol\u00f3gica sobre este scope (ex: justificativa de amostragem)"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "dimension_key",
+    "evaluated_entity_type",
+    "evaluated_entity_id"
+  ]
+}

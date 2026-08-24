@@ -1,0 +1,35 @@
+{
+  "name": "MQEResponse",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "mqe_question_id": {
+      "type": "string"
+    },
+    "crossing_key": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number",
+      "description": "0-5 scale"
+    },
+    "justification": {
+      "type": "string"
+    },
+    "divergence_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "assessment_id",
+    "mqe_question_id",
+    "crossing_key",
+    "score"
+  ]
+}

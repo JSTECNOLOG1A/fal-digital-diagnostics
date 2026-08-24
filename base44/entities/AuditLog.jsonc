@@ -1,0 +1,70 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_app_role": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "target_user_id": {
+      "type": "string"
+    },
+    "target_email": {
+      "type": "string"
+    },
+    "invited_app_role": {
+      "type": "string"
+    },
+    "invited_tenant_id": {
+      "type": "string"
+    },
+    "previous_app_role": {
+      "type": "string"
+    },
+    "new_app_role": {
+      "type": "string"
+    },
+    "previous_tenant_id": {
+      "type": "string"
+    },
+    "new_tenant_id": {
+      "type": "string"
+    },
+    "pending_id": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "method_version_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlation_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action"
+  ]
+}

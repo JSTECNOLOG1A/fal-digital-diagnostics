@@ -1,0 +1,154 @@
+{
+  "name": "FinancialUpload",
+  "type": "object",
+  "properties": {
+    "financial_diagnosis_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "version_number": {
+      "type": "number",
+      "default": 1
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "template_version": {
+      "type": "string"
+    },
+    "upload_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reading",
+        "validation_failed",
+        "validated",
+        "processing",
+        "processed",
+        "error"
+      ],
+      "default": "pending"
+    },
+    "uploaded_by": {
+      "type": "string"
+    },
+    "is_current": {
+      "type": "boolean",
+      "default": true
+    },
+    "validation_summary": {
+      "type": "object"
+    },
+    "current_validation_run_id": {
+      "type": "string"
+    },
+    "current_validation_checksum": {
+      "type": "string"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "processing_log": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source_entity_id": {
+      "type": "string"
+    },
+    "source_entity_type": {
+      "type": "string",
+      "enum": [
+        "group",
+        "company",
+        "unit"
+      ]
+    },
+    "source_entity_name": {
+      "type": "string"
+    },
+    "source_period": {
+      "type": "string"
+    },
+    "source_key": {
+      "type": "string"
+    },
+    "input_checksum": {
+      "type": "string"
+    },
+    "checksum_algorithm": {
+      "type": "string",
+      "enum": [
+        "sha256"
+      ],
+      "default": "sha256"
+    },
+    "original_filename": {
+      "type": "string"
+    },
+    "file_size": {
+      "type": "number"
+    },
+    "last_modified": {
+      "type": "number"
+    },
+    "supersedes_upload_id": {
+      "type": "string"
+    },
+    "superseded_by_upload_id": {
+      "type": "string"
+    },
+    "superseded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "replacement_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "validated",
+        "activated",
+        "failed"
+      ],
+      "default": "none"
+    },
+    "deletion_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending_delete",
+        "tombstoned",
+        "delete_failed"
+      ],
+      "default": "active"
+    },
+    "deletion_run_id": {
+      "type": "string"
+    },
+    "delete_requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tombstoned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delete_error": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "financial_diagnosis_id",
+    "tenant_id",
+    "file_name",
+    "file_url"
+  ]
+}
