@@ -34,6 +34,7 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
   const [filterDim, setFilterDim]       = useState('');
   const [filterPriority, setFilterPriority] = useState('');
   const [filterResponsavel, setFilterResponsavel] = useState('');
+  const [filterEntity, setFilterEntity] = useState('');
   const [search, setSearch] = useState('');
   const today = new Date();
   const qc = useQueryClient();
@@ -41,6 +42,14 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
 
   const dims   = useMemo(() => [...new Set(tasks.map(t => t.dimension_key).filter(Boolean))], [tasks]);
   const owners = useMemo(() => [...new Set(tasks.map(t => t.owner_name || t.assigned_to).filter(Boolean))], [tasks]);
+  // Entidades avaliadas presentes no plano (assessments multi_entity_master)
+  // — tarefas estratégicas (cluster/dimensão) não têm entidade, só as
+  // operacionais (nível de pergunta) que vieram de uma resposta específica.
+  const entities = useMemo(() => {
+    const map = new Map();
+    for (const t of tasks) if (t.evaluated_entity_id) map.set(t.evaluated_entity_id, t.evaluated_entity_name || t.evaluated_entity_id);
+    return [...map.entries()];
+  }, [tasks]);
 
   const filtered = useMemo(() => {
     return tasks.filter(t => {
@@ -55,10 +64,11 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
       if (filterDim && t.dimension_key !== filterDim)       return false;
       if (filterPriority && t.priority !== filterPriority)  return false;
       if (filterResponsavel && t.owner_name !== filterResponsavel && t.assigned_to !== filterResponsavel) return false;
+      if (filterEntity && t.evaluated_entity_id !== filterEntity) return false;
       if (search && !t.title.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [tasks, filterStatus, filterDim, filterPriority, filterResponsavel, search, today]);
+  }, [tasks, filterStatus, filterDim, filterPriority, filterResponsavel, filterEntity, search, today]);
 
   const handleInlineUpdate = async (taskId, updates) => {
     await base44.functions.invoke('updateActionTaskWithHistory', {
@@ -91,6 +101,13 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
             className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-1 focus:ring-blue-300 focus:outline-none">
             <option value="">Todas dimensões</option>
             {dims.map(d => <option key={d} value={d}>{DIM_LABELS[d] || d}</option>)}
+          </select>
+        )}
+        {entities.length > 0 && (
+          <select value={filterEntity} onChange={e => setFilterEntity(e.target.value)}
+            className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-1 focus:ring-blue-300 focus:outline-none">
+            <option value="">Todas entidades</option>
+            {entities.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
           </select>
         )}
         <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)}
@@ -129,6 +146,8 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
               <col style={{ width: 110 }} />
               {/* Cluster */}
               <col style={{ width: 140 }} />
+              {/* Entidade */}
+              <col style={{ width: 120 }} />
               {/* Tarefa */}
               <col style={{ width: 260 }} />
               <col style={{ width: 80 }} />
@@ -139,24 +158,25 @@ export default function ListaExecutivaTab({ tasks, onOpenTask, planId, tenantId,
               <col style={{ width: 28 }} />
             </colgroup>
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
+              <tr className="bg-slate-800">
                 <th className="px-3 py-2.5 w-7" />
                 {/* Dimensão sticky header */}
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600 sticky left-0 bg-slate-50 z-10 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)]">Dimensão</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Cluster</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Tarefa</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Origem</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Responsável</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Prazo</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Status</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Progresso</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white sticky left-0 bg-slate-800 z-10 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)]">Dimensão</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Cluster</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Entidade</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Tarefa</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Origem</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Responsável</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Prazo</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Status</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-white">Progresso</th>
                 <th className="w-7" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-16 text-slate-400">
+                  <td colSpan={11} className="text-center py-16 text-slate-400">
                     <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
                     Nenhuma tarefa nesta visualização.
                   </td>
@@ -245,6 +265,15 @@ function TaskTableRow({ task, today, onOpenTask, onInlineUpdate }) {
         ) : <span className="text-slate-300">—</span>}
       </td>
 
+      {/* Entidade avaliada (assessment multi-entidade) */}
+      <td className="px-3 py-3 cursor-pointer" onClick={() => onOpenTask(task)}>
+        {task.evaluated_entity_name ? (
+          <span className="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 truncate max-w-[110px]" title={task.evaluated_entity_name}>
+            {task.evaluated_entity_name}
+          </span>
+        ) : <span className="text-slate-300">—</span>}
+      </td>
+
       {/* Tarefa title */}
       <td className="px-3 py-3 cursor-pointer" onClick={() => onOpenTask(task)}>
         <div className="flex items-start gap-1.5">
@@ -315,7 +344,7 @@ function TaskTableRow({ task, today, onOpenTask, onInlineUpdate }) {
               <span className="flex items-center gap-1 text-amber-400"><Calendar className="w-3 h-3" /> <span className="text-[10px]">—</span></span>
             ) : (
               <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-slate-500'}`}>
-                {format(new Date(task.due_date + 'T12:00'), 'dd/MM/yy')}
+                {format(new Date(String(task.due_date).slice(0, 10) + 'T12:00'), 'dd/MM/yy')}
               </span>
             )}
             <Edit2 className="w-2.5 h-2.5 opacity-0 group-hover/date:opacity-100 text-slate-400 transition-opacity flex-shrink-0" />

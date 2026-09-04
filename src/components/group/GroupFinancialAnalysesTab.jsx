@@ -39,7 +39,27 @@ const STATUS_MAP = {
   archived:          { label: 'Arquivada',     dot: '#94a3b8', progress: 4 },
 };
 
-const TOTAL_STEPS = 4;
+// "Concluída" (5/5) agora exige, além dos 4 passos do diagnóstico
+// (processed/reviewed/approved), que o Relatório da Análise também tenha
+// sido finalizado (FinancialReportVersion.status === 'final' — ver
+// has_finalized_report em financial-diagnosis.service.ts::list()). Sem
+// isso, um diagnóstico processado mas sem relatório finalizado fica em
+// 4/5, rotulado "Relatório pendente" em vez de "Concluída".
+const TOTAL_STEPS = 5;
+
+/**
+ * @param {any} diagnosis
+ * @returns {{ label: string, dot: string, progress: number }}
+ */
+function getStatusConfig(diagnosis) {
+  const base = STATUS_MAP[diagnosis.status] || STATUS_MAP.draft;
+  if (diagnosis.status === 'archived') return { ...base, progress: TOTAL_STEPS };
+  const journeyDone = base.progress >= 4;
+  if (!journeyDone) return base;
+  if (diagnosis.has_finalized_report) return { label: 'Concluída', dot: '#22c55e', progress: TOTAL_STEPS };
+  return { label: 'Relatório pendente', dot: '#f59e0b', progress: 4 };
+}
+
 const PAGE_SIZE = 10;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -60,8 +80,8 @@ function fmtPeriodRange(d) {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-function StatusDot({ status }) {
-  const cfg = STATUS_MAP[status] || STATUS_MAP.draft;
+function StatusDot({ diagnosis }) {
+  const cfg = getStatusConfig(diagnosis);
   return (
     <div className="flex items-center gap-2">
       <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: cfg.dot }} />
@@ -70,8 +90,8 @@ function StatusDot({ status }) {
   );
 }
 
-function ProgressCell({ status }) {
-  const cfg = STATUS_MAP[status] || STATUS_MAP.draft;
+function ProgressCell({ diagnosis }) {
+  const cfg = getStatusConfig(diagnosis);
   const pct = (cfg.progress / TOTAL_STEPS) * 100;
   const isDone = cfg.progress === TOTAL_STEPS;
   const barColor = isDone ? '#22c55e' : cfg.progress > 0 ? '#2563eb' : '#e2e8f0';
@@ -309,12 +329,12 @@ export default function GroupFinancialAnalysesTab({ groupId, tenantId }) {
           <>
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Análise</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 whitespace-nowrap">Período</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Status</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Progresso</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500">Ações</th>
+                <tr className="bg-slate-800">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-white">Análise</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-white whitespace-nowrap">Período</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-white">Status</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-white">Progresso</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-white">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -343,10 +363,10 @@ export default function GroupFinancialAnalysesTab({ groupId, tenantId }) {
                         {fmtPeriodRange(d)}
                       </td>
                       <td className="px-5 py-3">
-                        <StatusDot status={d.status} />
+                        <StatusDot diagnosis={d} />
                       </td>
                       <td className="px-5 py-3">
-                        <ProgressCell status={d.status} />
+                        <ProgressCell diagnosis={d} />
                       </td>
                       <td className="px-5 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>

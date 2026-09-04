@@ -90,11 +90,11 @@ export default function ReportMfisAnalysis({ payload }) {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ borderCollapse: 'collapse', fontSize: 11 }}>
               <thead>
-                <tr>
-                  <th style={{ width: 80, fontSize: 9, color: '#94a3b8', padding: 4 }}></th>
+                <tr style={{ background: '#1e293b' }}>
+                  <th style={{ width: 80, fontSize: 9, color: '#ffffff', padding: 4 }}></th>
                   {dimKeys.map((dk) => (
                     <th key={dk} style={{
-                      width: 48, fontSize: 9, fontWeight: 700, color: '#64748b',
+                      width: 48, fontSize: 9, fontWeight: 700, color: '#ffffff',
                       textAlign: 'center', padding: '4px 2px', textTransform: 'uppercase',
                     }}>
                       {DIM_ABBR[dk] || dk.slice(0, 2).toUpperCase()}

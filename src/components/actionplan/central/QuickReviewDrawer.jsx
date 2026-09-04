@@ -347,7 +347,7 @@ export default function QuickReviewDrawer({ open, onClose, plan, tasks, reviewNu
               <div>
                 <p className="text-base font-bold text-slate-800">Revisão #{reviewNumber} concluída</p>
                 <p className="text-xs text-slate-500 mt-1">
-                  {format(new Date(meta.review_date + 'T12:00'), 'dd/MM/yyyy')} · {VISIT_TYPES.find(v => v.value === meta.visit_type)?.label}
+                  {format(new Date(String(meta.review_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy')} · {VISIT_TYPES.find(v => v.value === meta.visit_type)?.label}
                 </p>
               </div>
               {/* Progress delta */}

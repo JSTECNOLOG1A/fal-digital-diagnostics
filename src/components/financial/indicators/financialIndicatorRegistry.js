@@ -17,7 +17,7 @@ export const financialIndicatorRegistry = [
   {
     key: "liquidez_corrente",
     label: "LIQ. CORRENTE",
-    fullLabel: "Liquidez Corrente",
+    fullLabel: "Liquidez corrente",
     group: "liquidez",
     groupLabel: "INDICADORES DE LIQUIDEZ",
     format: "number",
@@ -37,7 +37,7 @@ export const financialIndicatorRegistry = [
   {
     key: "liquidez_seca",
     label: "LIQ. SECA",
-    fullLabel: "Liquidez Seca",
+    fullLabel: "Liquidez seca",
     group: "liquidez",
     groupLabel: "INDICADORES DE LIQUIDEZ",
     format: "number",
@@ -54,32 +54,14 @@ export const financialIndicatorRegistry = [
     },
   },
   {
-    key: "capital_circulante_liquido",
-    label: "CAP. CIRC. LÍQ.",
-    fullLabel: "Capital Circulante Líquido",
-    group: "liquidez",
-    groupLabel: "INDICADORES DE LIQUIDEZ",
-    format: "currency",
-    decimals: 2,
-    order: 30,
-    formula: "Ativo Circulante − Passivo Circulante",
-    description:
-      "Representa a folga ou insuficiência financeira de curto prazo.",
-    benchmark: {
-      tipo: "sinal",
-      referencia: "Positivo  |  Neutro  |  Negativo",
-      descritivo: "Folga financeira de curto prazo positiva.",
-    },
-  },
-  {
     key: "liquidez_imediata",
     label: "LIQ. IMEDIATA",
-    fullLabel: "Liquidez Imediata",
+    fullLabel: "Liquidez imediata",
     group: "liquidez",
     groupLabel: "INDICADORES DE LIQUIDEZ",
     format: "number",
     decimals: 2,
-    order: 40,
+    order: 30,
     formula: "Caixa e Equivalentes / Passivo Circulante",
     description:
       "Mede a liquidez imediata considerando apenas recursos disponíveis.",
@@ -91,12 +73,30 @@ export const financialIndicatorRegistry = [
       descritivo: "Disponibilidade imediata suficiente para urgências.",
     },
   },
+  {
+    key: "capital_circulante_liquido",
+    label: "CAP. CIRC. LÍQ.",
+    fullLabel: "Capital circulante líquido",
+    group: "liquidez",
+    groupLabel: "INDICADORES DE LIQUIDEZ",
+    format: "currency",
+    decimals: 2,
+    order: 50,
+    formula: "Ativo Circulante − Passivo Circulante",
+    description:
+      "Representa a folga ou insuficiência financeira de curto prazo.",
+    benchmark: {
+      tipo: "sinal",
+      referencia: "Positivo  |  Neutro  |  Negativo",
+      descritivo: "Folga financeira de curto prazo positiva.",
+    },
+  },
 
   // ── Endividamento ───────────────────────────────────────────────────────────
   {
     key: "divida_liquida_sobre_ebitda",
     label: "DÍV. LÍQ. / EBITDA",
-    fullLabel: "Dívida Líquida / EBITDA",
+    fullLabel: "Dívida líquida / EBITDA",
     group: "endividamento",
     groupLabel: "INDICADORES DE ENDIVIDAMENTO",
     format: "multiple",
@@ -116,7 +116,7 @@ export const financialIndicatorRegistry = [
   {
     key: "passivo_sobre_ativo",
     label: "PASSIVO / ATIVO",
-    fullLabel: "Passivo / Ativo",
+    fullLabel: "Passivo / ativo",
     group: "endividamento",
     groupLabel: "INDICADORES DE ENDIVIDAMENTO",
     format: "number",
@@ -136,7 +136,7 @@ export const financialIndicatorRegistry = [
   {
     key: "capital_terceiros_sobre_pl",
     label: "CAP. TERCEIROS / PL",
-    fullLabel: "Capital de Terceiros / Patrimônio Líquido",
+    fullLabel: "Capital de terceiros / patrimônio líquido",
     group: "endividamento",
     groupLabel: "INDICADORES DE ENDIVIDAMENTO",
     format: "multiple",
@@ -156,7 +156,7 @@ export const financialIndicatorRegistry = [
   {
     key: "composicao_endividamento",
     label: "COMP. DÍVIDA",
-    fullLabel: "Composição da Dívida",
+    fullLabel: "Composição da dívida",
     group: "endividamento",
     groupLabel: "INDICADORES DE ENDIVIDAMENTO",
     format: "percent",
@@ -178,7 +178,7 @@ export const financialIndicatorRegistry = [
   {
     key: "margem_bruta",
     label: "M. BRUTA",
-    fullLabel: "Margem Bruta",
+    fullLabel: "Margem bruta",
     group: "rentabilidade",
     groupLabel: "INDICADORES DE RENTABILIDADE",
     format: "percent",
@@ -217,7 +217,7 @@ export const financialIndicatorRegistry = [
   {
     key: "margem_liquida",
     label: "M. LÍQUIDA",
-    fullLabel: "Margem Líquida",
+    fullLabel: "Margem líquida",
     group: "rentabilidade",
     groupLabel: "INDICADORES DE RENTABILIDADE",
     format: "percent",
@@ -236,7 +236,7 @@ export const financialIndicatorRegistry = [
   {
     key: "roe",
     label: "ROE",
-    fullLabel: "Retorno sobre Patrimônio Líquido",
+    fullLabel: "Retorno sobre patrimônio líquido",
     group: "rentabilidade",
     groupLabel: "INDICADORES DE RENTABILIDADE",
     format: "percent",
@@ -255,7 +255,7 @@ export const financialIndicatorRegistry = [
   {
     key: "roic",
     label: "ROIC",
-    fullLabel: "Retorno sobre Capital Investido",
+    fullLabel: "Retorno sobre capital investido",
     group: "rentabilidade",
     groupLabel: "INDICADORES DE RENTABILIDADE",
     format: "percent",
@@ -276,7 +276,7 @@ export const financialIndicatorRegistry = [
   {
     key: "prazo_medio_recebimento",
     label: "PMR",
-    fullLabel: "Prazo Médio de Recebimento",
+    fullLabel: "Prazo médio de recebimento",
     group: "eficiencia",
     groupLabel: "INDICADORES DE EFICIÊNCIA",
     format: "days",
@@ -296,7 +296,7 @@ export const financialIndicatorRegistry = [
   {
     key: "prazo_medio_pagamento",
     label: "PMP",
-    fullLabel: "Prazo Médio de Pagamento",
+    fullLabel: "Prazo médio de pagamento",
     group: "eficiencia",
     groupLabel: "INDICADORES DE EFICIÊNCIA",
     format: "days",
@@ -314,17 +314,17 @@ export const financialIndicatorRegistry = [
     },
   },
   {
-    key: "crescimento_receita", label: "CRESC. RECEITA", fullLabel: "Crescimento de Receita", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "percent", decimals: 2, order: 30,
+    key: "crescimento_receita", label: "CRESC. RECEITA", fullLabel: "Crescimento de receita", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "percent", decimals: 2, order: 60,
     formula: "(Receita atual − anterior) / Receita anterior", description: "Mede a variação da receita entre períodos.", benchmark: { orientacao: "crescente", saudavel: 0.1, atencao: 0, referencia: "≥ 10% | 0%–10% | < 0%", descritivo: "Crescimento consistente da receita." }
   },
-  { key: "liquidez_geral", label: "LIQ. GERAL", fullLabel: "Liquidez Geral", group: "liquidez", groupLabel: "INDICADORES DE LIQUIDEZ", format: "number", decimals: 2, order: 50, formula: "Realizável total / Passivo exigível", description: "Mede a cobertura das obrigações totais por ativos realizáveis." },
-  { key: "divida_liquida", label: "DÍVIDA LÍQUIDA", fullLabel: "Dívida Líquida", group: "endividamento", groupLabel: "INDICADORES DE ENDIVIDAMENTO", format: "currency", decimals: 2, order: 50, formula: "Dívida bruta − disponibilidade imediata", description: "Dívida financeira líquida de caixa e aplicações de liquidez imediata." },
+  { key: "liquidez_geral", label: "LIQ. GERAL", fullLabel: "Liquidez geral", group: "liquidez", groupLabel: "INDICADORES DE LIQUIDEZ", format: "number", decimals: 2, order: 40, formula: "Realizável total / Passivo exigível", description: "Mede a cobertura das obrigações totais por ativos realizáveis." },
+  { key: "divida_liquida", label: "DÍVIDA LÍQUIDA", fullLabel: "Dívida líquida", group: "endividamento", groupLabel: "INDICADORES DE ENDIVIDAMENTO", format: "currency", decimals: 2, order: 50, formula: "Dívida bruta − disponibilidade imediata", description: "Dívida financeira líquida de caixa e aplicações de liquidez imediata." },
   { key: "margem_ebit", label: "M. EBIT", fullLabel: "Margem EBIT", group: "rentabilidade", groupLabel: "INDICADORES DE RENTABILIDADE", format: "percent", decimals: 2, order: 25, formula: "EBIT / Receita Líquida", description: "Margem operacional após depreciação e amortização." },
-  { key: "roa", label: "ROA", fullLabel: "Retorno sobre Ativos", group: "rentabilidade", groupLabel: "INDICADORES DE RENTABILIDADE", format: "percent", decimals: 2, order: 45, formula: "Resultado Líquido / Ativo Total", description: "Retorno líquido gerado pelos ativos." },
-  { key: "giro_ativo", label: "GIRO ATIVO", fullLabel: "Giro do Ativo", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "number", decimals: 2, order: 40, formula: "Receita Líquida / Ativo Total", description: "Eficiência dos ativos na geração de receita." },
-  { key: "prazo_medio_estoque", label: "PME", fullLabel: "Prazo Médio de Estoque", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 50, formula: "Estoques × 360 / |Custos|", description: "Permanência média dos estoques." },
-  { key: "ciclo_operacional", label: "CICLO OP.", fullLabel: "Ciclo Operacional", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 60, formula: "PMR + PME", description: "Dias entre a compra e o recebimento da venda." },
-  { key: "ciclo_financeiro", label: "CICLO FIN.", fullLabel: "Ciclo Financeiro", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 70, formula: "Ciclo Operacional − PMP", description: "Dias de financiamento do ciclo operacional." },
+  { key: "roa", label: "ROA", fullLabel: "Retorno sobre ativos", group: "rentabilidade", groupLabel: "INDICADORES DE RENTABILIDADE", format: "percent", decimals: 2, order: 45, formula: "Resultado Líquido / Ativo Total", description: "Retorno líquido gerado pelos ativos." },
+  { key: "giro_ativo", label: "GIRO ATIVO", fullLabel: "Giro do ativo", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "number", decimals: 2, order: 70, formula: "Receita Líquida / Ativo Total", description: "Eficiência dos ativos na geração de receita." },
+  { key: "prazo_medio_estoque", label: "PME", fullLabel: "Prazo médio de estoque", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 30, formula: "Estoques × 360 / |Custos|", description: "Permanência média dos estoques." },
+  { key: "ciclo_operacional", label: "CICLO OP.", fullLabel: "Ciclo operacional", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 40, formula: "PMR + PME", description: "Dias entre a compra e o recebimento da venda." },
+  { key: "ciclo_financeiro", label: "CICLO FIN.", fullLabel: "Ciclo financeiro", group: "eficiencia", groupLabel: "INDICADORES DE EFICIÊNCIA", format: "days", decimals: 0, order: 50, formula: "Ciclo Operacional − PMP", description: "Dias de financiamento do ciclo operacional." },
 ];
 
 // Ordem canônica dos grupos visuais

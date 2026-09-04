@@ -79,10 +79,14 @@
   --fal-shadow-floating: 0 12px 32px rgba(15, 23, 42, 0.16), 0 4px 8px rgba(15, 23, 42, 0.10);
 
   /* ── Radius ───────────────────────────────────────────────────── */
-  --fal-radius-sm: 8px;
-  --fal-radius-md: 12px;
-  --fal-radius-lg: 14px;
-  --fal-radius-xl: 18px;
+  --fal-radius-sm: 0px;
+  --fal-radius-md: 0px;
+  --fal-radius-lg: 0px;
+  --fal-radius-xl: 0px;
+
+  /* ── Table header (padrão único em todo o app) ───────────────── */
+  --table-header-bg: #1e293b;
+  --table-header-fg: #ffffff;
 
   /* ── Legacy aliases ───────────────────────────────────────────── */
   --fal-navy:    var(--fal-navy-950);
@@ -172,7 +176,7 @@
 
 /* Sidebar */
 .fal-sidebar { background: linear-gradient(180deg, var(--fal-navy-950) 0%, var(--fal-navy-900) 100%); color: #FFFFFF; }
-.fal-sidebar-item { color: var(--fal-text-inverse-muted); border-radius: 10px; transition: all 0.18s ease; }
+.fal-sidebar-item { color: var(--fal-text-inverse-muted); border-radius: 0; transition: all 0.18s ease; }
 .fal-sidebar-item:hover { background: rgba(255,255,255,0.06); color: #FFFFFF; }
 .fal-sidebar-item-active { background: rgba(47,166,106,0.14); color: #7FE3A5; border-left: 4px solid var(--fal-green-400); }
 
@@ -351,7 +355,7 @@
 .structure-panel {
   background: #ffffff;
   border: 1px solid var(--fal-border-subtle);
-  border-radius: 18px;
+  border-radius: 0;
   padding: 20px;
   margin-top: 4px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.03);
@@ -375,7 +379,7 @@
 
 .structure-action-btn {
   height: 32px;
-  border-radius: 10px;
+  border-radius: 0;
   border: 1px solid var(--fal-border-soft);
   background: #ffffff;
   color: var(--fal-text-muted);
@@ -397,7 +401,7 @@
 
 .zoom-control {
   height: 32px;
-  border-radius: 10px;
+  border-radius: 0;
   border: 1px solid var(--fal-border-soft);
   background: #ffffff;
   display: inline-flex;
@@ -437,7 +441,7 @@
   width: 100%;
   min-height: 520px;
   overflow: auto;
-  border-radius: 16px;
+  border-radius: 0;
   background:
     radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.2) 1px, transparent 0);
   background-size: 24px 24px;
@@ -458,7 +462,7 @@
 /* ── Nó raiz ── */
 .org-root-node {
   width: 360px;
-  border-radius: 18px;
+  border-radius: 0;
   padding: 16px;
   color: #ffffff;
   background: linear-gradient(135deg, #071b33 0%, #0b2b52 100%);
@@ -478,7 +482,7 @@
 .org-root-icon {
   width: 40px;
   height: 40px;
-  border-radius: 14px;
+  border-radius: 0;
   background: rgba(37, 99, 235, 0.75);
   display: flex;
   align-items: center;
@@ -570,7 +574,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 16px;
+  border-radius: 0;
   background: #ffffff;
   border: 1px solid var(--fal-border-medium);
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
@@ -592,7 +596,7 @@
 .company-node-icon {
   width: 32px;
   height: 32px;
-  border-radius: 10px;
+  border-radius: 0;
   background: #2563eb;
   color: #ffffff;
   display: flex;
@@ -654,7 +658,7 @@
   align-items: center;
   gap: 3px;
   padding: 4px 10px;
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid var(--fal-border-soft);
   background: transparent;
   color: var(--fal-text-muted);
@@ -688,7 +692,7 @@
 .unit-node-card {
   width: 100%;
   max-width: 320px;
-  border-radius: 14px;
+  border-radius: 0;
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   padding: 14px 16px;
@@ -706,7 +710,7 @@
 .unit-node-icon {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 0;
   background: #dcfce7;
   color: #15803d;
   display: flex;
@@ -740,7 +744,7 @@
 .empty-unit-node {
   width: 290px;
   height: 54px;
-  border-radius: 14px;
+  border-radius: 0;
   border: 1px dashed var(--fal-border-medium);
   background: #ffffff;
   color: var(--fal-text-muted);
@@ -783,7 +787,7 @@
   align-items: center;
   gap: 16px;
   border: 1px solid var(--fal-border-subtle);
-  border-radius: 12px;
+  border-radius: 0;
   padding: 8px 14px;
   background: #ffffff;
   flex-wrap: wrap;
@@ -798,7 +802,7 @@
 .structure-legend-dot {
   width: 10px;
   height: 10px;
-  border-radius: 3px;
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -823,7 +827,7 @@
 .ql-editor { min-height: 120px; }
 
 .client-tree { min-width: 320px; max-width: 420px; overflow-y: auto; resize: horizontal; overflow: auto; }
-.tree-item { padding: 8px 12px; border-radius: 8px; width: 100%; }
+.tree-item { padding: 8px 12px; border-radius: 0; width: 100%; }
 
 @layer base {
   :root {
@@ -851,7 +855,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 0px;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;

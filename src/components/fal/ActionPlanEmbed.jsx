@@ -105,7 +105,7 @@ export default function ActionPlanEmbed({ assessmentId }) {
         </div>
         {lastReview && (
           <p className="text-[10px] text-slate-400 mt-2">
-            Última revisão: {new Date(lastReview.review_date + 'T12:00').toLocaleDateString('pt-BR')} · Rev. Nº{lastReview.review_number}
+            Última revisão: {new Date(String(lastReview.review_date).slice(0, 10) + 'T12:00').toLocaleDateString('pt-BR')} · Rev. Nº{lastReview.review_number}
           </p>
         )}
       </div>

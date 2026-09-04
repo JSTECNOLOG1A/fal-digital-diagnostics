@@ -200,6 +200,55 @@ Deno.serve(async (req) => {
       }).catch(() => {});
     }
 
+    // 9) Fecha o ciclo de rastreabilidade: marca o achado de origem (via tag
+    // __fk__ em related_indicator_codes — mesmo mecanismo usado por
+    // generateFinancialRecommendations, ver ali) e a FinancialActionProposal
+    // correspondente como convertidos/exportados, com o id da tarefa criada.
+    // Best-effort: falha aqui nunca deve impedir a tarefa já criada de ser
+    // retornada ao usuário.
+    if (rec) {
+      const fkTag = (rec.related_indicator_codes || []).find(
+        (c: unknown) => typeof c === 'string' && c.startsWith('__fk__:')
+      );
+      const findingKey = fkTag ? String(fkTag).replace('__fk__:', '') : null;
+      if (findingKey) {
+        try {
+          const [finding] = await base44.asServiceRole.entities.FinancialFinding.filter(
+            { finding_key: findingKey, financial_diagnosis_id: diagId }, 'id', 1
+          );
+          if (finding) {
+            await base44.asServiceRole.entities.FinancialFinding.update(finding.id, {
+              action_plan_status: 'converted_to_task',
+              action_recommendation_id: financial_recommendation_id,
+              action_task_id: task.id,
+              action_plan_id: plan.id,
+              converted_to_task_at: new Date().toISOString(),
+              converted_to_task_by: user.email,
+            });
+          }
+        } catch (e: any) {
+          console.error('[convertFinancialRecommendation] falha ao marcar achado como convertido:', e.message);
+        }
+      }
+
+      try {
+        const [proposal] = await base44.asServiceRole.entities.FinancialActionProposal.filter(
+          { financial_recommendation_id }, 'id', 1
+        );
+        if (proposal) {
+          await base44.asServiceRole.entities.FinancialActionProposal.update(proposal.id, {
+            status: 'exported',
+            exported_to_fal: true,
+            fal_action_plan_id: plan.id,
+            fal_action_task_id: task.id,
+            exported_at: new Date().toISOString(),
+          });
+        }
+      } catch (e: any) {
+        console.error('[convertFinancialRecommendation] falha ao marcar proposta como exportada:', e.message);
+      }
+    }
+
     return Response.json({ task, plan_id: plan.id });
   } catch (err: any) {
     // Distinguish error types for proper HTTP status

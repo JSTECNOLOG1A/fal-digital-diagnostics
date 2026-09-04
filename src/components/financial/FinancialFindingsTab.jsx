@@ -88,7 +88,7 @@ export default function FinancialFindingsTab({ diagnosisId, tenantId }) {
     <div className="space-y-6">
       <Section title="Data-base"             items={snapshot} />
       <Section title="Evolução"              items={comparison} />
-      <Section title="Validações Estruturais" items={structural} />
+      <Section title="Validações estruturais" items={structural} />
       <Section title="Outros"                 items={other} />
     </div>
   );

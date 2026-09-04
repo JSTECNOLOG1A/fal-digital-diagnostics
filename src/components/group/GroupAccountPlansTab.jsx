@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import {
   Plus, FileSpreadsheet, Check, AlertCircle, Loader2,
   BookOpen, ArrowLeft, ChevronRight, ChevronLeft, Pencil,
-  Search, MoreVertical, ExternalLink } from
+  Search, MoreVertical, ExternalLink, Copy } from
 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -35,19 +35,80 @@ const PCG_COLUMNS = [
 { col: 'statement_code', name: 'Demonstrativo (BP / DRE / DFC)', example: 'BP', required: false },
 { col: 'bp_group', name: 'Grupo BP (ativo_circulante / ativo_nao_circulante / passivo_circulante / passivo_nao_circulante / patrimonio_liquido)', example: 'ativo_circulante', required: false, highlight: true },
 { col: 'ebitda_component', name: 'Componente EBITDA', example: 'receita_bruta', required: false, highlight: true },
-{ col: 'dfc_classification', name: 'Classificação DFC', example: 'dfc_op_var_contas_receber', required: false, highlight: true }];
+{ col: 'dfc_classification', name: 'Classificação DFC', example: 'dfc_op_var_contas_receber', required: false, highlight: true },
+{ col: 'canonical_key', name: 'Chave Canônica (avançado — normalmente inferida automaticamente a partir de "classification")', example: 'receita_bruta', required: false }];
 
+
+// Copia uma "tabela" (array de linhas, cada linha um array de valores) para a área de
+// transferência com separador de TAB entre colunas e quebra de linha entre linhas —
+// formato que o Excel/Sheets reconhece ao colar, distribuindo automaticamente cada
+// valor numa célula e cada linha numa linha.
+async function copyToClipboardAsTable(rows) {
+  const text = rows.map((row) => row.join('\t')).join('\n');
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    throw new Error('Clipboard API indisponível');
+  } catch (e) {
+    // Fallback para navegadores/contextos sem permissão de Clipboard API
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return true;
+    } catch (fallbackErr) {
+      return false;
+    }
+  }
+}
 
 function ColumnGuide() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyHeaders = async () => {
+    // Linha 1: cabeçalho técnico (o que o parser de importação espera).
+    // Linha 2: descrição de cada campo, pra lembrar o que preencher em cada coluna.
+    const headerRow = PCG_COLUMNS.map((c) => c.col);
+    const descriptionRow = PCG_COLUMNS.map((c) => c.name);
+    const ok = await copyToClipboardAsTable([headerRow, descriptionRow]);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="overflow-x-auto text-xs">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span style={{ color: 'var(--fal-text-muted)' }}>
+          Copie os cabeçalhos (com a descrição de cada campo logo abaixo) e cole na célula A1 da sua planilha — as colunas já ficam na ordem certa.
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleCopyHeaders}
+          className="h-7 gap-1.5 text-xs shrink-0"
+        >
+          {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? 'Copiado!' : 'Copiar cabeçalhos'}
+        </Button>
+      </div>
       <table className="w-full border-collapse">
         <thead>
-          <tr style={{ background: 'var(--fal-bg-muted)' }}>
-            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--fal-text-muted)', borderColor: 'var(--fal-border-soft)' }}>Cabeçalho (col. Excel)</th>
-            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--fal-text-muted)', borderColor: 'var(--fal-border-soft)' }}>Campo</th>
-            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--fal-text-muted)', borderColor: 'var(--fal-border-soft)' }}>Exemplo</th>
-            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--fal-text-muted)', borderColor: 'var(--fal-border-soft)' }}>Obrig.</th>
+          <tr style={{ background: 'var(--table-header-bg)' }}>
+            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--table-header-fg)', borderColor: 'var(--table-header-bg)' }}>Cabeçalho (col. Excel)</th>
+            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--table-header-fg)', borderColor: 'var(--table-header-bg)' }}>Campo</th>
+            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--table-header-fg)', borderColor: 'var(--table-header-bg)' }}>Exemplo</th>
+            <th className="px-3 py-2 text-left font-semibold border" style={{ color: 'var(--table-header-fg)', borderColor: 'var(--table-header-bg)' }}>Obrig.</th>
           </tr>
         </thead>
         <tbody>
@@ -274,7 +335,10 @@ function ImportLinesPanel({ plan, tenantId, onImported }) {
           ebitda_component: get(row, 'ebitda_component') || '',
           canonical_key: get(row, 'canonical_key') || '',
           dfc_classification: get(row, 'dfc_classification') || '',
-          sign_rule: get(row, 'sign_rule') || 'normal',
+          // sign_rule não é mais lido do Excel: o sinal é sempre derivado automaticamente
+          // pelo motor de cálculo (applySign), nunca manual. Mantido como 'normal' fixo
+          // apenas para compatibilidade com o schema existente.
+          sign_rule: 'normal',
           is_active: true,
           notes: parentCode && parentCode !== codeNorm ? `pai:${parentCode}` : '',
         });
@@ -519,14 +583,14 @@ export default function GroupAccountPlansTab({ groupId, tenantId }) {
         <>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Plano</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Empresa</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Sistema</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Versão ativa</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Mapeamento</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500">Status</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500">Ações</th>
+              <tr className="bg-slate-800">
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Plano</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Empresa</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Sistema</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Versão ativa</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Mapeamento</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-white">Status</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-white">Ações</th>
               </tr>
             </thead>
             <tbody>

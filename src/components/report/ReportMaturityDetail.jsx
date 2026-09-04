@@ -70,10 +70,10 @@ export default function ReportMaturityDetail({ payload }) {
       {/* Tabela */}
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{ borderBottom: '2px solid #0f172a' }}>
+          <tr style={{ background: '#1e293b' }}>
             {['Dimensão', 'Score / Barra', 'Classificação', 'Leitura'].map((h) => (
               <th key={h} style={{
-                fontSize: 9, color: '#94a3b8', textTransform: 'uppercase',
+                fontSize: 9, color: '#ffffff', textTransform: 'uppercase',
                 letterSpacing: 1, padding: '8px 10px', textAlign: 'left', fontWeight: 700,
               }}>{h}</th>
             ))}

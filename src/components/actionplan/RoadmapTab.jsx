@@ -68,7 +68,7 @@ export default function RoadmapTab({ tasks, reviews = [], onOpenTask }) {
                   <div>
                     <p className="text-xs font-semibold text-slate-800">Revisão #{r.review_number}</p>
                     <p className="text-[10px] text-slate-500">
-                      {r.review_date ? format(new Date(r.review_date + 'T12:00'), 'dd MMM yyyy', { locale: ptBR }) : '—'}
+                      {r.review_date ? format(new Date(String(r.review_date).slice(0, 10) + 'T12:00'), 'dd MMM yyyy', { locale: ptBR }) : '—'}
                       {daysUntil > 0 && <span className="ml-1 text-indigo-500 font-medium">· em {daysUntil}d</span>}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ export default function RoadmapTab({ tasks, reviews = [], onOpenTask }) {
                         Revisão #{r.review_number} — {r.visit_type === 'final' ? 'Final' : r.visit_type === 'extraordinary' ? 'Extraordinária' : 'Intermediária'}
                       </span>
                       <span className="text-[10px] text-emerald-600 font-medium">
-                        {r.review_date ? format(new Date(r.review_date + 'T12:00'), 'dd MMM yyyy', { locale: ptBR }) : '—'}
+                        {r.review_date ? format(new Date(String(r.review_date).slice(0, 10) + 'T12:00'), 'dd MMM yyyy', { locale: ptBR }) : '—'}
                       </span>
                     </div>
                     {r.executive_summary && (

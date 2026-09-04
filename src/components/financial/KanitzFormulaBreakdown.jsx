@@ -229,7 +229,7 @@ export default function KanitzFormulaBreakdown({ diagnosisId, selectedIndicators
                 </div>
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="bg-slate-50 text-slate-500 border-b border-slate-100">
+                    <tr className="bg-slate-800 text-white">
                       <th className="text-left font-semibold px-3 py-2">Componente</th>
                       <th className="text-center font-semibold px-2 py-2">Coef.</th>
                       <th className="text-right font-semibold px-3 py-2">Valor</th>

@@ -55,10 +55,10 @@ export default function ColumnOrderGuide() {
       <div className="rounded-lg border border-slate-200 overflow-hidden">
         <table className="w-full text-[10px]">
           <thead>
-            <tr className="bg-slate-100">
-              <th className="text-left px-2 py-1.5 font-semibold text-slate-500">Coluna</th>
-              <th className="text-left px-2 py-1.5 font-semibold text-slate-500 hidden sm:table-cell">Descrição</th>
-              <th className="text-left px-2 py-1.5 font-semibold text-slate-500">Tipo</th>
+            <tr className="bg-slate-800">
+              <th className="text-left px-2 py-1.5 font-semibold text-white">Coluna</th>
+              <th className="text-left px-2 py-1.5 font-semibold text-white hidden sm:table-cell">Descrição</th>
+              <th className="text-left px-2 py-1.5 font-semibold text-white">Tipo</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">

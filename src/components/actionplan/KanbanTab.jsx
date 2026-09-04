@@ -8,6 +8,7 @@ import { useReviewMode } from '@/context/ReviewModeContext';
 import ReviewModeOverlay from './ReviewModeOverlay';
 import { assessmentKey } from '@/lib/query-client';
 import { useTenant } from '@/components/shared/TenantContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const COLUMNS = [
   { key: 'todo',        label: 'A Estruturar', cls: 'bg-slate-50 border-slate-200',     hdr: 'bg-slate-100',     dot: 'bg-slate-400' },
@@ -24,32 +25,54 @@ const COL_KEYS = COLUMNS.map(c => c.key);
  * @param {any=} props.tasks
  * @param {any=} props.planId
  * @param {any=} props.onOpenTask
+ * @param {any=} props.assessmentId
  * @param {boolean=} props.readOnly
  */
-export default function KanbanTab({ tasks, planId, onOpenTask, readOnly = false }) {
+export default function KanbanTab({ tasks, planId, assessmentId, onOpenTask, readOnly = false }) {
   const { tenantId } = useTenant();
   const qc = useQueryClient();
   const { isReviewMode, review_id } = useReviewMode();
+  const { toast } = useToast();
 
   const handleStatusChange = async (taskId, newStatus) => {
     if (readOnly) return;
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.status === newStatus) return;
+
     const updates = { status: newStatus };
-    if (newStatus === 'done') updates.progress_percentage = 100;
+    if (newStatus === 'done') {
+      const evidence = window.prompt('Evidência entregue (obrigatório para concluir):', task.completion_evidence || '');
+      if (!evidence || !evidence.trim()) return;
+      updates.progress_percentage = 100;
+      updates.completion_evidence = evidence.trim();
+    }
+    if (newStatus === 'blocked') {
+      const reason = window.prompt('Motivo do bloqueio (obrigatório):', task.blocked_reason || '');
+      if (!reason || !reason.trim()) return;
+      updates.blocked_reason = reason.trim();
+    }
+
+    const queryKey = assessmentKey(tenantId, assessmentId, 'action-tasks', planId);
+    const previousTasks = qc.getQueryData(queryKey);
 
     // Optimistic update — atualiza o cache imediatamente para a Lista Executiva refletir sem delay
-    qc.setQueryData(assessmentKey(tenantId, null, 'action-tasks', planId), (/** @type {any} */ prev) =>
+    qc.setQueryData(queryKey, (/** @type {any} */ prev) =>
       prev ? prev.map(t => t.id === taskId ? { ...t, ...updates } : t) : prev
     );
 
-    await base44.functions.invoke('updateActionTaskWithHistory', {
-      task_id: taskId, 
-      updates, 
-      source: 'kanban',
-      review_id: isReviewMode ? review_id : undefined,
-    });
-    qc.invalidateQueries({ queryKey: assessmentKey(tenantId, null, 'action-tasks', planId) });
+    try {
+      const res = await base44.functions.invoke('updateActionTaskWithHistory', {
+        task_id: taskId,
+        updates,
+        source: 'kanban',
+        review_id: isReviewMode ? review_id : undefined,
+      });
+      if (res?.data?.error) throw new Error(res.data.error);
+      qc.invalidateQueries({ queryKey });
+    } catch (e) {
+      qc.setQueryData(queryKey, previousTasks);
+      toast({ title: 'Não foi possível mover a tarefa', description: e.message, variant: 'destructive' });
+    }
   };
 
   const tasksByStatus = {};
@@ -289,7 +312,7 @@ function KanbanCard({ task, colKey, onOpenTask, onStatusChange, readOnly = false
               {task.due_date && (
                 <span className={`flex items-center gap-0.5 font-medium ${isOverdue ? 'text-red-600' : 'text-slate-400'}`}>
                   <Calendar className="w-2.5 h-2.5" />
-                  {format(new Date(task.due_date), 'dd/MM')}
+                  {format(new Date(String(task.due_date).slice(0, 10) + 'T12:00'), 'dd/MM')}
                 </span>
               )}
             </div>

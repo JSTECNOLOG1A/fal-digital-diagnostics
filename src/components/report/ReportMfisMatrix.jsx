@@ -74,14 +74,14 @@ export default function ReportMfisMatrix({ payload }) {
       <div style={{ overflowX: 'auto', marginBottom: 28 }}>
         <table style={{ borderCollapse: 'collapse', margin: '0 auto' }}>
           <thead>
-            <tr>
+            <tr style={{ background: '#1e293b' }}>
               <th style={{ width: 80, padding: 6 }}></th>
               {dimKeys.map((dk) => {
                 const dim = dimensions.find((d) => d.key === dk);
                 return (
                   <th key={dk} style={{
                     width: 56, padding: '4px 2px',
-                    fontSize: 9, fontWeight: 700, color: '#64748b',
+                    fontSize: 9, fontWeight: 700, color: '#ffffff',
                     textAlign: 'center', textTransform: 'uppercase', letterSpacing: 0.5,
                   }}>
                     {DIM_ABBR[dk] || dk.slice(0, 3).toUpperCase()}

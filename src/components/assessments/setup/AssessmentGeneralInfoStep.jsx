@@ -11,8 +11,14 @@ import { createPageUrl } from '@/utils';
  * @param {any=} props.form
  * @param {any=} props.onChange
  * @param {any=} props.onForceCreate
+ * @param {any=} props.diagnosticLabel Rótulo exibido no título sugerido e nos avisos
+ *   (ex.: "FAL" ou "Reforma Tributária 8D"). Default: "FAL".
+ * @param {any=} props.methodVersionId Escopa a checagem de diagnóstico já
+ *   existente ao mesmo método sendo criado — sem isso, um diagnóstico FAL
+ *   apareceria como "já existe" ao tentar criar um de Reforma Tributária
+ *   pro mesmo grupo (e vice-versa).
  */
-export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreate }) {
+export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreate, diagnosticLabel = 'FAL', methodVersionId = null }) {
   const { tenantId } = useTenant();
   const [groupSearch, setGroupSearch] = useState('');
   const [forceCreate, setForceCreate] = useState(false);
@@ -25,9 +31,9 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
 
   // Fetch existing assessments for the selected group to compute cycle_number
   const { data: existingAssessments = [], isLoading: checkingAssessments } = useQuery({
-    queryKey: ['setup-existing-assessments', form.group_id],
+    queryKey: ['setup-existing-assessments', form.group_id, methodVersionId || 'fal8d'],
     queryFn: () => base44.entities.Assessment.filter(
-      { group_id: form.group_id, assessment_mode: 'multi_entity_master' },
+      { group_id: form.group_id, assessment_mode: 'multi_entity_master', method_version_id: methodVersionId },
       '-created_date',
       100
     ),
@@ -44,12 +50,12 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
     if (!form.group_id || !form.group_name) return;
     const year = form.diagnostic_cycle || String(new Date().getFullYear());
     const cycleNumber = existingAssessments.length + 1;
-    const suggested = `Diagnóstico FAL — ${form.group_name} — ${year} — Ciclo ${cycleNumber}`;
+    const suggested = `Diagnóstico ${diagnosticLabel} — ${form.group_name} — ${year} — Ciclo ${cycleNumber}`;
     // Only auto-fill if title is empty or matches a previous auto-suggestion pattern
     if (!form.title || form._auto_title) {
       onChange({ title: suggested, _auto_title: true });
     }
-  }, [form.group_id, form.group_name, existingAssessments.length, form.diagnostic_cycle]);
+  }, [form.group_id, form.group_name, existingAssessments.length, form.diagnostic_cycle, diagnosticLabel]);
 
   const filteredGroups = groups
     .filter(g => !g.is_archived)
@@ -94,7 +100,7 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
               <ShieldAlert className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-sm font-bold text-amber-900">Metodologia FAL: Diagnóstico Inicial já existe</p>
+              <p className="text-sm font-bold text-amber-900">Diagnóstico {diagnosticLabel}: Diagnóstico Inicial já existe</p>
               <p className="text-xs text-amber-700 mt-1">
                 Este grupo já possui um diagnóstico ativo:{' '}
                 <strong className="text-amber-900">"{activeInitialDiagnostic.title}"</strong>

@@ -139,14 +139,28 @@ export default function AssessmentDetail() {
     return qs.every(id => answeredIds.has(id));
   }, [assessment?.question_set, falResponses]);
 
-  // mqeComplete: usa a mesma lógica do CrossingProgress (sem filtro de setor) para consistência visual
+  // mqeComplete: usa a mesma lógica do CrossingProgress — inclusive o filtro
+  // por dimensões ativas. SEM esse filtro, um diagnóstico com escopo parcial
+  // (nem todas as 8 dimensões ativas, ex: só Governança+Jurídico) nunca
+  // conseguia completar o MQE de verdade: a tela de cruzamentos só deixa
+  // responder os cruzamentos das dimensões ativas, mas a checagem antiga
+  // exigia responder TODO o banco global de MQE (todas as dimensões,
+  // ativas ou não) — travando a Etapa 2 pra sempre nesse cenário, que é uma
+  // configuração normal e suportada pelo próprio assistente de criação.
   const mqeComplete = React.useMemo(() => {
     if (mqeQuestions.length === 0) return false;
+    const activeDimensionsSet = new Set(assessment?.active_dimensions || []);
+    const visibleCrossingKeys = new Set(
+      (methodVersion?.crossings || [])
+        .filter(c => activeDimensionsSet.has(c.dim_a) && activeDimensionsSet.has(c.dim_b))
+        .map(c => c.key)
+    );
+    if (visibleCrossingKeys.size === 0) return false;
     if (mqeResponses.length === 0) return false;
-    // Agrupa perguntas por crossing_key (sem filtro de setor — igual ao CrossingProgress)
+    // Agrupa perguntas por crossing_key, restrito aos cruzamentos visíveis
     const qByCrossing = {};
     for (const q of mqeQuestions) {
-      if (!q.crossing_key) continue;
+      if (!q.crossing_key || !visibleCrossingKeys.has(q.crossing_key)) continue;
       qByCrossing[q.crossing_key] = (qByCrossing[q.crossing_key] || 0) + 1;
     }
     const crossingKeys = Object.keys(qByCrossing);
@@ -158,7 +172,7 @@ export default function AssessmentDetail() {
       rByCrossing[r.crossing_key] = (rByCrossing[r.crossing_key] || 0) + 1;
     }
     return crossingKeys.every(key => (rByCrossing[key] || 0) >= qByCrossing[key]);
-  }, [mqeQuestions, mqeResponses]);
+  }, [mqeQuestions, mqeResponses, assessment?.active_dimensions, methodVersion?.crossings]);
 
   const [running, setRunning] = useState(false);
   const [analysisStep, setAnalysisStep] = useState('');
@@ -502,7 +516,12 @@ export default function AssessmentDetail() {
   return (
     <PageContainer variant="wide" className="py-6">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => {
+          if (assessment?.unit_id) navigate(`/UnitDetail?id=${assessment.unit_id}`);
+          else if (assessment?.company_id) navigate(`/CompanyDetail?id=${assessment.company_id}`);
+          else if (assessment?.group_id) navigate(`/GroupDetail?id=${assessment.group_id}&tab=diagnostico-8d`);
+          else navigate('/Groups');
+        }}
         className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6"
       >
         <ArrowLeft className="w-4 h-4" />

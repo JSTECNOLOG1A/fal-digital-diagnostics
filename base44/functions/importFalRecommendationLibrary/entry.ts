@@ -175,7 +175,12 @@ Deno.serve(async (req) => {
         estimated_timeframe: timeframeMapped,
         cluster_question_count: row.cluster_question_count ? Number(row.cluster_question_count) : null,
         method_version_id: method_version_id || row.method_version_id?.trim() || null,
-        tenant_id: tenant_id || row.tenant_id?.trim() || null,
+        // BUGFIX: import global (sem tenant_id) tem que gravar 'global', não
+        // null — generateActionPlan busca literalmente { tenant_id: 'global' }
+        // (ver linha ~466 de generateActionPlan/entry.ts). Gravar null fazia
+        // a biblioteca importada nunca ser encontrada pelo motor de plano de
+        // ação, mesmo com o import "funcionando" sem erro.
+        tenant_id: tenant_id || row.tenant_id?.trim() || 'global',
         version: row.version?.trim() || "1.0",
         notes: row.notes?.trim() || null,
         is_active: row.active === 'true' || row.active === true

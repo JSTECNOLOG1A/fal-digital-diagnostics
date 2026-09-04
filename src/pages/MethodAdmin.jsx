@@ -45,7 +45,7 @@ export default function MethodAdmin() {
   const profiles = methodVersion.penalty_profiles || [];
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center">
           <Shield className="w-6 h-6 text-white" />

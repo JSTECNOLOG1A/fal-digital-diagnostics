@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, GitBranch, Plus } from 'lucide-react';
+import { ArrowLeft, GitBranch, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { isAfter } from 'date-fns';
 import { base44 } from '@/api/base44Client';
@@ -84,6 +84,23 @@ export default function APlanHeader({ assessment, plan, tasks, reviews, onAddTas
         </div>
 
         <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+          {onRegenerate && (
+            <PermissionGuard area="actionplan">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  if (window.confirm('Reprocessar o plano vai gerar/atualizar as recomendações sugeridas a partir do diagnóstico atual. Tarefas e recomendações já aprovadas/rejeitadas não são afetadas. Continuar?')) {
+                    onRegenerate();
+                  }
+                }}
+                disabled={isRegenerating}
+                className="gap-1.5 text-slate-600 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? 'animate-spin' : ''}`} /> {isRegenerating ? 'Reprocessando...' : 'Reprocessar'}
+              </Button>
+            </PermissionGuard>
+          )}
           <PermissionGuard area="actionplan">
             <Button size="sm" variant="outline" onClick={onAddTask} className="gap-1.5 text-slate-600">
               <Plus className="w-3.5 h-3.5" /> Nova tarefa

@@ -36,6 +36,8 @@ periods.some((p) => {
 });
 
 const COL_VALUE = 'w-32 shrink-0';
+/** Régua fixa de largura de texto — mesma calibração do BalanceSheetView.jsx (ver comentário lá). */
+const COL_LABEL = 'w-80 shrink-0';
 
 /**
  * ValueCell — alinhamento contábil padrão (mesmo do BalanceSheetView).
@@ -64,8 +66,8 @@ function ValueCell({ value, className = '' }) {
 function PeriodColHeader({ periods, periodLabelMap = {} }) {
   const showComparative = periods.length > 1;
   return (
-    <div className="flex items-center bg-slate-700 px-5 py-1.5">
-      <span className="flex-1 min-w-0 text-[11px] font-bold text-white uppercase tracking-widest">descrição de rubricas</span>
+    <div className="flex items-center bg-slate-800 px-5 py-1.5">
+      <span className={`${COL_LABEL} text-[11px] font-bold text-white uppercase tracking-widest`}>descrição de rubricas</span>
       {periods.map((p, idx) => {
         const label = periodLabelMap[p] || fmtPeriod(p);
         return (
@@ -89,7 +91,7 @@ function GroupHeaderRow({ label, subtotalValues, periods }) {
   const subtotal = subtotalValues && Object.values(subtotalValues).some((v) => v != null && v !== 0);
   return (
     <div className="flex items-center px-5 py-[3px] mt-1 bg-slate-200 rounded-md">
-      <span className="flex-1 text-[12px] font-bold text-slate-700 uppercase tracking-wide">{label}</span>
+      <span className={`${COL_LABEL} text-[12px] font-bold text-slate-700 uppercase tracking-wide truncate`}>{label}</span>
       {subtotal && periods.map((p) =>
       <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
           <ValueCell value={subtotalValues?.[p] ?? null} className="text-[12px] font-bold text-slate-700" />
@@ -112,7 +114,7 @@ function ComposedRow({ label, noteRef, valuesByPeriod, periods }) {
   if (!hasAnyValue(valuesByPeriod, periods)) return null;
   return (
     <div className="flex items-center px-5 py-[3px] hover:bg-slate-50">
-      <span className="flex-1 text-[13px] text-slate-700 pl-5 truncate">
+      <span className={`${COL_LABEL} text-[13px] text-slate-700 pl-5 truncate`}>
         {label}
         {noteRef && <sup className="text-[9px] text-slate-400 ml-0.5">{noteRef}</sup>}
       </span>
@@ -136,7 +138,7 @@ function ComposedRow({ label, noteRef, valuesByPeriod, periods }) {
 function CalculatedRow({ label, valuesByPeriod, periods, isSubtotal = false }) {
   return (
     <div className={`flex items-center px-5 py-1.5 border-t mt-0.5 ${isSubtotal ? 'border-slate-200 bg-slate-50' : 'border-slate-300 bg-slate-100'}`}>
-      <span className={`flex-1 text-[13px] font-semibold ${isSubtotal ? 'text-slate-700' : 'text-slate-800'}`}>{isSubtotal ? '' : label}</span>
+      <span className={`${COL_LABEL} text-[13px] font-semibold truncate ${isSubtotal ? 'text-slate-700' : 'text-slate-800'}`}>{isSubtotal ? '' : label}</span>
       {periods.map((p) => {
         const v = valuesByPeriod?.[p] ?? null;
         return (
@@ -159,7 +161,7 @@ function CalculatedRow({ label, valuesByPeriod, periods, isSubtotal = false }) {
 function TotalRow({ label, valuesByPeriod, periods }) {
   return (
     <div className="flex items-center px-5 py-1.5 bg-slate-800 border-t-2 border-slate-600 mt-2">
-      <span className="flex-1 text-[13px] font-bold text-white">{label}</span>
+      <span className={`${COL_LABEL} text-[13px] font-bold text-white truncate`}>{label}</span>
       {periods.map((p) => {
         const v = valuesByPeriod?.[p] ?? null;
         return (
@@ -287,11 +289,9 @@ export default function IncomeStatementView({ lines, periods, periodLabelMap = {
   const lastPeriod = sortedPeriods.slice(-1)[0];
   const comparative = sortedPeriods.length > 1;
 
-  const maxW = sortedPeriods.length === 1 ? 'max-w-2xl' : sortedPeriods.length === 2 ? 'max-w-3xl' : '';
-
   return (
     <div className="font-sans">
-      <div className={`border border-slate-200 rounded-xl overflow-hidden ${maxW}`}>
+      <div className="border border-slate-200 rounded-xl overflow-hidden w-fit">
         <PeriodColHeader periods={sortedPeriods} periodLabelMap={periodLabelMap} />
 
         {allGroups.map((groupDef) => {

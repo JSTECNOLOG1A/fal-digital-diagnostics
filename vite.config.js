@@ -6,7 +6,12 @@ export default defineConfig({
   logLevel: 'error',
   server: {
     host: true,
-    port: 5173,
+    // Fixado em 5174 (em vez do padrão 5173) porque a porta 5173 já é usada
+    // por outro projeto local (endividamento-web). Antes isso era sobrescrito
+    // via "--port 5174" na linha de comando, mas esse argumento não chega até
+    // o Vite quando o processo é iniciado pelo PM2 no Windows — por isso agora
+    // fica fixo aqui, sem depender de flag de linha de comando.
+    port: 5174,
     strictPort: true,
   },
   plugins: [

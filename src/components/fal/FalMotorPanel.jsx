@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { RefreshCw, Loader2, AlertCircle, ShieldAlert, Settings2, Database, Download } from 'lucide-react';
 import { useTenant } from '@/components/shared/TenantContext';
 import { invalidateAssessmentQueries } from '@/lib/query-client';
+import FalContentSuggestionsPanel from './FalContentSuggestionsPanel';
 
 /**
  * @param {Object} props
@@ -286,6 +287,8 @@ export default function FalMotorPanel({ assessment }) {
           )}
         </CardContent>
       </Card>
+
+      {isHQ && <FalContentSuggestionsPanel />}
     </div>
   );
 }

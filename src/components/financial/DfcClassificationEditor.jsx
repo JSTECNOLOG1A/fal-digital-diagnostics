@@ -253,7 +253,7 @@ export default function DfcClassificationEditor({ diagnosisId, uploadId, open, o
         ) : (
           <div className="flex-1 overflow-y-auto border border-slate-200 rounded-lg">
             {/* Header */}
-            <div className="sticky top-0 z-10 flex items-center bg-slate-700 px-3 py-2 gap-2">
+            <div className="sticky top-0 z-10 flex items-center bg-slate-800 px-3 py-2 gap-2">
               <span className="flex-1 text-[10px] font-bold text-white uppercase tracking-wider">Rubrica</span>
               <span className="w-20 text-[10px] font-bold text-white uppercase tracking-wider text-right pr-1">Variação</span>
               <span className="w-28 text-[10px] font-bold text-white uppercase tracking-wider">Bucket atual</span>

@@ -31,12 +31,6 @@ enum SyncJobStatus {
   cancelled
 }
 
-enum AssessmentStatus {
-  draft
-  in_progress
-  completed
-  archived
-}
 
 enum DataSubjectRequestType {
   access
@@ -88,6 +82,26 @@ model Tenant {
   clients             Client[]
   methodVersions      MethodVersion[]
   assessments         Assessment[]
+  falResponses          FalResponse[]
+  mqeResponses          MQEResponse[]
+  falContentSuggestions FalContentSuggestion[]
+  assessmentFlowStates       AssessmentFlowState[]
+  falDiagnosticSnapshots     FalDiagnosticSnapshot[]
+  systemicCrossingAnalyses   SystemicCrossingAnalysis[]
+  systemicDimensionImpacts   SystemicDimensionImpact[]
+  falAggregateSnapshots      FalAggregateSnapshot[]
+  actionPlans                ActionPlan[]
+  actionTasks                ActionTask[]
+  actionTaskActivities       ActionTaskActivity[]
+  actionTaskReviews          ActionTaskReview[]
+  actionRecommendations      ActionRecommendation[]
+  actionRecommendationLibrary ActionRecommendationLibrary[]
+  falActionLibrary            FalActionLibrary[]
+  assessmentReportVersions    AssessmentReportVersion[]
+  assessmentScopes            AssessmentScope[]
+  falQuestionSwaps            FalQuestionSwap[]
+  actionPlanReviews          ActionPlanReview[]
+  actionPlanGenerationOperations ActionPlanGenerationOperation[]
   dataSubjectRequests DataSubjectRequest[]
   integrationConnections     IntegrationConnection[]
   integrationApiKeys         IntegrationApiKey[]
@@ -95,6 +109,24 @@ model Tenant {
   integrationWebhookDeliveries IntegrationWebhookDelivery[]
   integrationInboundEvents   IntegrationInboundEvent[]
   integrationJobs            IntegrationJob[]
+  financialAccountPlans       FinancialAccountPlan[]
+  financialAccountPlanLines   FinancialAccountPlanLine[]
+  financialDiagnoses          FinancialDiagnosis[]
+  financialUploads            FinancialUpload[]
+  financialJourneyPositions   FinancialJourneyPosition[]
+  financialProcessingRuns     FinancialProcessingRun[]
+  financialValidationResults  FinancialValidationResult[]
+  financialStatementLines     FinancialStatementLine[]
+  financialIndicatorSnapshots FinancialIndicatorSnapshot[]
+  financialTrialBalanceLines  FinancialTrialBalanceLine[]
+  financialMappingResolutions FinancialMappingResolution[]
+  financialDfcCompositionLines      FinancialDfcCompositionLine[]
+  financialDfcManualAdjustments     FinancialDfcManualAdjustment[]
+  financialDfcClassificationOverrides FinancialDfcClassificationOverride[]
+  financialFindings           FinancialFinding[]
+  financialRecommendations    FinancialRecommendation[]
+  financialActionProposals    FinancialActionProposal[]
+  financialReportVersions     FinancialReportVersion[]
 
   @@map("tenants")
 }
@@ -119,6 +151,7 @@ model User {
   invitesSent         UserInvite[]         @relation("InviteSender")
   assessmentsCreated  Assessment[]         @relation("AssessmentCreator")
   dataSubjectRequests DataSubjectRequest[] @relation("DsrHandler")
+  financialJourneyPositions FinancialJourneyPosition[]
 
   @@index([tenantId])
   @@index([role])
@@ -192,6 +225,9 @@ model Group {
 
   tenant    Tenant    @relation(fields: [tenantId], references: [id])
   companies Company[]
+  financialAccountPlans FinancialAccountPlan[]
+  financialDiagnoses    FinancialDiagnosis[]
+  assessments           Assessment[]
 
   @@index([tenantId])
   @@map("groups")
@@ -212,6 +248,8 @@ model Company {
   tenant Tenant            @relation(fields: [tenantId], references: [id])
   group  Group             @relation(fields: [groupId], references: [id])
   units  OperationalUnit[]
+  financialDiagnoses FinancialDiagnosis[]
+  assessments        Assessment[]
 
   @@index([tenantId])
   @@index([groupId])
@@ -230,6 +268,8 @@ model OperationalUnit {
 
   tenant  Tenant  @relation(fields: [tenantId], references: [id])
   company Company @relation(fields: [companyId], references: [id])
+  financialDiagnoses FinancialDiagnosis[]
+  assessments        Assessment[]
 
   @@index([tenantId])
   @@index([companyId])
@@ -309,6 +349,8 @@ model MethodVersion {
 
   tenant      Tenant?      @relation(fields: [tenantId], references: [id])
   assessments Assessment[]
+  mqeQuestions MQEQuestion[]
+  falQuestions FalQuestion[]
 
   @@unique([tenantId, code, version])
   @@index([tenantId])
@@ -339,22 +381,284 @@ model Assessment {
   clientId        String?          @map("client_id") @db.Uuid
   methodVersionId String?          @map("method_version_id") @db.Uuid
   title           String
-  status          AssessmentStatus @default(draft)
+  displayName     String?          @map("display_name")
+  /// Vocabulário aberto herdado do base44 (draft, in_progress, scoring,
+  /// completed, published, archived, ...) — string livre, não enum, porque
+  /// novos valores de status continuam aparecendo em telas legadas.
+  status          String           @default("draft")
   createdById     String?          @map("created_by_id") @db.Uuid
   startedAt       DateTime?        @map("started_at")
   completedAt     DateTime?        @map("completed_at")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
-  deletedAt       DateTime?        @map("deleted_at")
 
-  tenant        Tenant         @relation(fields: [tenantId], references: [id])
-  client        Client?        @relation(fields: [clientId], references: [id])
-  methodVersion MethodVersion? @relation(fields: [methodVersionId], references: [id])
-  createdBy     User?          @relation("AssessmentCreator", fields: [createdById], references: [id])
+  /// Escopo hierárquico do diagnóstico 8D — mesmo padrão de FinancialDiagnosis
+  /// (nível único por diagnóstico; group para o combinado do grupo).
+  groupId    String? @map("group_id") @db.Uuid
+  companyId  String? @map("company_id") @db.Uuid
+  unitId     String? @map("unit_id") @db.Uuid
+  targetType String? @map("target_type")
+  targetId   String? @map("target_id") @db.Uuid
+  cycleLabel String? @map("cycle_label")
+
+  /// Metadados de negócio herdados do base44 (CreateAssessmentDialog /
+  /// FalAssessmentSetupPage) — os mais consultados viram colunas de verdade.
+  assessmentType   String?  @map("assessment_type")
+  assessmentMode   String   @default("single_entity") @map("assessment_mode")
+  competence       String?
+  cycleNumber      Int?     @map("cycle_number")
+  cycleId          String?  @map("cycle_id")
+  contextNote      String?  @map("context_note")
+  penaltyProfileKey String? @map("penalty_profile_key")
+  assignedTo       String?  @map("assigned_to")
+  scopeMode        String?  @map("scope_mode")
+  recipientName    String?  @map("recipient_name")
+
+  /// Cauda longa de campos legados de telas específicas (wizard multi-
+  /// entidade FalAssessmentSetupPage: diagnostic_cycle, dimension_target_
+  /// mapping, linked_entities, scope_hash, configuration_status,
+  /// coverage_mode, report_status, e o que mais aparecer — o base44 nunca
+  /// teve schema fixo pra Assessment). Guardado como JSON pra não perder
+  /// dado nenhum nem travar toda vez que uma tela legada manda um campo
+  /// novo; os campos realmente consultados/filtrados viram coluna própria
+  /// (ver acima). O mapper do frontend (clarityMappers.js) faz esse split.
+  metadata Json @default("{}")
+
+  /// Dimensões ativas (governanca, juridico, controles_internos, financeiro,
+  /// contabil, tributario, operacional, sistemas) — chaves em português,
+  /// mesmo padrão do base44/buildFalQuestionSet.
+  activeDimensions String[] @map("active_dimensions")
+  diagnosticDepth  String   @default("rapid") @map("diagnostic_depth")
+
+  /// question_set: ids de FalQuestion selecionados para este assessment —
+  /// congelado no momento da montagem, não recalculado a cada leitura.
+  questionSet         String[]  @map("question_set")
+  progressPercentage  Int       @default(0) @map("progress_percentage")
+  lastSavedAt         DateTime? @map("last_saved_at")
+  lastSubdimensionKey String?   @map("last_subdimension_key")
+
+  /// Incrementado a cada mudança relevante em FalResponse (score/justificativa/
+  /// evidência) — espelha base44/onFalResponseChange. Usado por AssessmentFlowState
+  /// pra saber se um snapshot já calculado ficou "stale" (respostas mudaram depois).
+  currentResponseVersion Int @default(0) @map("current_response_version")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant        Tenant           @relation(fields: [tenantId], references: [id])
+  client        Client?          @relation(fields: [clientId], references: [id])
+  methodVersion MethodVersion?   @relation(fields: [methodVersionId], references: [id])
+  createdBy     User?            @relation("AssessmentCreator", fields: [createdById], references: [id])
+  group         Group?           @relation(fields: [groupId], references: [id])
+  company       Company?         @relation(fields: [companyId], references: [id])
+  unit          OperationalUnit? @relation(fields: [unitId], references: [id])
+
+  falResponses         FalResponse[]
+  mqeResponses         MQEResponse[]
+  falContentSuggestions FalContentSuggestion[]
+  flowState            AssessmentFlowState?
+  diagnosticSnapshots  FalDiagnosticSnapshot[]
+  systemicCrossings    SystemicCrossingAnalysis[]
+  systemicDimensionImpacts SystemicDimensionImpact[]
+  actionPlans ActionPlan[]
+  reportVersions AssessmentReportVersion[]
+  scopes AssessmentScope[]
+  questionSwaps FalQuestionSwap[]
 
   @@index([tenantId, status])
   @@index([clientId])
+  @@index([groupId])
+  @@index([companyId])
+  @@index([unitId])
   @@map("assessments")
+}
+
+/// Banco global de perguntas do questionário 8D — biblioteca compartilhada
+/// entre tenants (mesmo padrão do base44 FalQuestion: sem tenant_id).
+model FalQuestion {
+  id                  String   @id @default(uuid()) @db.Uuid
+  questionId          String   @unique @map("question_id")
+  dimensionKey        String   @map("dimension_key")
+  subdimensionKey     String   @map("subdimension_key")
+  clusterKey          String   @map("cluster_key")
+  processStage        String   @map("process_stage")
+  sequenceOrder       Int      @default(0) @map("sequence_order")
+  diagnosticDepth     String[] @map("diagnostic_depth")
+  levelApplicability  String[] @map("level_applicability")
+  questionWeight      Decimal  @default(1) @map("question_weight") @db.Decimal(6, 2)
+  questionText        String   @map("question_text")
+  guidance            String?
+  evidenceHint        String?  @map("evidence_hint")
+  isKillerQuestion    Boolean  @default(false) @map("is_killer_question")
+  isCritical          Boolean  @default(false) @map("is_critical")
+  dependency          String?
+  /// Discriminador de método/diagnóstico. NULL = FAL 8D clássico (comportamento
+  /// atual, intocado). Preenchido = pertence a um MethodVersion específico
+  /// (ex.: Reforma Tributária 8D) e só entra no questionário de assessments
+  /// que apontam para esse mesmo MethodVersion — evita misturar bancos de
+  /// perguntas de diagnósticos diferentes que reaproveitam as mesmas dimension_key.
+  methodVersionId     String?  @map("method_version_id") @db.Uuid
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  methodVersion         MethodVersion?          @relation(fields: [methodVersionId], references: [id])
+  falResponses          FalResponse[]
+  falContentSuggestions FalContentSuggestion[]
+
+  @@index([clusterKey])
+  @@index([dimensionKey])
+  @@index([methodVersionId])
+  @@map("fal_questions")
+}
+
+/// Biblioteca global de recomendações por cluster/trigger_score — mesmo
+/// padrão "global" do base44 (tenant_id é uma string livre, normalmente
+/// literal "global"; não é FK pra Tenant, ver nota do bug de import corrigido
+/// nesta sessão: importador gravava null e generateActionPlan consultava
+/// 'global' — nunca batiam).
+model FalRecommendationLibrary {
+  id                    String   @id @default(uuid()) @db.Uuid
+  recommendationKey     String   @unique @map("recommendation_key")
+  source                String?
+  sourceType            String?  @map("source_type")
+  dimensionKey          String   @map("dimension_key")
+  subdimensionKey       String?  @map("subdimension_key")
+  clusterKey            String   @map("cluster_key")
+  questionId            String?  @map("question_id")
+  triggerScore          Int?     @map("trigger_score")
+  gapLevel              Int?     @map("gap_level")
+  isActionable          Boolean  @default(true) @map("is_actionable")
+  recommendationType    String?  @map("recommendation_type")
+  recommendationTitle   String   @map("recommendation_title")
+  recommendationDescription String? @map("recommendation_description")
+  implementationSteps   String[] @map("implementation_steps")
+  evidenceRequired      String?  @map("evidence_required")
+  successIndicators     String?  @map("success_indicators")
+  routineTemplate       String?  @map("routine_template")
+  effortLevel           Int?     @map("effort_level")
+  impactLevel           Int?     @map("impact_level")
+  priorityWeight        Int?     @map("priority_weight")
+  typicalOwner          String?  @map("typical_owner")
+  estimatedTimeframe    String?  @map("estimated_timeframe")
+  clusterQuestionCount  Int?     @map("cluster_question_count")
+  tenantId              String   @default("global") @map("tenant_id")
+  version               String   @default("1.0")
+  notes                 String?
+  isActive              Boolean  @default(true) @map("is_active")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@index([clusterKey])
+  @@index([clusterKey, triggerScore])
+  @@map("fal_recommendation_library")
+}
+
+/// Resposta de um consultor a uma FalQuestion, dentro de um Assessment.
+model FalResponse {
+  id                   String    @id @default(uuid()) @db.Uuid
+  tenantId             String    @map("tenant_id") @db.Uuid
+  assessmentId         String    @map("assessment_id") @db.Uuid
+  falQuestionId        String    @map("fal_question_id") @db.Uuid
+  dimensionKey         String    @map("dimension_key")
+  subdimensionKey      String?   @map("subdimension_key")
+  clusterKey           String?   @map("cluster_key")
+  score                Int
+  justification        String?
+  confidenceLevel      String    @default("auto_declarada") @map("confidence_level")
+  flag                 String?
+  evidenceNotes        String?   @map("evidence_notes")
+  evidenceFileUrls     String[]  @map("evidence_file_urls")
+  evaluatedEntityId    String?   @map("evaluated_entity_id") @db.Uuid
+  evaluatedEntityType  String?   @map("evaluated_entity_type")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  assessment  Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  falQuestion FalQuestion @relation(fields: [falQuestionId], references: [id])
+
+  @@index([tenantId])
+  @@index([assessmentId])
+  @@index([assessmentId, dimensionKey])
+  @@map("fal_responses")
+}
+
+/// Perguntas de cruzamento MQE (par de dimensões) — biblioteca global.
+model MQEQuestion {
+  id           String   @id @default(uuid()) @db.Uuid
+  methodVersionId String @map("method_version_id") @db.Uuid
+  crossingKey  String   @map("crossing_key")
+  code         String?
+  text         String
+  weight       Decimal  @default(1) @map("weight") @db.Decimal(6, 2)
+  order        Int      @default(0)
+  guidance     String?
+  sectorTags   String[] @map("sector_tags")
+  sectorType   String?  @map("sector_type")
+  evidenceHint String?  @map("evidence_hint")
+  riskTag      String?  @map("risk_tag")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  methodVersion MethodVersion @relation(fields: [methodVersionId], references: [id])
+  mqeResponses  MQEResponse[]
+
+  @@index([crossingKey])
+  @@map("mqe_questions")
+}
+
+model MQEResponse {
+  id              String   @id @default(uuid()) @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  assessmentId    String   @map("assessment_id") @db.Uuid
+  mqeQuestionId   String   @map("mqe_question_id") @db.Uuid
+  crossingKey     String   @map("crossing_key")
+  score           Int
+  justification   String?
+  divergenceNotes String?  @map("divergence_notes")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  assessment  Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  mqeQuestion MQEQuestion @relation(fields: [mqeQuestionId], references: [id])
+
+  @@index([tenantId])
+  @@index([assessmentId])
+  @@map("mqe_responses")
+}
+
+/// Copiloto de IA — sugestões de novas perguntas/recomendações, pendentes
+/// de revisão humana antes de virarem FalQuestion/FalRecommendationLibrary
+/// de verdade. Ver base44/functions/generateFalContentSuggestions (origem).
+model FalContentSuggestion {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String?   @map("tenant_id") @db.Uuid
+  contentType           String    @default("question") @map("content_type")
+  dimensionKey          String?   @map("dimension_key")
+  subdimensionKey       String?   @map("subdimension_key")
+  clusterKey            String    @map("cluster_key")
+  trigger               String    @default("manual")
+  requestedBy           String?   @map("requested_by")
+  modelUsed             String?   @map("model_used")
+  promptContextSummary  String?   @map("prompt_context_summary")
+  draftPayload          Json      @map("draft_payload")
+  status                String    @default("pending")
+  reviewedBy            String?   @map("reviewed_by")
+  reviewedAt            DateTime? @map("reviewed_at")
+  reviewComment         String?   @map("review_comment")
+  publishedEntityId     String?   @map("published_entity_id") @db.Uuid
+  assessmentId          String?   @map("assessment_id") @db.Uuid
+  falQuestionId         String?   @map("fal_question_id") @db.Uuid
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  tenant      Tenant?      @relation(fields: [tenantId], references: [id])
+  assessment  Assessment?  @relation(fields: [assessmentId], references: [id])
+  falQuestion FalQuestion? @relation(fields: [falQuestionId], references: [id])
+
+  @@index([clusterKey])
+  @@index([status])
+  @@map("fal_content_suggestions")
 }
 
 /// Solicitações do titular (LGPD / ISO 27701-aligned)
@@ -510,4 +814,1667 @@ model IntegrationJob {
   @@index([tenantId, status])
   @@index([connectionId])
   @@map("integration_jobs")
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Diagnóstico Financeiro — Fase 1 (estrutura / fontes / validação)
+// Porta a jornada financeira que antes existia só como funções serverless
+// Base44 (sem persistência real localmente) para tabelas Postgres reais.
+// Cobre apenas analysisType = 'individual' por enquanto; 'combined' e
+// 'consolidated' (conciliação, cédula, combinação/preparação) ficam para
+// uma fase futura.
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Plano de contas financeiro de um Grupo (cabeçalho).
+model FinancialAccountPlan {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  groupId     String    @map("group_id") @db.Uuid
+  name        String
+  description String?
+  version     String?
+  isActive    Boolean   @default(true) @map("is_active")
+  isDefault   Boolean   @default(false) @map("is_default")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  tenant    Tenant                     @relation(fields: [tenantId], references: [id])
+  group     Group                      @relation(fields: [groupId], references: [id])
+  lines     FinancialAccountPlanLine[]
+  diagnoses FinancialDiagnosis[]
+
+  @@index([tenantId])
+  @@index([groupId])
+  @@map("financial_account_plans")
+}
+
+/// Linha (conta) de um plano de contas financeiro.
+model FinancialAccountPlanLine {
+  id                 String   @id @default(uuid()) @db.Uuid
+  tenantId           String   @map("tenant_id") @db.Uuid
+  accountPlanId      String   @map("account_plan_id") @db.Uuid
+  accountCode        String   @map("account_code")
+  accountCodeDisplay String?  @map("account_code_display")
+  accountName        String   @map("account_name")
+  accountType        String?  @map("account_type")
+  parentAccountCode  String?  @map("parent_account_code")
+  classification     String?
+  statementCode      String?  @map("statement_code")
+  bpGroup            String?  @map("bp_group")
+  ebitdaComponent    String?  @map("ebitda_component")
+  canonicalKey       String?  @map("canonical_key")
+  dfcClassification  String?  @map("dfc_classification")
+  /// Sempre 'normal' — o sinal é sempre calculado pela engine, nunca editado
+  /// pelo usuário (ver applySign() em buildFinancialStatements).
+  signRule           String   @default("normal") @map("sign_rule")
+  statementGroup     String?  @map("statement_group")
+  isActive           Boolean  @default(true) @map("is_active")
+  notes              String?
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  tenant      Tenant               @relation(fields: [tenantId], references: [id])
+  accountPlan FinancialAccountPlan @relation(fields: [accountPlanId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([accountPlanId])
+  @@index([accountPlanId, accountCode])
+  @@map("financial_account_plan_lines")
+}
+
+/// Uma análise/diagnóstico financeiro (o objeto raiz da jornada).
+model FinancialDiagnosis {
+  id            String    @id @default(uuid()) @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  groupId       String?   @map("group_id") @db.Uuid
+  companyId     String?   @map("company_id") @db.Uuid
+  unitId        String?   @map("unit_id") @db.Uuid
+  scopeLevel    String?   @map("scope_level")
+  analysisType  String    @default("individual") @map("analysis_type")
+  title         String
+  status        String    @default("draft")
+  firstPeriod   String?   @map("first_period")
+  lastPeriod    String?   @map("last_period")
+  periodicidade String?
+  accountPlanId String?   @map("account_plan_id") @db.Uuid
+  notes         String?
+  dataBaseAbertura   DateTime? @map("data_base_abertura")
+  dataBaseFechamento DateTime? @map("data_base_fechamento")
+  monthsCount        Int?      @map("months_count")
+  presentingEntityId String?   @map("presenting_entity_id") @db.Uuid
+  parentEntityId     String?   @map("parent_entity_id") @db.Uuid
+  currentUploadId    String?   @map("current_upload_id") @db.Uuid
+  currentProcessingSnapshotId String? @map("current_processing_snapshot_id") @db.Uuid
+  /// Preenchidos por checkFinancialDiagnosisIntegrity (fase 2) — já
+  /// existem aqui para não exigir outra migration quando essa fase chegar.
+  integrityStatus        String?   @map("integrity_status")
+  integrityBlockingCount Int?      @map("integrity_blocking_count")
+  integrityWarningCount  Int?      @map("integrity_warning_count")
+  integrityCheckedAt     DateTime? @map("integrity_checked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant      Tenant                @relation(fields: [tenantId], references: [id])
+  group       Group?                @relation(fields: [groupId], references: [id])
+  company     Company?              @relation(fields: [companyId], references: [id])
+  unit        OperationalUnit?      @relation(fields: [unitId], references: [id])
+  accountPlan FinancialAccountPlan? @relation(fields: [accountPlanId], references: [id])
+
+  uploads           FinancialUpload[]
+  journeyPositions  FinancialJourneyPosition[]
+  processingRuns    FinancialProcessingRun[]
+  validationResults FinancialValidationResult[]
+  statementLines       FinancialStatementLine[]
+  indicatorSnapshots   FinancialIndicatorSnapshot[]
+  trialBalanceLines    FinancialTrialBalanceLine[]
+  mappingResolutions   FinancialMappingResolution[]
+  dfcCompositionLines  FinancialDfcCompositionLine[]
+  dfcManualAdjustments FinancialDfcManualAdjustment[]
+  dfcClassificationOverrides FinancialDfcClassificationOverride[]
+  findings            FinancialFinding[]
+  recommendations     FinancialRecommendation[]
+  actionProposals     FinancialActionProposal[]
+  reportVersions      FinancialReportVersion[]
+
+  @@index([tenantId])
+  @@index([groupId])
+  @@index([companyId])
+  @@index([unitId])
+  @@map("financial_diagnoses")
+}
+
+/// Upload de balancete/arquivo-fonte vinculado a uma análise.
+model FinancialUpload {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  fileName              String   @map("file_name")
+  /// Chave do objeto no MinIO (bucket financial-uploads), não uma URL pública.
+  fileUrl               String   @map("file_url")
+  versionNumber         Int?     @map("version_number")
+  uploadStatus          String   @default("pending") @map("upload_status")
+  isCurrent             Boolean  @default(true) @map("is_current")
+  sourceEntityId        String?  @map("source_entity_id") @db.Uuid
+  sourceEntityType      String?  @map("source_entity_type")
+  sourceEntityName      String?  @map("source_entity_name")
+  sourcePeriod          String?  @map("source_period")
+  sourceKey             String?  @map("source_key")
+  inputChecksum         String?  @map("input_checksum")
+  replacementStatus     String?  @map("replacement_status")
+  notes                 String?
+  validationSummary          Json?     @map("validation_summary")
+  currentValidationRunId     String?   @map("current_validation_run_id") @db.Uuid
+  currentValidationChecksum  String?   @map("current_validation_checksum")
+  validatedAt                 DateTime? @map("validated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+
+  processingRuns    FinancialProcessingRun[]
+  validationResults FinancialValidationResult[]
+  statementLines      FinancialStatementLine[]
+  trialBalanceLines   FinancialTrialBalanceLine[]
+  mappingResolutions  FinancialMappingResolution[]
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@map("financial_uploads")
+}
+
+/// Última etapa da jornada que cada usuário selecionou, por análise
+/// (preferência de UI — não afeta o que está de fato liberado).
+model FinancialJourneyPosition {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  userEmail             String   @map("user_email")
+  step                  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  user               User               @relation(fields: [userId], references: [id])
+
+  @@unique([financialDiagnosisId, userId])
+  @@index([tenantId])
+  @@map("financial_journey_positions")
+}
+
+/// Registro de execução de uma operação assíncrona/idempotente da engine
+/// financeira (hoje: validate_upload; fases futuras adicionam outros
+/// operationType, ex: build_statements).
+model FinancialProcessingRun {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String    @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String?   @map("financial_upload_id") @db.Uuid
+  operationType         String    @map("operation_type")
+  operationKey          String    @map("operation_key")
+  status                String    @default("running")
+  startedAt             DateTime  @default(now()) @map("started_at")
+  completedAt           DateTime? @map("completed_at")
+  triggeredBy           String?   @map("triggered_by")
+  sourceEntityId        String?   @map("source_entity_id") @db.Uuid
+  sourcePeriod           String?   @map("source_period")
+  inputChecksum           String?   @map("input_checksum")
+  resultSummary            Json?     @map("result_summary")
+  cleanupPending           Boolean   @default(false) @map("cleanup_pending")
+  errorDetails             Json?     @map("error_details")
+
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis  @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  financialUpload    FinancialUpload?    @relation(fields: [financialUploadId], references: [id])
+
+  validationResults FinancialValidationResult[]
+  statementLines      FinancialStatementLine[]
+  indicatorSnapshots  FinancialIndicatorSnapshot[]
+  trialBalanceLines   FinancialTrialBalanceLine[]
+  mappingResolutions  FinancialMappingResolution[]
+  dfcCompositionLines FinancialDfcCompositionLine[]
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@index([operationKey])
+  @@map("financial_processing_runs")
+}
+
+/// Achado individual de validação de um upload (candidate → active →
+/// superseded/invalid — máquina de estados de publicação em duas fases).
+model FinancialValidationResult {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String    @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String    @map("financial_upload_id") @db.Uuid
+  processingRunId       String    @map("processing_run_id") @db.Uuid
+  publicationStatus     String    @default("candidate") @map("publication_status")
+  severity              String
+  category              String?
+  code                  String?
+  title                 String?
+  message               String?
+  sheetName             String?   @map("sheet_name")
+  rowRef                String?   @map("row_ref")
+  blocking              Boolean   @default(false)
+  publishedAt           DateTime? @map("published_at")
+  supersededAt          DateTime? @map("superseded_at")
+  invalidatedAt         DateTime? @map("invalidated_at")
+  invalidationReason    String?   @map("invalidation_reason")
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  financialUpload    FinancialUpload        @relation(fields: [financialUploadId], references: [id], onDelete: Cascade)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@index([financialUploadId])
+  @@index([processingRunId])
+  @@index([publicationStatus])
+  @@map("financial_validation_results")
+}
+
+// ── Fase 2: motor de montagem de demonstrações (BP/DRE/DFC) ──────────────
+//
+// No Base44 original, cada build passa por uma máquina de estados manual
+// (candidate → committing → active/superseded/invalid) com rollback de
+// compensação escrito à mão, apoiada por uma tabela extra de "snapshot"
+// imutável (FinancialProcessingSnapshot) e um ponteiro duplo por entidade
+// (FinancialSourceOutputHead). Como no Postgres já temos transações reais,
+// essa complexidade foi deliberadamente simplificada: cada build roda numa
+// única transação (via PrismaService.withTenantContext), que já garante
+// atomicidade sem precisar de compensação manual nem de uma tabela de
+// snapshot separada. O FinancialProcessingRun já existente faz o papel de
+// "run" e também de "snapshot" (seu id é gravado em
+// FinancialDiagnosis.currentProcessingSnapshotId como o build atual válido).
+// Fase 2 cobre só analysisType='individual' — as tabelas de preparação
+// multi-empresa (FinancialPreparationRun, PreparedFinancialDatasetLine,
+// FinancialAnalysisScopeEntity, FinancialConsolidationEntry) ficam para uma
+// fase futura de consolidação.
+
+/// Uma linha de BP, DRE ou DFC por período×rubrica_canônica. Tabela de saída
+/// principal — o que as telas de demonstrações renderizam.
+model FinancialStatementLine {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String    @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String?   @map("financial_upload_id") @db.Uuid
+  processingRunId       String    @map("processing_run_id") @db.Uuid
+  entityCode            String?   @map("entity_code")
+  period                String
+  columnKey             String?   @map("column_key")
+  columnLabel           String?   @map("column_label")
+  periodType            String?   @map("period_type")
+  statementCode         String    @map("statement_code")
+  statementFamily       String?   @map("statement_family")
+  groupLabel            String?   @map("group_label")
+  rubricLabel           String?   @map("rubric_label")
+  canonicalKey          String    @map("canonical_key")
+  lineType              String    @map("line_type")
+  displayOrder          Int?      @map("display_order")
+  noteReference         String?   @map("note_reference")
+  value                 Decimal   @db.Decimal(20, 4)
+  datasetScope          String    @default("individual") @map("dataset_scope")
+  reportingEntityId     String?   @map("reporting_entity_id") @db.Uuid
+  publicationStatus     String    @default("candidate") @map("publication_status")
+  publishedAt           DateTime? @map("published_at")
+  supersededAt          DateTime? @map("superseded_at")
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  financialUpload    FinancialUpload?       @relation(fields: [financialUploadId], references: [id], onDelete: SetNull)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, processingRunId, publicationStatus])
+  @@index([financialDiagnosisId, period, canonicalKey])
+  @@map("financial_statement_lines")
+}
+
+/// Um valor de indicador/índice financeiro por período×indicador.
+model FinancialIndicatorSnapshot {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String    @map("financial_diagnosis_id") @db.Uuid
+  processingRunId       String    @map("processing_run_id") @db.Uuid
+  entityCode            String?   @map("entity_code")
+  period                String
+  columnKey             String?   @map("column_key")
+  columnLabel           String?   @map("column_label")
+  periodType            String?   @map("period_type")
+  indicatorCode         String    @map("indicator_code")
+  value                 Decimal?  @db.Decimal(20, 6)
+  previousValue         Decimal?  @map("previous_value") @db.Decimal(20, 6)
+  variationValue        Decimal?  @map("variation_value") @db.Decimal(20, 6)
+  variationPercent      Decimal?  @map("variation_percent") @db.Decimal(20, 6)
+  signal                String?
+  severity              String?
+  confidenceLevel       String?   @map("confidence_level")
+  validationCode        String?   @map("validation_code")
+  formula               String?
+  numerator              String?
+  denominator            String?
+  canonicalSources       Json?    @map("canonical_sources")
+  datasetScope          String    @default("individual") @map("dataset_scope")
+  reportingEntityId     String?   @map("reporting_entity_id") @db.Uuid
+  publicationStatus     String    @default("candidate") @map("publication_status")
+  publishedAt           DateTime? @map("published_at")
+  supersededAt          DateTime? @map("superseded_at")
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, publicationStatus])
+  @@index([financialDiagnosisId, indicatorCode])
+  @@map("financial_indicator_snapshots")
+}
+
+/// Linha crua do balancete (uma por conta×período), como veio do Excel —
+/// sem agregação, mantida para rastreabilidade/auditoria.
+model FinancialTrialBalanceLine {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String   @map("financial_upload_id") @db.Uuid
+  processingRunId       String   @map("processing_run_id") @db.Uuid
+  accountCode           String   @map("account_code")
+  accountName           String?  @map("account_name")
+  period                String
+  value                 Decimal  @db.Decimal(20, 4)
+  sourceSheet           String?  @map("source_sheet")
+  sourceRow             Int?     @map("source_row")
+  publicationStatus     String   @default("candidate") @map("publication_status")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  financialUpload    FinancialUpload        @relation(fields: [financialUploadId], references: [id], onDelete: Cascade)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, publicationStatus])
+  @@map("financial_trial_balance_lines")
+}
+
+/// Uma decisão de mapeamento conta→rubrica_canônica por conta encontrada no
+/// balancete (de onde veio: plano de contas, planilha, ou não mapeada).
+model FinancialMappingResolution {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String   @map("financial_upload_id") @db.Uuid
+  processingRunId       String   @map("processing_run_id") @db.Uuid
+  accountCode           String   @map("account_code")
+  canonicalKey          String?  @map("canonical_key")
+  mappingSource         String   @map("mapping_source")
+  blockingIssue         Boolean  @default(false) @map("blocking_issue")
+  resolvedConfidence    String?  @map("resolved_confidence")
+  publicationStatus     String   @default("candidate") @map("publication_status")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  financialUpload    FinancialUpload        @relation(fields: [financialUploadId], references: [id], onDelete: Cascade)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, publicationStatus])
+  @@map("financial_mapping_resolutions")
+}
+
+/// Decomposição em "baldes" de DFC (operacional/investimento/financiamento)
+/// de cada rubrica de BP entre dois períodos consecutivos — o que
+/// explica/justifica cada número da DFC indireta.
+model FinancialDfcCompositionLine {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  processingRunId       String   @map("processing_run_id") @db.Uuid
+  period                String
+  columnKey             String?  @map("column_key")
+  rubricKey              String  @map("rubric_key")
+  rubricLabel            String? @map("rubric_label")
+  canonicalKey            String? @map("canonical_key")
+  bucket                 String
+  bucketSource            String? @map("bucket_source")
+  previousValue           Decimal? @map("previous_value") @db.Decimal(20, 4)
+  currentValue            Decimal? @map("current_value") @db.Decimal(20, 4)
+  delta                   Decimal? @db.Decimal(20, 4)
+  impactOnDfc              Decimal? @map("impact_on_dfc") @db.Decimal(20, 4)
+  datasetScope            String  @default("individual") @map("dataset_scope")
+  reportingEntityId        String? @map("reporting_entity_id") @db.Uuid
+  publicationStatus        String  @default("candidate") @map("publication_status")
+  createdAt                DateTime @default(now()) @map("created_at")
+
+  tenant             Tenant                 @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis     @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  processingRun      FinancialProcessingRun @relation(fields: [processingRunId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, publicationStatus])
+  @@map("financial_dfc_composition_lines")
+}
+
+/// Ajuste manual de DFC informado pelo usuário (ex: um lançamento que o
+/// método indireto não capturaria sozinho). Persiste entre builds — é lido
+/// e somado à atividade correspondente a cada rebuild.
+model FinancialDfcManualAdjustment {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  financialUploadId     String?  @map("financial_upload_id") @db.Uuid
+  activity              String
+  label                 String?
+  value                 Decimal  @db.Decimal(20, 4)
+  period                String
+  columnKey             String?  @map("column_key")
+  adjustmentType        String?  @map("adjustment_type")
+  justification         String?
+  notes                 String?
+  createdBy             String?  @map("created_by")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@map("financial_dfc_manual_adjustments")
+}
+
+/// Override manual do "balde" de DFC de uma rubrica canônica (sobrepõe o
+/// dfc_treatment do registro canônico / da inferência por texto).
+model FinancialDfcClassificationOverride {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  financialDiagnosisId  String   @map("financial_diagnosis_id") @db.Uuid
+  canonicalKey          String   @map("canonical_key")
+  manualBucket          String   @map("manual_bucket")
+  status                String   @default("active")
+  createdBy             String?  @map("created_by")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@map("financial_dfc_classification_overrides")
+}
+
+// ── Relatório da Análise Financeira: achados, recomendações, propostas de
+// ação e versionamento de PDF ("Frente B" financeira). Promove pro Postgres
+// o que no base44 original (base44/entities/FinancialFinding.jsonc,
+// FinancialRecommendation.jsonc, FinancialActionProposal.jsonc) vivia como
+// entidade real, mas que na porta local ficou só como mock em localStorage
+// (ver ActionTask.financialDiagnosisId/financialFindingId e
+// ActionRecommendation homônimos — campos já reservados sem FK justamente
+// por essa lacuna). A partir daqui esses campos passam a apontar pra dado
+// real; ActionTask continua sem FK formal pra manter simetria com o resto
+// do schema, mas o valor gravado agora é um FinancialFinding.id de verdade. ──
+
+/// Achado (automático ou manual) sobre um diagnóstico financeiro — detectado
+/// por limiar/variação (origin=auto_interpretation, motor em
+/// FinancialInsightService, porta de generateFinancialInterpretations) ou
+/// registrado à mão pelo consultor (origin=manual). reportInclusionStatus é
+/// o estado de curadoria para fins do Relatório da Análise (distinto de
+/// status/action_plan_status, que rastreiam o ciclo achado→recomendação→
+/// tarefa) — um achado pode estar convertido em tarefa e, independentemente,
+/// aprovado/excluído do relatório.
+model FinancialFinding {
+  id                   String  @id @default(uuid()) @db.Uuid
+  tenantId             String  @map("tenant_id") @db.Uuid
+  financialDiagnosisId String  @map("financial_diagnosis_id") @db.Uuid
+  groupId              String? @map("group_id") @db.Uuid
+  companyId            String? @map("company_id") @db.Uuid
+  unitId               String? @map("unit_id") @db.Uuid
+
+  title       String
+  description String?
+  severity    String @default("medium")
+  findingType String  @map("finding_type")
+
+  financialIndicator String? @map("financial_indicator")
+  period             String?
+  comparisonPeriod   String? @map("comparison_period")
+  findingScope       String  @default("period_snapshot") @map("finding_scope")
+
+  financialUploadId String? @map("financial_upload_id") @db.Uuid
+  findingKey        String  @map("finding_key")
+  sourceType        String  @map("source_type")
+  sourceRefId       String? @map("source_ref_id")
+  origin            String  @default("manual")
+  confidenceLevel   String  @default("medium") @map("confidence_level")
+  status            String  @default("open")
+
+  /// Evidência numérica citada no achado — array de {label, value, period,
+  /// formatted} usado tanto pela seção 3 (Insights) quanto pela exportação
+  /// em PDF, exigência da spec de "fundamentação numérica obrigatória".
+  evidenceNumeric Json? @map("evidence_numeric")
+
+  /// Classificação de apresentação no relatório (distinta de `severity`,
+  /// que é o sinal técnico do motor de detecção).
+  classification         String? // critico | atencao | oportunidade | informativo
+  interpretation          String?
+  potentialImpact         String? @map("potential_impact")
+  investigationQuestion   String? @map("investigation_question")
+  reportInclusionStatus   String  @default("candidate") @map("report_inclusion_status") // candidate | approved | edited | excluded | internal_only
+  reportInclusionEditedText String? @map("report_inclusion_edited_text")
+  lastReportVersionId     String? @map("last_report_version_id") @db.Uuid
+
+  actionPlanStatus     String    @default("not_sent") @map("action_plan_status")
+  actionRecommendationId String? @map("action_recommendation_id") @db.Uuid
+  actionTaskId         String?   @map("action_task_id") @db.Uuid
+  actionPlanId         String?   @map("action_plan_id") @db.Uuid
+  sentToActionPlanAt   DateTime? @map("sent_to_action_plan_at")
+  sentToActionPlanBy   String?   @map("sent_to_action_plan_by")
+  convertedToTaskAt    DateTime? @map("converted_to_task_at")
+  convertedToTaskBy    String?   @map("converted_to_task_by")
+  rejectedReason       String?   @map("rejected_reason")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+
+  recommendations FinancialRecommendation[]
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, origin])
+  @@index([financialDiagnosisId, findingKey])
+  @@map("financial_findings")
+}
+
+/// Recomendação técnica derivada de um FinancialFinding (ou manual) — texto
+/// editável pelo consultor antes de virar uma FinancialActionProposal.
+model FinancialRecommendation {
+  id                   String  @id @default(uuid()) @db.Uuid
+  tenantId             String  @map("tenant_id") @db.Uuid
+  financialDiagnosisId String  @map("financial_diagnosis_id") @db.Uuid
+  financialFindingId   String? @map("financial_finding_id") @db.Uuid
+
+  title             String
+  diagnosticThesis  String? @map("diagnostic_thesis")
+  probableCause     String? @map("probable_cause")
+  suggestedAction   String? @map("suggested_action")
+  expectedImpact    String? @map("expected_impact")
+  priority          String  @default("media") // critica | alta | media | baixa
+  editableText      String? @map("editable_text")
+  consultantComment String? @map("consultant_comment")
+
+  /// Ligado ao envio ao Plano de Ação (convertRecommendation/unconvertToTask)
+  /// — NÃO é a aprovação de inclusão no relatório, ver reportInclusionStatus.
+  isApproved Boolean   @default(false) @map("is_approved")
+  approvedAt DateTime? @map("approved_at")
+  approvedBy String?   @map("approved_by")
+
+  /// Curadoria de inclusão na seção "4. Recomendações avulsas" do relatório
+  /// — mesmo padrão de FinancialFinding.reportInclusionStatus, mas
+  /// independente dele: uma recomendação pode ser aprovada pro relatório
+  /// mesmo que o achado-pai não esteja (ou vice-versa).
+  reportInclusionStatus String @default("candidate") @map("report_inclusion_status") // candidate | approved | edited | excluded | internal_only
+
+  relatedIndicatorCodes String[] @map("related_indicator_codes")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  finding            FinancialFinding?  @relation(fields: [financialFindingId], references: [id], onDelete: SetNull)
+
+  actionProposals FinancialActionProposal[]
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@map("financial_recommendations")
+}
+
+/// Proposta de ação exportável — a última curadoria antes de virar ActionTask
+/// no Plano de Ação central do grupo (ver FinancialInsightService.convert,
+/// porta de convertFinancialRecommendation).
+model FinancialActionProposal {
+  id                       String  @id @default(uuid()) @db.Uuid
+  tenantId                 String  @map("tenant_id") @db.Uuid
+  financialDiagnosisId     String  @map("financial_diagnosis_id") @db.Uuid
+  financialRecommendationId String? @map("financial_recommendation_id") @db.Uuid
+
+  title       String
+  description String?
+  priority    String  @default("media")
+  status      String  @default("proposed") // proposed | approved | exported | rejected
+
+  exportedToFal    Boolean   @default(false) @map("exported_to_fal")
+  falActionPlanId  String?   @map("fal_action_plan_id") @db.Uuid
+  falActionTaskId  String?   @map("fal_action_task_id") @db.Uuid
+  exportedAt       DateTime? @map("exported_at")
+  consultantAdjustment String? @map("consultant_adjustment")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant                   @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis       @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+  recommendation     FinancialRecommendation? @relation(fields: [financialRecommendationId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId])
+  @@index([financialRecommendationId])
+  @@map("financial_action_proposals")
+}
+
+/// Versão imutável do "Relatório da Análise" (PDF) de um diagnóstico
+/// financeiro — mesmo padrão de AssessmentReportVersion (snapshot congelado,
+/// nunca sobrescrito; cada geração ou finalização nasce uma linha nova).
+model FinancialReportVersion {
+  id                   String  @id @default(uuid()) @db.Uuid
+  tenantId             String  @map("tenant_id") @db.Uuid
+  financialDiagnosisId String  @map("financial_diagnosis_id") @db.Uuid
+
+  versionNumber        Int      @default(1) @map("version_number")
+  status               String   @default("draft") // draft | generated | in_review | final | outdated
+  baseDatePeriod       String?  @map("base_date_period")
+  comparativePeriods   String[] @map("comparative_periods")
+
+  payloadSnapshot       Json?   @map("payload_snapshot")
+  payloadChecksum       String? @map("payload_checksum")
+  /// Edições manuais de texto (por sectionKey) que sobrevivem a uma
+  /// regeneração — só são descartadas se o usuário confirmar explicitamente.
+  reviewedTextOverrides Json?   @map("reviewed_text_overrides")
+
+  pdfStatus      String?   @map("pdf_status")
+  pdfFileUrl     String?   @map("pdf_file_url")
+  pdfChecksum    String?   @map("pdf_checksum")
+  pdfGeneratedAt DateTime? @map("pdf_generated_at")
+  pdfPageCount   Int?      @map("pdf_page_count")
+  pdfFileSize    Int?      @map("pdf_file_size")
+  pdfStorageKey  String?   @map("pdf_storage_key")
+  pdfError       String?   @map("pdf_error")
+  watermarkDraft Boolean   @default(true) @map("watermark_draft")
+
+  generatedAt DateTime? @map("generated_at")
+  generatedBy String?   @map("generated_by")
+  finalizedAt DateTime? @map("finalized_at")
+  finalizedBy String?   @map("finalized_by")
+  notes       String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  financialDiagnosis FinancialDiagnosis @relation(fields: [financialDiagnosisId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([financialDiagnosisId, status])
+  @@map("financial_report_versions")
+}
+
+// ── Marco 2: Motor de scoring 8D (diagnóstico, prioridade, inteligência, MFIS, agregados) ──
+
+/// Estado da esteira pós-questionário (diagnóstico → prioridades →
+/// inteligência → plano de ação → simulação → relatório) — um registro por
+/// assessment. Espelha base44/getAssessmentFlow + onFalResponseChange.
+model AssessmentFlowState {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  assessmentId String  @unique @map("assessment_id") @db.Uuid
+
+  flowVersion            Int @default(1) @map("flow_version")
+  sourceResponseVersion  Int @default(0) @map("source_response_version")
+
+  diagnosticStatus   String @default("not_started") @map("diagnostic_status")
+  prioritiesStatus   String @default("not_started") @map("priorities_status")
+  intelligenceStatus String @default("not_started") @map("intelligence_status")
+  actionPlanStatus   String @default("not_started") @map("action_plan_status")
+  simulationStatus   String @default("not_started") @map("simulation_status")
+  reportStatus       String @default("not_started") @map("report_status")
+
+  diagnosticGeneratedAt   DateTime? @map("diagnostic_generated_at")
+  prioritiesGeneratedAt   DateTime? @map("priorities_generated_at")
+  intelligenceGeneratedAt DateTime? @map("intelligence_generated_at")
+  actionPlanGeneratedAt   DateTime? @map("action_plan_generated_at")
+  simulationGeneratedAt   DateTime? @map("simulation_generated_at")
+  reportGeneratedAt       DateTime? @map("report_generated_at")
+
+  snapshotId             String? @map("snapshot_id") @db.Uuid
+  prioritiesSnapshotId   String? @map("priorities_snapshot_id") @db.Uuid
+  intelligenceSnapshotId String? @map("intelligence_snapshot_id") @db.Uuid
+  actionPlanId           String? @map("action_plan_id") @db.Uuid
+  simulationId           String? @map("simulation_id") @db.Uuid
+  reportId               String? @map("report_id") @db.Uuid
+
+  /// null = nenhuma etapa está desatualizada.
+  staleFromStep    String? @map("stale_from_step")
+  lastErrorStep    String? @map("last_error_step")
+  lastErrorMessage String? @map("last_error_message")
+  lastRunMode      String? @map("last_run_mode")
+  nextBestStep     String? @map("next_best_step")
+  updatedBy        String? @map("updated_by")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("assessment_flow_states")
+}
+
+/// Snapshot do motor de diagnóstico FAL — um registro por cálculo
+/// (computeFalDiagnostic cria; computeFalPriority/computeClusterIntelligence
+/// atualizam o mais recente com prioridades/inteligência). Estruturas
+/// profundas (dimension_scores, cluster_analysis etc.) ficam em JSON —
+/// são a árvore de cálculo inteira, não fazem sentido como colunas.
+model FalDiagnosticSnapshot {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  assessmentId String  @map("assessment_id") @db.Uuid
+  cycleId      String? @map("cycle_id")
+  targetType   String? @map("target_type")
+  targetId     String? @map("target_id") @db.Uuid
+
+  computedAt DateTime @default(now()) @map("computed_at")
+  computedBy String?  @map("computed_by")
+
+  questionSet           String[] @map("question_set")
+  dimensionScores       Json     @map("dimension_scores")
+  overallScore          Decimal  @map("overall_score") @db.Decimal(6, 2)
+  overallLevel          String   @map("overall_level")
+  radarPoints           Json     @map("radar_points")
+  gapsTop               Json     @map("gaps_top")
+  sectorSnapshot        String[] @map("sector_snapshot")
+  activeDimensions      String[] @map("active_dimensions")
+  dimensionRiskSummary  Json     @map("dimension_risk_summary")
+  maturityIndex         Int      @map("maturity_index")
+  totalEvolution        Decimal? @map("total_evolution") @db.Decimal(6, 2)
+  criticalClustersCount Int      @default(0) @map("critical_clusters_count")
+  totalClustersCount    Int      @default(0) @map("total_clusters_count")
+  actionExecutionRate   Int?     @map("action_execution_rate")
+  impactPotential       Decimal? @map("impact_potential") @db.Decimal(6, 2)
+  valueLeverSummary     Json?    @map("value_lever_summary")
+  methodologyLog        Json     @map("methodology_log")
+
+  /// Preenchido por computeFalPriority.
+  clustersCriticos        Json?     @map("clusters_criticos")
+  clustersAltaPrioridade  Json?     @map("clusters_alta_prioridade")
+  clustersMediaPrioridade Json?     @map("clusters_media_prioridade")
+  clustersBaixaPrioridade Json?     @map("clusters_baixa_prioridade")
+  priorityComputedAt      DateTime? @map("priority_computed_at")
+  priorityComputedBy      String?   @map("priority_computed_by")
+
+  /// Preenchido por computeClusterIntelligence.
+  clusterAnalysis            Json?     @map("cluster_analysis")
+  intelligenceComputedAt     DateTime? @map("intelligence_computed_at")
+  intelligenceBenchmarkGroup String?   @map("intelligence_benchmark_group")
+
+  /// Preenchido por publishFalAssessment — publicar cria/atualiza uma linha
+  /// separada com status='published' (upsert por tenant+assessment+cycle),
+  /// mantendo o(s) snapshot(s) 'draft' intactos como histórico de cálculo.
+  status           String    @default("draft")
+  publishedAt      DateTime? @map("published_at")
+  publishedBy      String?   @map("published_by")
+  answersCoverage  Decimal?  @map("answers_coverage") @db.Decimal(4, 2)
+  sourceSnapshotId String?   @map("source_snapshot_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([assessmentId, computedAt])
+  @@map("fal_diagnostic_snapshots")
+}
+
+/// Um dos 11 cruzamentos MFIS™ calculados para um assessment — upsert por
+/// (assessment_id, crossing_key). Ver computeMfisAnalysis.
+model SystemicCrossingAnalysis {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  assessmentId String @map("assessment_id") @db.Uuid
+
+  computedAt DateTime @default(now()) @map("computed_at")
+  computedBy String?  @map("computed_by")
+
+  crossingKey   String @map("crossing_key")
+  crossingLabel String @map("crossing_label")
+  crossingType  String @map("crossing_type")
+
+  dimensionAKey   String @map("dimension_a_key")
+  dimensionALabel String @map("dimension_a_label")
+  dimensionBKey   String @map("dimension_b_key")
+  dimensionBLabel String @map("dimension_b_label")
+
+  dimensionAScoreRaw Decimal  @map("dimension_a_score_raw") @db.Decimal(6, 2)
+  dimensionBScoreRaw Decimal  @map("dimension_b_score_raw") @db.Decimal(6, 2)
+  mqeScoreRaw        Decimal? @map("mqe_score_raw") @db.Decimal(6, 2)
+  hasMqeData         Boolean  @default(false) @map("has_mqe_data")
+
+  crossScoreBaseRaw Decimal @map("cross_score_base_raw") @db.Decimal(6, 2)
+  crossWeight       Decimal @map("cross_weight") @db.Decimal(6, 2)
+  crossScoreFinal   Decimal @map("cross_score_final") @db.Decimal(6, 2)
+
+  tensionLevel String  @map("tension_level")
+  tensionRank  Int?    @map("tension_rank")
+  isFragile    Boolean @default(false) @map("is_fragile")
+  isCritical   Boolean @default(false) @map("is_critical")
+
+  interpretationText String? @map("interpretation_text")
+  riskSummary        String? @map("risk_summary")
+  recommendedFocus   String? @map("recommended_focus")
+  systemicWeight     Decimal? @map("systemic_weight") @db.Decimal(6, 2)
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, crossingKey])
+  @@index([tenantId])
+  @@map("systemic_crossing_analyses")
+}
+
+/// Impacto sistêmico agregado de uma dimensão (soma dos cruzamentos em que
+/// participa) — upsert por (assessment_id, dimension_key).
+model SystemicDimensionImpact {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  assessmentId String @map("assessment_id") @db.Uuid
+
+  computedAt DateTime @default(now()) @map("computed_at")
+
+  dimensionKey             String  @map("dimension_key")
+  dimensionLabel           String  @map("dimension_label")
+  relatedCrossingsCount    Int     @map("related_crossings_count")
+  fragileCrossingsCount    Int     @map("fragile_crossings_count")
+  criticalCrossingsCount   Int     @map("critical_crossings_count")
+  averageCrossScore        Decimal @map("average_cross_score") @db.Decimal(6, 2)
+  leverageScore            Decimal @map("leverage_score") @db.Decimal(6, 2)
+  isSystemicLeveragePoint  Boolean @default(false) @map("is_systemic_leverage_point")
+  systemicSummary          String? @map("systemic_summary")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, dimensionKey])
+  @@index([tenantId])
+  @@map("systemic_dimension_impacts")
+}
+
+/// Snapshot agregado de score no nível Grupo/Empresa (média/média ponderada
+/// dos assessments/aggregates filhos) — upsert por (level_type, level_id).
+model FalAggregateSnapshot {
+  id        String @id @default(uuid()) @db.Uuid
+  tenantId  String @map("tenant_id") @db.Uuid
+  levelType String @map("level_type")
+  levelId   String @map("level_id") @db.Uuid
+
+  computedAt DateTime @default(now()) @map("computed_at")
+  computedBy String?  @map("computed_by")
+
+  overallScore      Decimal @map("overall_score") @db.Decimal(6, 2)
+  overallLevel      String  @map("overall_level")
+  dimensionScores   Json    @map("dimension_scores")
+  radarPoints       Json    @map("radar_points")
+  sourceAssessments Json    @map("source_assessments")
+  aggregationRule   String  @default("mean") @map("aggregation_rule")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([levelType, levelId])
+  @@index([tenantId])
+  @@map("fal_aggregate_snapshots")
+}
+
+/// Causas prováveis por cluster (score baixo) — biblioteca global, ver
+/// computeClusterIntelligence.
+model FalClusterCause {
+  id                 String  @id @default(uuid()) @db.Uuid
+  clusterKey         String  @map("cluster_key")
+  dimensionKey       String? @map("dimension_key")
+  causeKey           String  @map("cause_key")
+  causeDescription   String  @map("cause_description")
+  probabilityWeight  Decimal @default(1) @map("probability_weight") @db.Decimal(4, 2)
+  triggerScoreBelow  Decimal @default(2) @map("trigger_score_below") @db.Decimal(4, 2)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([clusterKey])
+  @@map("fal_cluster_causes")
+}
+
+/// Recomendações por cluster (independente de trigger_score — comparar com
+/// FalRecommendationLibrary, que é por trigger_score) — biblioteca global.
+model FalClusterRecommendation {
+  id                        String  @id @default(uuid()) @db.Uuid
+  clusterKey                String  @map("cluster_key")
+  dimensionKey              String? @map("dimension_key")
+  recommendationKey         String  @map("recommendation_key")
+  recommendationText        String  @map("recommendation_text")
+  impactLevel               Int     @default(3) @map("impact_level")
+  implementationComplexity  Int     @default(3) @map("implementation_complexity")
+  estimatedTime             String? @map("estimated_time")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+
+  @@index([clusterKey])
+  @@map("fal_cluster_recommendations")
+}
+
+/// Benchmark de mercado por cluster/grupo setorial — biblioteca global.
+/// NOTA: a planilha de benchmark importada nesta sessão (falBenchmark.json)
+/// usa um formato diferente (sector/benchmark_value/benchmark_description,
+/// sem percentis) e por isso NÃO foi semeada aqui — precisa ser remapeada/
+/// enriquecida com avg/p75/p90 reais antes de alimentar esta tabela, senão
+/// benchmarkPosition() em computeClusterIntelligence quebra silenciosamente
+/// (percentil null vira 0 na comparação e classifica tudo como "top10").
+model FalBenchmark {
+  id               String  @id @default(uuid()) @db.Uuid
+  dimensionKey     String? @map("dimension_key")
+  subdimensionKey  String? @map("subdimension_key")
+  clusterKey       String  @map("cluster_key")
+  benchmarkGroup   String  @map("benchmark_group")
+  avgScore         Decimal @map("avg_score") @db.Decimal(6, 2)
+  medianScore      Decimal? @map("median_score") @db.Decimal(6, 2)
+  p75Score         Decimal? @map("p75_score") @db.Decimal(6, 2)
+  p90Score         Decimal? @map("p90_score") @db.Decimal(6, 2)
+  sampleSize       Int?    @map("sample_size")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([clusterKey, benchmarkGroup])
+  @@map("fal_benchmarks")
+}
+
+// ── Marco 3: Plano de Ação (Execução & Impacto) ──
+//
+// base44/functions/generateActionPlan usava um estado manual "candidate/
+// active/invalid" com snapshot+rollback pra simular transação atômica
+// (a API de entidades do base44 não garante atomicidade entre múltiplos
+// creates/updates). No Postgres real, um único `prisma.$transaction` dá
+// essa garantia de graça — por isso o port aqui NÃO replica a máquina de
+// estados/rollback: ActionPlanGenerationOperation vira um log de auditoria
+// simples (sucesso/falha), não um ledger de commit. Também não portamos
+// resolveFinancialLineage (DiagnosticLink/FinancialProcessingSnapshot/
+// FinancialSourceOutputHead não existem no Postgres — Financial "Frente B"
+// nunca foi migrada) nem FalInsightSnapshot/computeInsights/
+// FalRootCauseCatalog (motor legado pré-FAL, já excluído do escopo geral
+// da migração) — esses dois só enriqueciam o plano com metadado opcional,
+// nunca decidiam quais tarefas são geradas.
+
+/// Perguntas específicas (FalQuestion) com score baixo disparam uma ação
+/// operacional própria — biblioteca global, ver generateActionPlan passo 9.
+model FalQuestionActionLibrary {
+  id                 String   @id @default(uuid()) @db.Uuid
+  questionId         String   @map("question_id")
+  dimensionKey       String?  @map("dimension_key")
+  subdimensionKey    String?  @map("subdimension_key")
+  clusterKey         String?  @map("cluster_key")
+  sectorGroup        String   @default("geral") @map("sector_group")
+  triggerScoreMax    Decimal  @default(2) @map("trigger_score_max") @db.Decimal(4, 2)
+  actionType         String   @default("implantacao") @map("action_type")
+  actionTitle        String   @map("action_title")
+  actionDescription  String?  @map("action_description")
+  howToExecute       String?  @map("how_to_execute")
+  expectedEvidence   String?  @map("expected_evidence")
+  frequency          String?  @default("once")
+  reasonTemplate     String?  @map("reason_template")
+  impactLevel        Int      @default(3) @map("impact_level")
+  effortLevel        Int      @default(3) @map("effort_level")
+  priorityWeight     Decimal? @map("priority_weight") @db.Decimal(4, 2)
+  responsibleRole    String?  @map("responsible_role")
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([questionId])
+  @@index([clusterKey])
+  @@map("fal_question_action_library")
+}
+
+/// Um plano de ação por (tenant, target) — reidentificado por plan_key.
+model ActionPlan {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  /// Opcional a partir do Marco 7 (convergência FAL × Financeiro) — um plano
+  /// pode nascer só de um diagnóstico financeiro (ainda não migrado, ver
+  /// FinancialFinding no comentário de ActionRecommendation) sem nenhum
+  /// Assessment 8D por trás. O ancoramento real do plano passa a ser
+  /// groupId/companyId/unitId — pelo menos um deles é obrigatório (CHECK na
+  /// migration). assessmentId vira só "a origem 8D, se houver".
+  assessmentId String? @map("assessment_id") @db.Uuid
+  groupId      String? @map("group_id") @db.Uuid
+  companyId    String? @map("company_id") @db.Uuid
+  unitId       String? @map("unit_id") @db.Uuid
+  cycleId      String? @map("cycle_id")
+  targetType   String? @map("target_type")
+  targetId     String? @map("target_id") @db.Uuid
+  planKey      String  @map("plan_key")
+
+  diagnosticSnapshotId  String? @map("diagnostic_snapshot_id") @db.Uuid
+  generationFingerprint String? @map("generation_fingerprint")
+
+  currentRevisionId String?   @map("current_revision_id") @db.Uuid
+  lastReviewNumber  Int       @default(0) @map("last_review_number")
+  publishedAt       DateTime? @map("published_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  updatedBy         String?   @map("updated_by")
+
+  status                     String    @default("draft")
+  overallProgressPercentage  Decimal   @default(0) @map("overall_progress_percentage") @db.Decimal(5, 2)
+  totalTasks                 Int       @default(0) @map("total_tasks")
+  doneTasks                  Int       @default(0) @map("done_tasks")
+  blockedTasks                Int      @default(0) @map("blocked_tasks")
+  overdueTasks                Int      @default(0) @map("overdue_tasks")
+  criticalOpenTasks           Int      @default(0) @map("critical_open_tasks")
+  nextDueDate                 DateTime? @map("next_due_date") @db.Date
+
+  generationDiffSummary Json?   @map("generation_diff_summary")
+  engineVersion         String? @map("engine_version")
+  generationConfig      Json?   @map("generation_config")
+  generationSummary     Json?   @map("generation_summary")
+  roadmap               Json?
+
+  generatedAt DateTime? @map("generated_at")
+  generatedBy String?   @map("generated_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  assessment Assessment? @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  tasks               ActionTask[]
+  recommendations     ActionRecommendation[]
+  reviews             ActionPlanReview[]
+  generationOperations ActionPlanGenerationOperation[]
+
+  @@unique([tenantId, planKey])
+  @@index([tenantId, status])
+  @@index([assessmentId])
+  @@map("action_plans")
+}
+
+model ActionTask {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  planId       String  @map("plan_id") @db.Uuid
+  /// Opcional pelo mesmo motivo de ActionPlan.assessmentId — uma tarefa
+  /// pode vir de um achado financeiro (financialDiagnosisId/financialFindingId
+  /// abaixo) sem nenhum Assessment 8D.
+  assessmentId String? @map("assessment_id") @db.Uuid
+  targetType   String? @map("target_type")
+  targetId     String? @map("target_id") @db.Uuid
+
+  /// Qual motor gerou esta tarefa — 'fal_diagnostic' (padrão, comportamento
+  /// atual), 'financial_diagnostic' (Frente B financeira, ainda não migrada)
+  /// ou 'manual'. Independente de originType (que descreve o *nível* do
+  /// gatilho dentro do motor FAL: cluster/subdimension/dimension/question).
+  sourceType           String  @default("fal_diagnostic") @map("source_type")
+  /// Sem FK — mesmo motivo do campo homônimo em ActionRecommendation: a
+  /// Frente B financeira (FinancialFinding) ainda não foi migrada pro Postgres.
+  financialDiagnosisId String? @map("financial_diagnosis_id")
+  financialFindingId   String? @map("financial_finding_id")
+
+  dimensionKey    String? @map("dimension_key")
+  subdimensionKey String? @map("subdimension_key")
+  clusterKey      String? @map("cluster_key")
+
+  /// Entidade avaliada (assessment multi_entity_master) que originou esta
+  /// tarefa — só populado pra candidatos operacionais (nível de pergunta),
+  /// já que candidatos estratégicos (cluster/dimensão) usam o score já
+  /// consolidado entre entidades, não uma resposta de uma entidade só.
+  evaluatedEntityId   String? @map("evaluated_entity_id") @db.Uuid
+  evaluatedEntityType String? @map("evaluated_entity_type")
+  evaluatedEntityName String? @map("evaluated_entity_name")
+
+  taskKey                     String  @map("task_key")
+  operationId                 String? @map("operation_id")
+  operationStatus             String  @default("active") @map("operation_status")
+  operationInvalidatedAt      DateTime? @map("operation_invalidated_at")
+  operationInvalidationReason String? @map("operation_invalidation_reason")
+  actionLibraryKey            String? @map("action_library_key")
+
+  title       String
+  description String?
+  horizon     String?
+  priority    String?
+  actionType  String? @map("action_type")
+  taskLayer   String  @default("strategic") @map("task_layer")
+  typicalOwner String? @map("typical_owner")
+
+  impactScore       Int?     @map("impact_score")
+  effortScore       Int?     @map("effort_score")
+  evidenceSeverity  Int?     @map("evidence_severity")
+  evidenceMissing   Boolean  @default(false) @map("evidence_missing")
+  priorityScore     Decimal? @map("priority_score") @db.Decimal(8, 2)
+  originScore       Decimal? @map("origin_score") @db.Decimal(6, 2)
+  originType        String?  @map("origin_type")
+  originKey         String?  @map("origin_key")
+  originDetail      String?  @map("origin_detail")
+  questionActionId  String?  @map("question_action_id") @db.Uuid
+
+  howToExecute       String? @map("how_to_execute")
+  executionGuidance  String? @map("execution_guidance")
+  expectedEvidence   String? @map("expected_evidence")
+  completionEvidence String? @map("completion_evidence")
+  blockedReason      String? @map("blocked_reason")
+
+  lastCheckinAt      DateTime? @map("last_checkin_at")
+  lastCheckinComment String?   @map("last_checkin_comment")
+  lastUpdatedBy      String?   @map("last_updated_by")
+
+  frequency            String?  @default("once")
+  reason               String?
+  dependencyTaskKeys   String[] @map("dependency_task_keys")
+  isBlocked            Boolean  @default(false) @map("is_blocked")
+
+  status             String    @default("todo")
+  progressPercentage Int       @default(0) @map("progress_percentage")
+  assignedTo         String?   @map("assigned_to")
+  ownerName          String?   @map("owner_name")
+  startDate          DateTime? @map("start_date") @db.Date
+  dueDate            DateTime? @map("due_date") @db.Date
+  completedAt        DateTime? @map("completed_at")
+
+  isManual           Boolean  @default(false) @map("is_manual")
+  isSystemGenerated  Boolean  @default(true) @map("is_system_generated")
+  consultantNotes    String?  @map("consultant_notes")
+  evidenceQuestions  String[] @map("evidence_questions")
+  playbookKey        String?  @map("playbook_key")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id])
+  plan   ActionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  activities ActionTaskActivity[]
+  taskReviews ActionTaskReview[]
+
+  @@unique([planId, taskKey])
+  @@index([tenantId, status])
+  @@index([planId])
+  @@map("action_tasks")
+}
+
+/// Log de auditoria de toda mudança em uma ActionTask (histórico completo).
+model ActionTaskActivity {
+  id           String @id @default(uuid()) @db.Uuid
+  actionTaskId String @map("action_task_id") @db.Uuid
+  actionPlanId String @map("action_plan_id") @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  operationId  String @map("operation_id")
+  commitStatus String @default("active") @map("commit_status")
+
+  type          String
+  before        Json?
+  after         Json?
+  changedFields String[] @map("changed_fields")
+  reviewId      String?  @map("review_id") @db.Uuid
+  comment       String?
+  note          String?
+  actor         String?
+  timestamp     DateTime @default(now())
+  createdBy     String?  @map("created_by")
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id])
+  task   ActionTask @relation(fields: [actionTaskId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([actionTaskId])
+  @@map("action_task_activities")
+}
+
+/// Mudança de uma ActionTask registrada dentro de uma ActionPlanReview
+/// (visita do consultor) — histórico "antes/depois" por ciclo de revisão.
+model ActionTaskReview {
+  id                  String @id @default(uuid()) @db.Uuid
+  actionPlanReviewId  String @map("action_plan_review_id") @db.Uuid
+  actionPlanId        String @map("action_plan_id") @db.Uuid
+  actionTaskId        String @map("action_task_id") @db.Uuid
+  tenantId            String @map("tenant_id") @db.Uuid
+  operationId         String @map("operation_id")
+  commitStatus        String @default("active") @map("commit_status")
+
+  previousStatus              String?  @map("previous_status")
+  newStatus                   String?  @map("new_status")
+  previousProgressPercentage  Int?     @map("previous_progress_percentage")
+  newProgressPercentage       Int?     @map("new_progress_percentage")
+  consultantComment           String?  @map("consultant_comment")
+  clientComment                String? @map("client_comment")
+  evidenceUrls                String[] @map("evidence_urls")
+  changeType                   String  @map("change_type")
+  changes                      Json?
+  createdBy                    String? @map("created_by")
+  createdAt                    DateTime @default(now()) @map("created_at")
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id])
+  review ActionPlanReview @relation(fields: [actionPlanReviewId], references: [id], onDelete: Cascade)
+  task   ActionTask       @relation(fields: [actionTaskId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([actionPlanReviewId])
+  @@map("action_task_reviews")
+}
+
+/// Recomendação pendente de classificação/aprovação antes de virar ActionTask
+/// — pode nascer do motor FAL (generateActionRecommendations), de um achado
+/// financeiro (sendFindingToActionPlan — não portado, ver nota de escopo) ou
+/// manual do consultor.
+model ActionRecommendation {
+  id                    String  @id @default(uuid()) @db.Uuid
+  tenantId              String  @map("tenant_id") @db.Uuid
+  assessmentId          String? @map("assessment_id") @db.Uuid
+  actionPlanId          String? @map("action_plan_id") @db.Uuid
+
+  /// Sem FK — o domínio financeiro "Frente B" (achados/recomendações) ainda
+  /// não foi migrado pro Postgres, continua só no mock local.
+  financialDiagnosisId  String? @map("financial_diagnosis_id")
+  financialFindingId    String? @map("financial_finding_id")
+
+  sourceType     String  @default("manual") @map("source_type")
+  sourceRefId    String? @map("source_ref_id")
+  dimensionKey   String? @map("dimension_key")
+  subdimensionKey String? @map("subdimension_key")
+  clusterKey     String? @map("cluster_key")
+  questionId     String? @map("question_id")
+
+  /// Entidade avaliada (assessment multi_entity_master) — ver nota igual em
+  /// ActionTask.evaluatedEntityId. Só populado pra sugestões operacionais.
+  evaluatedEntityId   String? @map("evaluated_entity_id") @db.Uuid
+  evaluatedEntityType String? @map("evaluated_entity_type")
+  evaluatedEntityName String? @map("evaluated_entity_name")
+
+  title               String
+  recommendationText  String  @map("recommendation_text")
+  rationale           String?
+  practicalSteps      String? @map("practical_steps")
+  evidenceRequired    String? @map("evidence_required")
+  expectedDeliverable String? @map("expected_deliverable")
+  expectedResult      String? @map("expected_result")
+
+  suggestedOwnerArea      String?  @map("suggested_owner_area")
+  suggestedDeadlineDays   Int?     @map("suggested_deadline_days")
+  priority                String   @default("medium")
+  impactScore             Int?     @map("impact_score")
+  effortScore             Int?     @map("effort_score")
+  complexityLevel         String?  @map("complexity_level")
+  consultantOriginContext String?  @map("consultant_origin_context")
+
+  /// Campos abaixo existem só pra sugestões geradas pelo motor de
+  /// generateActionPlan (candidatos estratégicos/operacionais que passaram a
+  /// nascer como recomendação, não mais tarefa direta — ver nota de escopo
+  /// em action-plan.service.ts). Preservam fidelidade total: quando a
+  /// recomendação é aprovada e convertida, a ActionTask resultante usa esses
+  /// valores em vez de recalcular do zero ou usar default genérico.
+  taskLayer          String?  @map("task_layer")
+  horizon            String?
+  howToExecute       String?  @map("how_to_execute")
+  expectedEvidence   String?  @map("expected_evidence")
+  frequency          String?
+  dependencyTaskKeys String[] @map("dependency_task_keys")
+  playbookKey        String?  @map("playbook_key")
+  actionLibraryKey   String?  @map("action_library_key")
+  questionActionId   String?  @map("question_action_id") @db.Uuid
+  evidenceSeverity   Int?     @map("evidence_severity")
+  evidenceMissing    Boolean? @map("evidence_missing")
+  evidenceQuestions  String[] @map("evidence_questions")
+  originScore        Decimal? @map("origin_score") @db.Decimal(6, 2)
+  originType         String?  @map("origin_type")
+  originKey          String?  @map("origin_key")
+  originDetail       String?  @map("origin_detail")
+
+  status           String    @default("needs_classification")
+  approvedBy       String?   @map("approved_by")
+  approvedAt       DateTime? @map("approved_at")
+  rejectedReason   String?   @map("rejected_reason")
+  convertedTaskIds String[]  @map("converted_task_ids")
+  convertedAt      DateTime? @map("converted_at")
+  convertedBy      String?   @map("converted_by")
+
+  suggestToLibrary Boolean @default(false) @map("suggest_to_library")
+  libraryEntryId   String? @map("library_entry_id") @db.Uuid
+  createdBy        String? @map("created_by")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant      @relation(fields: [tenantId], references: [id])
+  plan   ActionPlan? @relation(fields: [actionPlanId], references: [id])
+
+  @@index([tenantId, status])
+  @@index([actionPlanId])
+  @@index([assessmentId])
+  @@map("action_recommendations")
+}
+
+/// Biblioteca de recomendações reaproveitáveis entre diagnósticos — pode ser
+/// global (tenantId null) ou específica de um tenant. Alimentada por
+/// manageActionRecommendation(action=suggest_library) — sempre nasce is_draft.
+model ActionRecommendationLibrary {
+  id               String  @id @default(uuid()) @db.Uuid
+  tenantId         String? @map("tenant_id") @db.Uuid
+  methodVersionId  String? @map("method_version_id") @db.Uuid
+  dimensionKey     String  @map("dimension_key")
+  subdimensionKey  String? @map("subdimension_key")
+  clusterKey       String? @map("cluster_key")
+  questionId       String? @map("question_id")
+  maturityTrigger  String? @map("maturity_trigger")
+  severity         String  @default("medium")
+
+  recommendationTitle String  @map("recommendation_title")
+  recommendationText  String  @map("recommendation_text")
+  rationale           String?
+  practicalSteps      String? @map("practical_steps")
+  evidenceRequired    String? @map("evidence_required")
+  expectedDeliverable String? @map("expected_deliverable")
+  expectedResult      String? @map("expected_result")
+  suggestedOwnerArea  String? @map("suggested_owner_area")
+  suggestedDeadlineDays Int?  @map("suggested_deadline_days")
+  impactScore         Int?    @map("impact_score")
+  effortScore         Int?    @map("effort_score")
+  complexityLevel     String? @map("complexity_level")
+  actionType          String? @map("action_type")
+
+  isActive    Boolean  @default(true) @map("is_active")
+  isDraft     Boolean  @default(false) @map("is_draft")
+  suggestedBy String?  @map("suggested_by")
+  createdBy   String?  @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+
+  @@index([dimensionKey])
+  @@index([clusterKey])
+  @@map("action_recommendation_library")
+}
+
+/// Visita de acompanhamento do consultor — abre em draft, acumula mudanças
+/// de tarefas (ActionTaskReview) e fecha com completeActionPlanReview.
+model ActionPlanReview {
+  id           String  @id @default(uuid()) @db.Uuid
+  actionPlanId String  @map("action_plan_id") @db.Uuid
+  /// Opcional pelo mesmo motivo de ActionPlan.assessmentId — herda do plano
+  /// no momento da abertura (open()); nulo pra planos de origem financeira.
+  assessmentId String? @map("assessment_id") @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+
+  reviewKey    String @map("review_key")
+  commitStatus String @default("active") @map("commit_status")
+
+  reviewNumber Int      @map("review_number")
+  reviewDate   DateTime @map("review_date") @db.Date
+  visitType    String   @default("intermediate") @map("visit_type")
+
+  consultantId   String? @map("consultant_id") @db.Uuid
+  consultantName String? @map("consultant_name")
+
+  executiveSummary        String?  @map("executive_summary")
+  overallProgressBefore    Decimal? @map("overall_progress_before") @db.Decimal(5, 2)
+  overallProgressAfter     Decimal? @map("overall_progress_after") @db.Decimal(5, 2)
+  falDimensionScoresSnapshot Json?  @map("fal_dimension_scores_snapshot")
+
+  openingSnapshot Json? @map("opening_snapshot")
+  closingSnapshot Json? @map("closing_snapshot")
+
+  status String @default("draft")
+
+  openedAt          DateTime? @map("opened_at")
+  openedBy          String?   @map("opened_by")
+  cancelledAt       DateTime? @map("cancelled_at")
+  cancelledBy       String?   @map("cancelled_by")
+  cancellationReason String?  @map("cancellation_reason")
+  completedAt       DateTime? @map("completed_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id])
+  plan   ActionPlan @relation(fields: [actionPlanId], references: [id], onDelete: Cascade)
+
+  taskReviews ActionTaskReview[]
+
+  @@index([tenantId])
+  @@index([actionPlanId])
+  @@map("action_plan_reviews")
+}
+
+/// Log de auditoria de cada execução de generateActionPlan — versão
+/// simplificada do ledger candidate/active/invalid do base44 original (ver
+/// nota de escopo no topo desta seção: Postgres já garante atomicidade via
+/// transação, então isso aqui é só histórico, não uma máquina de estados).
+model ActionPlanGenerationOperation {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  assessmentId String  @map("assessment_id") @db.Uuid
+  actionPlanId String? @map("action_plan_id") @db.Uuid
+
+  operationId       String  @map("operation_id")
+  status            String  @default("active")
+  inputFingerprint  String? @map("input_fingerprint")
+  generationSummary Json?   @map("generation_summary")
+
+  startedAt   DateTime  @default(now()) @map("started_at")
+  startedBy   String?   @map("started_by")
+  completedAt DateTime? @map("completed_at")
+  errorCode   String?   @map("error_code")
+  errorMessage String?  @map("error_message")
+
+  tenant Tenant      @relation(fields: [tenantId], references: [id])
+  plan   ActionPlan? @relation(fields: [actionPlanId], references: [id])
+
+  @@index([tenantId])
+  @@index([assessmentId])
+  @@map("action_plan_generation_operations")
+}
+
+// ── Marco 4: Bibliotecas de conteúdo restantes ──
+//
+// FalClusterMeta, FalDriverCatalog, FalRootCauseCatalog e FalQuestionSignal
+// NÃO foram migrados: os três últimos só alimentam o motor legado de
+// insights (computeInsights/FalInsightSnapshot), já excluído do escopo
+// desta migração; FalClusterMeta só ajusta pesos de computeFalPriority, que
+// já degrada corretamente pro DEFAULT_META sem ela — nenhum dos quatro tem
+// dado real importado nesta sessão, então seriam tabelas vazias sem uso.
+
+/// Catálogo dinâmico de ações do motor de plano — biblioteca global (ou por
+/// tenant, sobrepondo a global por action_key). Fallback: BUILTIN_ACTION_LIBRARY
+/// embutido no código quando uma ação não está aqui.
+model FalActionLibrary {
+  id                   String   @id @default(uuid()) @db.Uuid
+  tenantId             String?  @map("tenant_id") @db.Uuid
+  actionKey            String   @map("action_key")
+  title                String
+  description          String?
+  dimensionKey         String   @map("dimension_key")
+  subdimensionKey      String?  @map("subdimension_key")
+  clusterKey           String?  @map("cluster_key")
+  driverIds            String[] @map("driver_ids")
+  scoreTriggerMax      Decimal  @default(2.5) @map("score_trigger_max") @db.Decimal(4, 2)
+  killerQuestionTrigger Boolean @default(false) @map("killer_question_trigger")
+  impactScore          Int?     @map("impact_score")
+  effortScore          Int?     @map("effort_score")
+  actionType           String?  @map("action_type")
+  defaultHorizon       String?  @map("default_horizon")
+  typicalOwner         String?  @map("typical_owner")
+  dependencyActionKeys String[] @map("dependency_action_keys")
+  levelApplicability   String[] @map("level_applicability")
+  sectorTags           String[] @map("sector_tags")
+  isActive             Boolean  @default(true) @map("is_active")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, actionKey])
+  @@index([clusterKey])
+  @@index([dimensionKey])
+  @@map("fal_action_library")
+}
+
+// ── Marco 5: Relatórios ──
+//
+// generatePdfFromReportVersion no base44 original NÃO gera um PDF binário
+// no servidor — ele reconstrói o payload de exibição a partir do
+// payload_snapshot imutável, e o PDF real é montado no navegador
+// (html2canvas/jsPDF) e só então enviado pro storage. Por isso não há
+// nenhuma infraestrutura de renderização de PDF no backend aqui — só o
+// versionamento imutável do snapshot + o rastreamento do artefato final.
+// synthetic_integrated e financial_diagnostic (tipos de relatório que
+// dependem de DiagnosticLink/SyntheticDiagnosticSnapshot/FinancialFinding —
+// nenhum migrado) não são suportados; os demais 7 tipos funcionam.
+
+/// Versão imutável de um relatório de assessment — nunca é sobrescrita,
+/// cada geração cria uma nova linha com um payload_snapshot congelado.
+model AssessmentReportVersion {
+  id           String  @id @default(uuid()) @db.Uuid
+  assessmentId String  @map("assessment_id") @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  actionPlanId String? @map("action_plan_id") @db.Uuid
+  reviewId     String? @map("review_id") @db.Uuid
+
+  reportType           String  @map("report_type")
+  reportTitle          String  @map("report_title")
+  reportVersionNumber  Int     @default(1) @map("report_version_number")
+  reportCode           String  @map("report_code")
+  previousReportVersionId String? @map("previous_report_version_id") @db.Uuid
+
+  status                    String  @default("draft")
+  actionPlanReviewId        String? @map("action_plan_review_id") @db.Uuid
+  assessmentRevisionNumber  Int?    @map("assessment_revision_number")
+  presetId                  String? @map("preset_id")
+  reportParameters          Json?   @map("report_parameters")
+  payloadSnapshot           Json?   @map("payload_snapshot")
+  payloadChecksum           String? @map("payload_checksum")
+  sourceManifest            Json?   @map("source_manifest")
+  diagnosticSnapshotId      String? @map("diagnostic_snapshot_id") @db.Uuid
+  prioritySnapshotId        String? @map("priority_snapshot_id") @db.Uuid
+  actionPlanSnapshotId      String? @map("action_plan_snapshot_id") @db.Uuid
+
+  pdfStatus            String?   @map("pdf_status")
+  pdfFileUrl           String?   @map("pdf_file_url")
+  pdfUploadIdentifier  String?   @map("pdf_upload_identifier")
+  pdfChecksum          String?   @map("pdf_checksum")
+  pdfGeneratedAt       DateTime? @map("pdf_generated_at")
+  pdfStartedAt         DateTime? @map("pdf_started_at")
+  pdfStartedBy         String?   @map("pdf_started_by")
+  pdfOperationId       String?   @map("pdf_operation_id")
+  pdfGeneratorVersion  String?   @map("pdf_generator_version")
+  pdfPageCount         Int?      @map("pdf_page_count")
+  pdfFileSize          Int?      @map("pdf_file_size")
+  pdfStorageProvider   String?   @map("pdf_storage_provider")
+  pdfStorageKey        String?   @map("pdf_storage_key")
+  pdfError             String?   @map("pdf_error")
+  htmlSnapshotUrl      String?   @map("html_snapshot_url")
+
+  generatedAt   DateTime? @map("generated_at")
+  generatedBy   String?   @map("generated_by")
+  notes         String?
+  errorMessage  String?   @map("error_message")
+  markAsOfficial Boolean  @default(false) @map("mark_as_official")
+  archivedAt    DateTime? @map("archived_at")
+  archivedBy    String?   @map("archived_by")
+  archiveReason String?   @map("archive_reason")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([assessmentId, reportType])
+  @@map("assessment_report_versions")
+}
+
+// ── Marco 6: itens descobertos na auditoria final (publicação, escopos
+// multi-entidade, substituição de pergunta) ──
+//
+// restructureFalMatrix (a 4ª função levantada na auditoria) NÃO foi
+// portada de propósito: é uma ferramenta administrativa de migração
+// estrutural única ("único script autorizado a reestruturar a matriz"),
+// da mesma família de seedFalClusters/migrateFalQuestionBank já
+// desativadas no próprio base44 original. As 311 perguntas reais
+// importadas nesta sessão já vieram no formato pós-reestruturação (mesma
+// fonte que alimenta falOfficialMatrix.js no frontend) — rodar essa
+// migração contra dado que já está correto seria risco sem ganho.
+
+/// Detalhamento por entidade×dimensão de um Assessment multi-entidade
+/// (assessment_mode='multi_entity_master') — gerado por
+/// generateAssessmentScopes a partir do dimension_target_mapping guardado
+/// em Assessment.metadata.
+model AssessmentScope {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  assessmentId String @map("assessment_id") @db.Uuid
+
+  dimensionKey            String  @map("dimension_key")
+  evaluatedEntityType      String  @map("evaluated_entity_type")
+  evaluatedEntityId        String  @map("evaluated_entity_id") @db.Uuid
+  evaluatedEntityName      String? @map("evaluated_entity_name")
+  weight                   Decimal @default(1) @map("weight") @db.Decimal(4, 2)
+  samplingMode             String  @default("full") @map("sampling_mode")
+  includeInConsolidatedScore Boolean @default(true) @map("include_in_consolidated_score")
+
+  status          String   @default("not_started")
+  questionCount   Int      @default(0) @map("question_count")
+  answeredCount   Int      @default(0) @map("answered_count")
+  requiredCount   Int      @default(0) @map("required_count")
+  completionRatio Decimal  @default(0) @map("completion_ratio") @db.Decimal(4, 3)
+  score           Decimal? @db.Decimal(6, 2)
+  maturityLevel   String?  @map("maturity_level")
+
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  notes       String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, dimensionKey, evaluatedEntityId])
+  @@index([tenantId])
+  @@map("assessment_scopes")
+}
+
+/// Auditoria de substituição de pergunta dentro do question_set de um
+/// assessment (consultor troca uma pergunta não aplicável por uma
+/// equivalente) — ver swapFalQuestion.
+model FalQuestionSwap {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  assessmentId String @map("assessment_id") @db.Uuid
+
+  originalQuestionId    String  @map("original_question_id") @db.Uuid
+  replacementQuestionId String  @map("replacement_question_id") @db.Uuid
+  dimensionKey          String? @map("dimension_key")
+  subdimensionKey       String? @map("subdimension_key")
+  clusterKey            String? @map("cluster_key")
+  swapReason            String  @map("swap_reason")
+  swapReasonLabel       String? @map("swap_reason_label")
+  fallbackLevel         String? @map("fallback_level")
+  swappedBy             String  @map("swapped_by")
+  swappedAt             DateTime @default(now()) @map("swapped_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, originalQuestionId])
+  @@index([tenantId])
+  @@map("fal_question_swaps")
 }
