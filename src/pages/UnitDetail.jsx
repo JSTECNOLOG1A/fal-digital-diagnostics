@@ -19,6 +19,8 @@ import { format } from 'date-fns';
 import { PencilIcon } from 'lucide-react';
 import NewDiagnosisTypePicker from '@/components/financial/NewDiagnosisTypePicker';
 import CreateFinancialDiagnosisDialog from '@/components/financial/CreateFinancialDiagnosisDialog.jsx';
+import { OFFICIAL_DIMENSIONS } from '@/components/fal/entityNatureDimensionMap';
+import { useTaxReformMethodVersion } from '@/lib/hooks/useTaxReformMethodVersion';
 
 const LEVEL_STYLE = {
   Crítico: 'bg-red-100 text-red-700',
@@ -36,12 +38,14 @@ export default function UnitDetail() {
   const params = new URLSearchParams(window.location.search);
   const unitId = params.get('id');
   const { user, methodVersion } = useTenant();
+  const { methodVersion: taxReformMethodVersion } = useTaxReformMethodVersion();
   const navigate = useNavigate();
   const [tab, setTab] = useState('assessments');
   const [assessmentDialog, setAssessmentDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
   const [typePicker, setTypePicker] = useState(false);
   const [financialDialog, setFinancialDialog] = useState(false);
+  const [taxReformDialog, setTaxReformDialog] = useState(false);
 
   const tabContentRef = useRef(null);
   const goToTab = useCallback((key) => {
@@ -113,7 +117,7 @@ export default function UnitDetail() {
   ];
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 flex-wrap">
         {company?.group_id && (
           <Link to={createPageUrl('Groups')} className="hover:text-slate-700">Grupos</Link>
@@ -270,7 +274,26 @@ export default function UnitDetail() {
         onClose={() => setTypePicker(false)}
         onSelectFal={() => { setTypePicker(false); setAssessmentDialog(true); }}
         onSelectFinancial={() => { setTypePicker(false); setFinancialDialog(true); }}
+        onSelectTaxReform={() => { setTypePicker(false); setTaxReformDialog(true); }}
       />
+
+      {taxReformDialog && (
+        <CreateAssessmentDialog
+          open={taxReformDialog}
+          onClose={() => setTaxReformDialog(false)}
+          targetType="unit"
+          targetId={unitId}
+          groupId={company?.group_id}
+          companyId={unit.company_id}
+          unitId={unitId}
+          tenantId={user?.tenant_id || unit?.tenant_id}
+          methodVersionId={taxReformMethodVersion?.id}
+          activeDimensionsOverride={OFFICIAL_DIMENSIONS}
+          userName={user?.email}
+          targetName={unit?.name}
+          onCreated={(a) => window.location.href = createPageUrl(`AssessmentDetail?id=${a.id}`)}
+        />
+      )}
 
       {financialDialog && (
         <CreateFinancialDiagnosisDialog

@@ -20,8 +20,12 @@ export default function BpBalanceAlert({ diagnosisId }) {
   const { data:currentScope } = useCurrentFinancialOutputScope(diagnosisId, tenantId);
   const { data: validations = [] } = useQuery({
     queryKey: [...financialKey(tenantId, diagnosisId, 'bp-balance-check'), currentScope?.snapshot_id, currentScope?.processing_run_id],
+    // Mesmo ajuste de StatementsTab/ValidationTab (FinancialDiagnosisDetail.jsx):
+    // com um upload por período, filtrar por processing_run_id só pegava o
+    // build mais recente e fazia esse banner mentir "equilibrado em todos os
+    // períodos" checando, na prática, só o último período processado.
     queryFn: () => base44.entities.FinancialValidationResult.filter(
-      { financial_diagnosis_id: diagnosisId, processing_run_id:currentScope.processing_run_id, publication_status:'active', code: 'BP_NOT_BALANCED' }, 'severity', 50
+      { financial_diagnosis_id: diagnosisId, publication_status:'active', code: 'BP_NOT_BALANCED' }, 'severity', 50
     ),
     enabled: !!currentScope?.processing_run_id,
   });

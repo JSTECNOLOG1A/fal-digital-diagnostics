@@ -253,7 +253,7 @@ function TaskCreateForm({ indicator, diagnosis, diagnosisId, tenantId, actionPla
         className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60"
       >
         {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-        {submitting ? "Criando..." : form.planId ? "Criar Tarefa no Plano" : "Criar Recomendação"}
+        {submitting ? "Criando..." : form.planId ? "Criar tarefa no plano" : "Criar recomendação"}
       </button>
     </div>
   );
@@ -398,7 +398,7 @@ export default function FinancialIndicatorHelpDrawer({
 
               <InsightCard
                 icon={ClipboardList}
-                label="Ações Propostas"
+                label="Ações propostas"
                 items={linkedProposals}
                 render={(p, i) => (
                   <div key={p.id || i} className={`border rounded-lg p-2.5 ${PRIORITY_CLS[p.priority] || PRIORITY_CLS.media}`}>

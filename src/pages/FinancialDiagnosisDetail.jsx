@@ -26,10 +26,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  CheckCircle2, FileSpreadsheet,
+  CheckCircle2, FileSpreadsheet, FileText,
   TrendingUp, Lock, AlertCircle, AlertTriangle, Loader2, RefreshCw, Trash2, RotateCcw } from
 'lucide-react';
 import FinancialMultiEntityPanel from '@/components/financial/FinancialMultiEntityPanel';
+import FinancialReportPanel from '@/components/financial/FinancialReportPanel';
 import PreparationPanel from '@/components/financial/PreparationPanel';
 import ConsolidationEntryManager from '@/components/financial/ConsolidationEntryManager';
 import IntercompanyReconciliationPanel from '@/components/financial/IntercompanyReconciliationPanel';
@@ -58,13 +59,15 @@ import DfcValidationAlert from '@/components/financial/DfcValidationAlert';
 import SystemHelpBanner from '@/components/financial/SystemHelpBanner';
 import KanitzInsolvencyCard from '@/components/financial/KanitzInsolvencyCard';
 import FinancialActionsPanel from '@/components/financial/FinancialActionsPanel';
+import FinancialStatementsAnalysis from '@/components/financial/FinancialStatementsAnalysis';
 import FinancialIndicatorsPanel from '@/components/financial/indicators/FinancialIndicatorsPanel';
 import PageContainer from '@/components/layout/PageContainer';
 import FinancialDefinitionForm from '@/components/financial/FinancialDefinitionForm';
 import FinancialIntegrityValidationPanel from '@/components/financial/FinancialIntegrityValidationPanel';
 import { usePermissions } from '@/lib/hooks/usePermissions';
 import { sha256File } from '@/lib/sha256File';
-import { useCurrentFinancialOutputScope } from '@/lib/hooks/useCurrentFinancialOutputScope';
+import { useCurrentFinancialOutputScope, currentFinancialScopeKey } from '@/lib/hooks/useCurrentFinancialOutputScope';
+import { resolveCurrentFinancialOutputScope } from '@/lib/financial/resolveCurrentFinancialOutputScope';
 
 
 // ─── OverviewTab ──────────────────────────────────────────────────────────────
@@ -776,9 +779,9 @@ function UploadTab({ diagnosisId, tenantId, diagnosisStatus, hasExistingUpload, 
       <div className="space-y-4">
           <div className="flex gap-2 border-b border-slate-200 pb-0 overflow-x-auto">
             {[
-          { key: 'periods', label: 'Períodos Importados', count: uploads.length },
-          { key: 'validation', label: 'Validação e Composição', count: null },
-          { key: 'plan', label: 'Plano de Contas Gerencial', count: null }].
+          { key: 'periods', label: 'Períodos importados', count: uploads.length },
+          { key: 'validation', label: 'Validação e composição', count: null },
+          { key: 'plan', label: 'Plano de contas gerencial', count: null }].
           map((t) =>
           <button
             key={t.key}
@@ -970,8 +973,16 @@ function ValidationTab({ diagnosisId, diagnosisStatus, currentUploadId, diagnosi
 
   const { data: validations = [], isLoading } = useQuery({
     queryKey: [...financialKey(tenantId, diagnosisId, 'validations'), currentScope?.snapshot_id, currentScope?.processing_run_id],
+    // Igual ao padrão já usado em FinancialIndicatorsPanel/KanitzFormulaBreakdown
+    // (mesmo frontend, herdado do Base44 sem alterações): publication_status:
+    // 'active' já é o critério de "vale agora" — cada build supersede só os
+    // registros DO MESMO upload (ver supersedePrevious), então períodos de
+    // uploads diferentes ficam ativos ao mesmo tempo. Filtrar também por
+    // processing_run_id (que aponta só para o ÚLTIMO build) escondia as
+    // validações dos períodos anteriores assim que um novo período era
+    // processado.
     queryFn: () => base44.entities.FinancialValidationResult.filter(
-      { financial_diagnosis_id: diagnosisId, processing_run_id:currentScope.processing_run_id, publication_status:'active' }, 'severity', 100
+      { financial_diagnosis_id: diagnosisId, publication_status:'active' }, 'severity', 100
     ),
     enabled: !!currentScope?.processing_run_id,
     refetchInterval: diagnosisStatus === 'validating' ? 3000 : false
@@ -1161,8 +1172,15 @@ function StatementsTab({ diagnosisId, uploadId, tenantId, uploadMeta, uploads = 
 
   const { data: rawLines = [], isLoading } = useQuery({
     queryKey: [...financialKey(tenantId, diagnosisId, 'statements'), currentScope?.snapshot_id, currentScope?.processing_run_id],
+    // Mesmo ajuste do ValidationTab acima: BP/DRE/DFC são compostos por
+    // vários uploads (um por período/ano), cada um com seu próprio
+    // processing_run_id. currentScope.processing_run_id só aponta pro build
+    // mais recente — filtrar por ele aqui escondia todos os períodos
+    // anteriores (raiz do bug "importei 3 anos, só aparece 1"). active já
+    // é o filtro certo (ver supersedePrevious: cada build só supersede o
+    // upload dele mesmo).
     queryFn: () => base44.entities.FinancialStatementLine.filter(
-      { financial_diagnosis_id: diagnosisId, processing_run_id: currentScope.processing_run_id, publication_status: 'active' }, 'period', 50000
+      { financial_diagnosis_id: diagnosisId, publication_status: 'active' }, 'period', 50000
     ),
     enabled: !!diagnosisId && hasCurrentScope
   });
@@ -1328,6 +1346,8 @@ function StatementsTab({ diagnosisId, uploadId, tenantId, uploadMeta, uploads = 
       {/* Banners de conferência de saldos abaixo das demonstrações */}
       {activeView === 'bp' && <BpBalanceAlert diagnosisId={diagnosisId} />}
       {activeView === 'dfc' && <DfcValidationAlert diagnosisId={diagnosisId} />}
+
+      <FinancialStatementsAnalysis diagnosisId={diagnosisId} tenantId={tenantId} />
     </div>);
 
 }
@@ -1421,6 +1441,7 @@ function AnalysisFinanceiraTab({ diagnosis, diagnosisId, uploadId, tenantId, upl
     { key: 'indicators', label: 'Indicadores', icon: TrendingUp },
     { key: 'kanitz', label: 'Kanitz', icon: AlertTriangle },
     { key: 'actions', label: 'Ações & Achados', icon: CheckCircle2 },
+    { key: 'report', label: 'Relatório da análise', icon: FileText },
   ];
 
 
@@ -1498,55 +1519,89 @@ function AnalysisFinanceiraTab({ diagnosis, diagnosisId, uploadId, tenantId, upl
     );
   }
 
-  // ── Etapa ANÁLISE: sub-abas internas (statements, indicators, kanitz, actions) ──
+  // ── Etapa ANÁLISE: sub-abas independentes (Demonstrações / Indicadores /
+  // Kanitz / Ações & Achados) — só a sub-aba selecionada é renderizada. ──
   if (activeStep === 'analise' && isProcessed) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="bg-white border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between flex-wrap gap-3 p-6 pb-4">
           <YearQuickSelector diagnosis={diagnosis} selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
         </div>
-        <div className="flex gap-2 border-b border-slate-200 pb-0 overflow-x-auto">
+
+        <div className="flex gap-1 border-b border-slate-200 px-6 overflow-x-auto sticky top-0 bg-white z-10">
           {ANALYSIS_SUBTABS.map((subtab) =>
             <button
               key={subtab.key}
+              type="button"
               onClick={() => setAnalysisSubTab(subtab.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px
-                ${analysisSubTab === subtab.key ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700 cursor-pointer'}`}>
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px rounded-t
+                ${analysisSubTab === subtab.key ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-500 hover:text-slate-700 cursor-pointer'}`}>
               <subtab.icon className="w-4 h-4" />
               {subtab.label}
             </button>
           )}
         </div>
 
-        {analysisSubTab === 'statements' &&
-          <StatementsTab
-            diagnosisId={diagnosisId}
-            uploadId={uploadId}
-            tenantId={tenantId}
-            uploads={uploads}
-            periodFilter={periodFilter}
-            setPeriodFilter={setPeriodFilter}
-            annualCount={annualCount}
-            setAnnualCount={setAnnualCount}
-            uploadMeta={uploadMeta}
-            selectedYear={selectedYear}
-          />
-        }
-        {analysisSubTab === 'indicators' &&
-          <FinancialIndicatorsPanel
-            diagnosisId={diagnosisId}
-            periodFilter={periodFilter}
-            setPeriodFilter={setPeriodFilter}
-            tenantId={tenantId}
-            diagnosis={diagnosis}
-          />
-        }
-        {analysisSubTab === 'kanitz' &&
-          <KanitzInsolvencyCard diagnosisId={diagnosisId} />
-        }
-        {analysisSubTab === 'actions' &&
-          <FinancialActionsPanel diagnosisId={diagnosisId} tenantId={tenantId} diagnosis={diagnosis} />
-        }
+        <div className="p-6">
+          {analysisSubTab === 'statements' &&
+            <section>
+              <div className="flex items-center gap-2 mb-3">
+                <FileSpreadsheet className="w-4 h-4 text-slate-500" />
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Demonstrações</h3>
+              </div>
+              <StatementsTab
+                diagnosisId={diagnosisId}
+                uploadId={uploadId}
+                tenantId={tenantId}
+                uploads={uploads}
+                periodFilter={periodFilter}
+                setPeriodFilter={setPeriodFilter}
+                annualCount={annualCount}
+                setAnnualCount={setAnnualCount}
+                uploadMeta={uploadMeta}
+                selectedYear={selectedYear}
+              />
+            </section>
+          }
+
+          {analysisSubTab === 'indicators' &&
+            <section>
+              <FinancialIndicatorsPanel
+                diagnosisId={diagnosisId}
+                periodFilter={periodFilter}
+                setPeriodFilter={setPeriodFilter}
+                tenantId={tenantId}
+                diagnosis={diagnosis}
+              />
+            </section>
+          }
+
+          {analysisSubTab === 'kanitz' &&
+            <section>
+              <div className="flex items-center gap-2 mb-3">
+                <AlertTriangle className="w-4 h-4 text-slate-500" />
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Kanitz</h3>
+              </div>
+              <KanitzInsolvencyCard diagnosisId={diagnosisId} />
+            </section>
+          }
+
+          {analysisSubTab === 'actions' &&
+            <section>
+              <div className="flex items-center gap-2 mb-3">
+                <CheckCircle2 className="w-4 h-4 text-slate-500" />
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Ações & Achados</h3>
+              </div>
+              <FinancialActionsPanel diagnosisId={diagnosisId} tenantId={tenantId} diagnosis={diagnosis} />
+            </section>
+          }
+
+          {analysisSubTab === 'report' &&
+            <section>
+              <FinancialReportPanel diagnosisId={diagnosisId} tenantId={tenantId} diagnosis={diagnosis} />
+            </section>
+          }
+        </div>
       </div>
     );
   }
@@ -1626,12 +1681,27 @@ export default function FinancialDiagnosisDetail() {
           await base44.functions.invoke('buildFinancialStatements', { diagnosis_id: diagnosisId, prepared_run_id: run.id });
         }
         try { await base44.functions.invoke('finalizeFinancialInsights', { financial_diagnosis_id: diagnosisId }); } catch (e) { console.warn('[reprocess] finalize falhou', e); }
-        setReprocessStatus({ step: 2, total: 2, uploadLabel: '', phase: 'done', failures: [] });
       } catch (e) {
         setReprocessError(`Reprocessamento multi-entidade falhou: ${e.message || e}`);
-        setReprocessStatus({ step: 2, total: 2, uploadLabel: '', phase: 'done', failures: [e.message] });
       }
+
+      // Mesma correção do fluxo individual: só declara "concluído" depois
+      // que o escopo/telas realmente refletirem os dados novos.
+      setReprocessStatus({ step: 2, total: 2, uploadLabel: 'Atualizando telas', phase: 'verifying', percent: 100 });
       await invalidateFinancialQueries(queryClient, diagnosisId, tenantId);
+      try {
+        const freshScope = await queryClient.fetchQuery({
+          queryKey: currentFinancialScopeKey(tenantId, diagnosisId),
+          queryFn: () => resolveCurrentFinancialOutputScope(diagnosisId),
+        });
+        if (freshScope?.processing_run_id) {
+          await queryClient.refetchQueries({
+            queryKey: [...financialKey(tenantId, diagnosisId, 'statements'), freshScope.snapshot_id, freshScope.processing_run_id],
+          });
+        }
+      } catch (e) {
+        console.warn('[reprocess] falha ao confirmar escopo atualizado das demonstrações', e);
+      }
       // 12: Não forçar análise — refetch journey e usar current_step do backend
       await queryClient.refetchQueries({ queryKey: financialKey(tenantId, diagnosisId, 'journey-state') });
       /** @type {FinancialJourneyState|undefined} */
@@ -1641,6 +1711,7 @@ export default function FinancialDiagnosisDetail() {
       } else {
         setActiveStep(refreshedJourney?.current_step || 'fontes');
       }
+      setReprocessStatus({ step: 2, total: 2, uploadLabel: '', phase: 'done', failures: reprocessError ? [reprocessError] : [] });
       setReprocessing(false);
       setTimeout(() => setReprocessStatus(null), 5000);
       return;
@@ -1683,12 +1754,37 @@ export default function FinancialDiagnosisDetail() {
       console.warn('[FinancialDiagnosisDetail] finalizeFinancialInsights falhou no reprocessamento', e);
     }
 
-    setReprocessStatus({ step: total, total, uploadLabel: '', phase: 'done', failures });
     if (failures.length > 0) {
       setReprocessError(`${failures.length} período(s) com falha: ${failures.join(' | ')}`);
     }
 
+    // A animação só declara "concluído" DEPOIS que as telas já têm os
+    // dados novos em cache — não só depois que os builds terminam. Antes,
+    // "done" era setado aqui em cima e a invalidação/refetch só rodava
+    // depois, então o usuário via "Reprocessamento concluído!" enquanto a
+    // aba Demonstrações ainda lia o processing_run_id antigo (via
+    // useCurrentFinancialOutputScope, cujo cache tem chave própria e só
+    // passou a ser invalidado corretamente agora) e mostrava "ainda não
+    // disponíveis".
+    setReprocessStatus({ step: total, total, uploadLabel: 'Atualizando telas', phase: 'verifying', percent: 100 });
+
     await invalidateFinancialQueries(queryClient, diagnosisId, tenantId);
+    // Busca o escopo atual (processing_run_id) já fresco e, com ele,
+    // busca de fato as linhas das demonstrações — só então a tela tem os
+    // dados prontos no momento em que o banner de "concluído" aparece.
+    try {
+      const freshScope = await queryClient.fetchQuery({
+        queryKey: currentFinancialScopeKey(tenantId, diagnosisId),
+        queryFn: () => resolveCurrentFinancialOutputScope(diagnosisId),
+      });
+      if (freshScope?.processing_run_id) {
+        await queryClient.refetchQueries({
+          queryKey: [...financialKey(tenantId, diagnosisId, 'statements'), freshScope.snapshot_id, freshScope.processing_run_id],
+        });
+      }
+    } catch (e) {
+      console.warn('[reprocess] falha ao confirmar escopo atualizado das demonstrações', e);
+    }
     // 12: Não forçar análise após falhas — refetch journey e usar current_step do backend
     await queryClient.refetchQueries({ queryKey: financialKey(tenantId, diagnosisId, 'journey-state') });
     /** @type {FinancialJourneyState|undefined} */
@@ -1698,6 +1794,7 @@ export default function FinancialDiagnosisDetail() {
     } else {
       setActiveStep(refreshedJourney?.current_step || 'fontes');
     }
+    setReprocessStatus({ step: total, total, uploadLabel: '', phase: 'done', failures });
     setReprocessing(false);
     setTimeout(() => setReprocessStatus(null), failures.length > 0 ? 8000 : 3000);
   };
@@ -1888,7 +1985,7 @@ export default function FinancialDiagnosisDetail() {
         diagnosis={diagnosis}
         statusCfg={statusCfg}
         backLabel={backLabel}
-        onBack={() => navigate(-1)}
+        onBack={() => navigate(backUrl)}
         analysisTypeBadge={ANALYSIS_TYPE_CONFIG[diagnosis.analysis_type] || ANALYSIS_TYPE_CONFIG.individual}
         onReprocessar={() => setShowReprocessConfirm(true)}
         reprocessing={reprocessing}
@@ -1964,6 +2061,7 @@ export default function FinancialDiagnosisDetail() {
               <p className="text-xs text-slate-500 mt-0.5">
                 {reprocessStatus.phase === 'purging' && '🧹 Limpando dados anteriores...'}
                 {reprocessStatus.phase === 'building' && '⚙️ Reconstruindo demonstrativos e indicadores...'}
+                {reprocessStatus.phase === 'verifying' && '🔄 Sincronizando telas com os novos dados...'}
                 {reprocessStatus.phase === 'done' && '✅ Demonstrativos e indicadores atualizados com sucesso.'}
               </p>
             </div>

@@ -148,7 +148,7 @@ export default function SystemLaunches() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-8">
       <header className="space-y-2">
         <p className="text-xs uppercase tracking-wide fal-muted">Operação do sistema</p>
         <h1 className="fal-title text-2xl flex items-center gap-2">

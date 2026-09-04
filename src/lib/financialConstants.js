@@ -379,75 +379,75 @@ export const SCOPE_LEVEL_LABEL = {
 // ─── ESTRUTURA CANÔNICA DO BALANÇO PATRIMONIAL ────────────────────────────────
 
 export const BP_GROUPS = [
-  { key: 'Ativo circulante',       side: 'ativo',   label: 'Ativo Circulante',       display_order: 10 },
-  { key: 'Ativo não circulante',   side: 'ativo',   label: 'Ativo Não Circulante',   display_order: 20 },
-  { key: 'Passivo circulante',     side: 'passivo', label: 'Passivo Circulante',      display_order: 30 },
-  { key: 'Passivo não circulante', side: 'passivo', label: 'Passivo Não Circulante',  display_order: 40 },
-  { key: 'Patrimônio líquido',     side: 'passivo', label: 'Patrimônio Líquido',      display_order: 50 },
+  { key: 'Ativo circulante',       side: 'ativo',   label: 'Ativo circulante',       display_order: 10 },
+  { key: 'Ativo não circulante',   side: 'ativo',   label: 'Ativo não circulante',   display_order: 20 },
+  { key: 'Passivo circulante',     side: 'passivo', label: 'Passivo circulante',      display_order: 30 },
+  { key: 'Passivo não circulante', side: 'passivo', label: 'Passivo não circulante',  display_order: 40 },
+  { key: 'Patrimônio líquido',     side: 'passivo', label: 'Patrimônio líquido',      display_order: 50 },
 ];
 
 // BP_RUBRICS — espelha exatamente CANONICAL_RUBRIC_LABEL e CANONICAL_META do backend.
 // REGRA: qualquer novo canonical_key do BP deve entrar aqui E no backend simultaneamente.
 export const BP_RUBRICS = {
   'Ativo circulante': [
-    { canonical_key: 'ativo_circulante_caixa',         rubric_label: 'Caixa e Equivalentes de Caixa', display_order: 10 },
-    { canonical_key: 'ativo_circulante_receber',        rubric_label: 'Contas a Receber',              display_order: 20 },
+    { canonical_key: 'ativo_circulante_caixa',         rubric_label: 'Caixa e equivalentes de caixa', display_order: 10 },
+    { canonical_key: 'ativo_circulante_receber',        rubric_label: 'Contas a receber',              display_order: 20 },
     { canonical_key: 'ativo_circulante_estoques',       rubric_label: 'Estoques',                      display_order: 30 },
-    { canonical_key: 'ativo_circulante_impostos',       rubric_label: 'Impostos a Recuperar',          display_order: 40 },
-    { canonical_key: 'ativo_circulante_biologicos',     rubric_label: 'Ativos Biológicos',             display_order: 50 },
+    { canonical_key: 'ativo_circulante_impostos',       rubric_label: 'Impostos a recuperar',          display_order: 40 },
+    { canonical_key: 'ativo_circulante_biologicos',     rubric_label: 'Ativos biológicos',             display_order: 50 },
     // aliases que o backend pode gerar para biológicos (variação de nomenclatura do Excel)
-    { canonical_key: 'ativo_biologico',                 rubric_label: 'Ativos Biológicos',             display_order: 50 },
-    { canonical_key: 'ativo_circulante_outros',         rubric_label: 'Outros Créditos',               display_order: 60 },
+    { canonical_key: 'ativo_biologico',                 rubric_label: 'Ativos biológicos',             display_order: 50 },
+    { canonical_key: 'ativo_circulante_outros',         rubric_label: 'Outros créditos',               display_order: 60 },
   ],
   'Ativo não circulante': [
-    { canonical_key: 'ativo_nc_aplicacoes',             rubric_label: 'Aplicações Financeiras',        display_order: 10 },
-    { canonical_key: 'ativo_nc_receber_lp',             rubric_label: 'Contas a Receber LP',           display_order: 20 },
-    { canonical_key: 'ativo_nc_impostos_lp',            rubric_label: 'Impostos a Recuperar LP',       display_order: 30 },
-    { canonical_key: 'ativo_nc_impostos_diferidos',     rubric_label: 'Impostos Diferidos',            display_order: 40 },
-    { canonical_key: 'ativo_nc_outros_creditos',        rubric_label: 'Outros Créditos LP',            display_order: 50 },
+    { canonical_key: 'ativo_nc_aplicacoes',             rubric_label: 'Aplicações financeiras',        display_order: 10 },
+    { canonical_key: 'ativo_nc_receber_lp',             rubric_label: 'Contas a receber LP',           display_order: 20 },
+    { canonical_key: 'ativo_nc_impostos_lp',            rubric_label: 'Impostos a recuperar LP',       display_order: 30 },
+    { canonical_key: 'ativo_nc_impostos_diferidos',     rubric_label: 'Impostos diferidos',            display_order: 40 },
+    { canonical_key: 'ativo_nc_outros_creditos',        rubric_label: 'Outros créditos LP',            display_order: 50 },
     { canonical_key: 'ativo_nc_investimentos',          rubric_label: 'Investimentos',                 display_order: 60 },
-    { canonical_key: 'ativo_nc_direitos_uso',           rubric_label: 'Direitos de Uso',               display_order: 70 },
+    { canonical_key: 'ativo_nc_direitos_uso',           rubric_label: 'Direitos de uso',               display_order: 70 },
     { canonical_key: 'ativo_nao_circulante',            rubric_label: 'Imobilizado',                   display_order: 80 },
     { canonical_key: 'ativo_nc_intangivel',             rubric_label: 'Intangível',                    display_order: 90 },
   ],
   'Passivo circulante': [
-    { canonical_key: 'passivo_circulante_trabalhistas',  rubric_label: 'Obrigações Trabalhistas',      display_order: 10 },
-    { canonical_key: 'passivo_circulante_fiscais',       rubric_label: 'Obrigações Fiscais',           display_order: 20 },
+    { canonical_key: 'passivo_circulante_trabalhistas',  rubric_label: 'Obrigações trabalhistas',      display_order: 10 },
+    { canonical_key: 'passivo_circulante_fiscais',       rubric_label: 'Obrigações fiscais',           display_order: 20 },
     // aliases gerados pelo backend para obrigações fiscais/tributárias
-    { canonical_key: 'obrigacoes_tributarias',           rubric_label: 'Obrigações Tributárias',       display_order: 22 },
+    { canonical_key: 'obrigacoes_tributarias',           rubric_label: 'Obrigações tributárias',       display_order: 22 },
     { canonical_key: 'passivo_circulante_fornecedores',  rubric_label: 'Fornecedores',                 display_order: 30 },
     // alias direto gerado quando classification = "Fornecedores" sem alias match
     { canonical_key: 'fornecedores',                     rubric_label: 'Fornecedores',                 display_order: 32 },
-    { canonical_key: 'passivo_circulante_emprestimos',   rubric_label: 'Empréstimos e Financiamentos', display_order: 40 },
-    { canonical_key: 'passivo_circulante_imoveis',       rubric_label: 'Obrig. por Aquisição de Imóveis', display_order: 50 },
-    { canonical_key: 'passivo_circulante_arrendamentos', rubric_label: 'Arrendamentos a Pagar',        display_order: 60 },
-    { canonical_key: 'passivo_circulante_adiantamentos', rubric_label: 'Adiantamentos de Clientes',    display_order: 70 },
-    { canonical_key: 'passivo_circulante_outros',        rubric_label: 'Outras Contas a Pagar',        display_order: 80 },
+    { canonical_key: 'passivo_circulante_emprestimos',   rubric_label: 'Empréstimos e financiamentos', display_order: 40 },
+    { canonical_key: 'passivo_circulante_imoveis',       rubric_label: 'Obrig. por aquisição de imóveis', display_order: 50 },
+    { canonical_key: 'passivo_circulante_arrendamentos', rubric_label: 'Arrendamentos a pagar',        display_order: 60 },
+    { canonical_key: 'passivo_circulante_adiantamentos', rubric_label: 'Adiantamentos de clientes',    display_order: 70 },
+    { canonical_key: 'passivo_circulante_outros',        rubric_label: 'Outras contas a pagar',        display_order: 80 },
   ],
   'Passivo não circulante': [
-    { canonical_key: 'passivo_nao_circulante',           rubric_label: 'Empréstimos e Financiamentos LP',   display_order: 10 },
-    { canonical_key: 'passivo_nc_imoveis_lp',            rubric_label: 'Obrig. por Aquisição de Imóveis LP', display_order: 20 },
-    { canonical_key: 'passivo_nc_arrendamentos_lp',      rubric_label: 'Arrendamentos a Pagar LP',           display_order: 30 },
+    { canonical_key: 'passivo_nao_circulante',           rubric_label: 'Empréstimos e financiamentos LP',   display_order: 10 },
+    { canonical_key: 'passivo_nc_imoveis_lp',            rubric_label: 'Obrig. por aquisição de imóveis LP', display_order: 20 },
+    { canonical_key: 'passivo_nc_arrendamentos_lp',      rubric_label: 'Arrendamentos a pagar LP',           display_order: 30 },
   ],
   'Patrimônio líquido': [
-    { canonical_key: 'patrimonio_capital',               rubric_label: 'Capital Social',               display_order: 10 },
+    { canonical_key: 'patrimonio_capital',               rubric_label: 'Capital social',               display_order: 10 },
     { canonical_key: 'patrimonio_reservas',              rubric_label: 'Reservas',                     display_order: 20 },
-    { canonical_key: 'patrimonio_reservas_fiscais',      rubric_label: 'Reserva de Incentivos Fiscais', display_order: 30 },
-    { canonical_key: 'patrimonio_liquido',               rubric_label: 'Lucros Acumulados',            display_order: 40 },
-    { canonical_key: 'patrimonio_prejuizos',             rubric_label: 'Prejuízos Acumulados',         display_order: 50 },
+    { canonical_key: 'patrimonio_reservas_fiscais',      rubric_label: 'Reserva de incentivos fiscais', display_order: 30 },
+    { canonical_key: 'patrimonio_liquido',               rubric_label: 'Lucros acumulados',            display_order: 40 },
+    { canonical_key: 'patrimonio_prejuizos',             rubric_label: 'Prejuízos acumulados',         display_order: 50 },
     // aliases gerados pelo backend para variações de nomenclatura de lucros/prejuízos
-    { canonical_key: 'lucros_(prejuizos)_acumulados',    rubric_label: 'Lucros (Prejuízos) Acumulados', display_order: 55 },
-    { canonical_key: 'resultado_do_exercicio',           rubric_label: 'Resultado do Exercício',        display_order: 45 },
-    { canonical_key: 'lucro_do_exercicio',               rubric_label: 'Lucro do Exercício',            display_order: 45 },
-    { canonical_key: 'prejuizo_do_exercicio',            rubric_label: 'Prejuízo do Exercício',         display_order: 55 },
+    { canonical_key: 'lucros_(prejuizos)_acumulados',    rubric_label: 'Lucros (prejuízos) acumulados', display_order: 55 },
+    { canonical_key: 'resultado_do_exercicio',           rubric_label: 'Resultado do exercício',        display_order: 45 },
+    { canonical_key: 'lucro_do_exercicio',               rubric_label: 'Lucro do exercício',            display_order: 45 },
+    { canonical_key: 'prejuizo_do_exercicio',            rubric_label: 'Prejuízo do exercício',         display_order: 55 },
     // alias genérico de custo no PL (erro de classificação — aparece aqui para não sumir)
     { canonical_key: 'custo',                            rubric_label: '(-) Custo (reclassificar)',     display_order: 99 },
   ],
 };
 
 export const BP_TOTALS = [
-  { canonical_key: 'total_ativo',      rubric_label: 'Total do Ativo',                      side: 'ativo'   },
-  { canonical_key: 'total_passivo_pl', rubric_label: 'Total Passivo e Patrimônio Líquido',  side: 'passivo' },
+  { canonical_key: 'total_ativo',      rubric_label: 'Total do ativo',                      side: 'ativo'   },
+  { canonical_key: 'total_passivo_pl', rubric_label: 'Total passivo e patrimônio líquido',  side: 'passivo' },
 ];
 
 // Mapa flat canonical_key → { group, rubric_label, display_order } para lookup rápido
@@ -461,37 +461,37 @@ export const BP_DISPLAY_ORDER = Object.entries(BP_RUBRICS).flatMap(([group, rubr
 //                Resultado Financeiro Líquido | Resultado Antes do IR | Resultado Líquido
 
 export const DRE_GROUPS = [
-  { key: 'Receita',               label: 'Receita Líquida',       display_order: 10 },
+  { key: 'Receita',               label: 'Receita líquida',       display_order: 10 },
   { key: 'Custo',                 label: 'Custo',                 display_order: 20 },
-  { key: 'Despesas operacionais', label: 'Despesas Operacionais', display_order: 30 },
-  { key: 'Resultado financeiro',  label: 'Resultado Financeiro',  display_order: 40 },
-  { key: 'Impostos',              label: 'Impostos sobre o Lucro',display_order: 50 },
+  { key: 'Despesas operacionais', label: 'Despesas operacionais', display_order: 30 },
+  { key: 'Resultado financeiro',  label: 'Resultado financeiro',  display_order: 40 },
+  { key: 'Impostos',              label: 'Impostos sobre o lucro',display_order: 50 },
 ];
 
 export const DRE_RUBRICS = [
   // ── Receita ──────────────────────────────────────────────────────────────────
-  { canonical_key: 'receita_bruta',           rubric_label: 'Receita Bruta',                        group: 'Receita',               display_order: 10 },
-  { canonical_key: 'deducoes_tributarias',    rubric_label: '(-) Deduções Tributárias',             group: 'Receita',               display_order: 20 },
-  { canonical_key: 'devolucoes_abatimentos',  rubric_label: '(-) Devoluções e Abatimentos',         group: 'Receita',               display_order: 30 },
+  { canonical_key: 'receita_bruta',           rubric_label: 'Receita bruta',                        group: 'Receita',               display_order: 10 },
+  { canonical_key: 'deducoes_tributarias',    rubric_label: '(-) Deduções tributárias',             group: 'Receita',               display_order: 20 },
+  { canonical_key: 'devolucoes_abatimentos',  rubric_label: '(-) Devoluções e abatimentos',         group: 'Receita',               display_order: 30 },
   // ── Custo ────────────────────────────────────────────────────────────────────
   { canonical_key: 'custo_produtos',          rubric_label: '(-) Custo',                            group: 'Custo',                 display_order: 10 },
   // ── Despesas Operacionais ────────────────────────────────────────────────────
-  { canonical_key: 'despesas_gerais_admin',   rubric_label: '(-) Gerais e Administrativas',         group: 'Despesas operacionais', display_order: 10 },
+  { canonical_key: 'despesas_gerais_admin',   rubric_label: '(-) Gerais e administrativas',         group: 'Despesas operacionais', display_order: 10 },
   { canonical_key: 'despesas_comerciais',     rubric_label: '(-) Comerciais',                       group: 'Despesas operacionais', display_order: 20 },
-  { canonical_key: 'outras_receitas_despesas',rubric_label: '(+/-) Outras Receitas e Despesas',     group: 'Despesas operacionais', display_order: 30 },
+  { canonical_key: 'outras_receitas_despesas',rubric_label: '(+/-) Outras receitas e despesas',     group: 'Despesas operacionais', display_order: 30 },
   // ── Resultado Financeiro ─────────────────────────────────────────────────────
-  { canonical_key: 'receitas_financeiras',    rubric_label: '(+) Receitas Financeiras',             group: 'Resultado financeiro',  display_order: 10 },
-  { canonical_key: 'despesas_financeiras',    rubric_label: '(-) Despesas Financeiras',             group: 'Resultado financeiro',  display_order: 20 },
+  { canonical_key: 'receitas_financeiras',    rubric_label: '(+) Receitas financeiras',             group: 'Resultado financeiro',  display_order: 10 },
+  { canonical_key: 'despesas_financeiras',    rubric_label: '(-) Despesas financeiras',             group: 'Resultado financeiro',  display_order: 20 },
   // ── Impostos ─────────────────────────────────────────────────────────────────
-  { canonical_key: 'ir_csll',                 rubric_label: '(-) Imposto de Renda e CSLL — Correntes', group: 'Impostos',          display_order: 10 },
-  { canonical_key: 'ir_diferido',             rubric_label: '(-) Imposto de Renda e CSLL — Diferidos', group: 'Impostos',          display_order: 20 },
+  { canonical_key: 'ir_csll',                 rubric_label: '(-) Imposto de renda e CSLL — correntes', group: 'Impostos',          display_order: 10 },
+  { canonical_key: 'ir_diferido',             rubric_label: '(-) Imposto de renda e CSLL — diferidos', group: 'Impostos',          display_order: 20 },
 ];
 
 // Totalizadores calculados — aparecem APÓS cada grupo
 export const DRE_FORMULAS = [
   {
     canonical_key:  'receita_liquida',
-    rubric_label:   'Receita Líquida',
+    rubric_label:   'Receita líquida',
     group:          'Receita',
     line_type:      'calculated',
     display_order:  200,
@@ -499,7 +499,7 @@ export const DRE_FORMULAS = [
   },
   {
     canonical_key:  'lucro_bruto',
-    rubric_label:   'Lucro Bruto',
+    rubric_label:   'Lucro bruto',
     group:          'Custo',
     line_type:      'calculated',
     display_order:  200,
@@ -507,7 +507,7 @@ export const DRE_FORMULAS = [
   },
   {
     canonical_key:  'resultado_operacional',
-    rubric_label:   'Resultado Operacional',
+    rubric_label:   'Resultado operacional',
     group:          'Despesas operacionais',
     line_type:      'calculated',
     display_order:  200,
@@ -515,7 +515,7 @@ export const DRE_FORMULAS = [
   },
   {
     canonical_key:  'resultado_financeiro_liquido',
-    rubric_label:   'Resultado Financeiro Líquido',
+    rubric_label:   'Resultado financeiro líquido',
     group:          'Resultado financeiro',
     line_type:      'calculated',
     display_order:  200,
@@ -523,7 +523,7 @@ export const DRE_FORMULAS = [
   },
   {
     canonical_key:  'resultado_antes_ir',
-    rubric_label:   'Resultado Antes dos Impostos sobre o Lucro',
+    rubric_label:   'Resultado antes dos impostos sobre o lucro',
     group:          'Resultado financeiro',
     line_type:      'calculated',
     display_order:  300,
@@ -531,7 +531,7 @@ export const DRE_FORMULAS = [
   },
   {
     canonical_key:  'resultado_liquido',
-    rubric_label:   'Resultado Líquido do Exercício',
+    rubric_label:   'Resultado líquido do exercício',
     group:          'Impostos',
     line_type:      'total',
     display_order:  999,

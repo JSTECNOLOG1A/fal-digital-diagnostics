@@ -1,0 +1,120 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fal
+      POSTGRES_PASSWORD: fal_dev_only_change_me
+      POSTGRES_DB: fal
+    ports:
+      - "5433:5432"
+    volumes:
+      - fal_pg_data:/var/lib/postgresql/data
+      - ./backend/docker/init-fal-app-role.sql:/docker-entrypoint-initdb.d/01-fal-app-role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fal -d fal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: fal-redis
+    restart: unless-stopped
+    ports:
+      - "6381:6379"
+    volumes:
+      - fal_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: fal-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: fal
+      MINIO_ROOT_PASSWORD: fal_minio_dev_secret
+    ports:
+      - "9100:9000"
+      - "9101:9001"
+    volumes:
+      - fal_minio_data:/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fal-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    environment:
+      NODE_ENV: development
+      API_PORT: 3002
+      API_PREFIX: api/v1
+      CORS_ORIGINS: http://localhost:5174,http://127.0.0.1:5174
+      DATABASE_URL: postgresql://fal_app:fal_app_dev_only_change_me@postgres:5432/fal?schema=public
+      DATABASE_URL_OWNER: postgresql://fal:fal_dev_only_change_me@postgres:5432/fal?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: dev-only-local-access-secret-change-me
+      JWT_ACCESS_TTL: 15m
+      JWT_REFRESH_TTL: 7d
+      CREDENTIALS_ENCRYPTION_KEY: fal-dev-only-change-me-please-32b
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ROOT_USER: fal
+      MINIO_ROOT_PASSWORD: fal_minio_dev_secret
+      # Puppeteer (financial-report-pdf.service.ts) navega até a rota de
+      # impressão do frontend por dentro da rede do compose — nome do
+      # serviço, não localhost/host do Windows.
+      FRONTEND_INTERNAL_URL: http://frontend:5174
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: fal-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    # Sem publicação de porta pro host: o frontend "de verdade" usado no
+    # navegador roda nativamente no Windows (npm run dev fora do Docker),
+    # já ocupando 5174 no host. Este container só existe para o Puppeteer
+    # do backend renderizar a rota de impressão do Relatório da Análise
+    # por dentro da rede interna do compose (http://frontend:5174) — não
+    # precisa e não deve tentar reservar a porta do host.
+    expose:
+      - "5174"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  # Aponta para os volumes já existentes criados pelo backend/docker-compose.yml
+  # (projeto "backend") para não perder os dados já gravados ao trocar para
+  # este compose consolidado na raiz.
+  fal_pg_data:
+    external: true
+    name: backend_fal_pg_data
+  fal_redis_data:
+    external: true
+    name: backend_fal_redis_data
+  fal_minio_data:
+    external: true
+    name: backend_fal_minio_data

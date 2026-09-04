@@ -85,12 +85,12 @@ export default function PortfolioKpiTable({ rankings = [] }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50">
+              <tr className="bg-slate-800">
                 {COLUMNS.map(col => (
                   <th
                     key={col.key}
                     onClick={() => col.sortable && handleSort(col.key)}
-                    className={`py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider ${col.key === 'client_name' ? 'text-left' : 'text-center'} ${col.sortable ? 'cursor-pointer hover:text-slate-800 select-none' : ''}`}
+                    className={`py-3 px-4 text-xs font-semibold text-white uppercase tracking-wider ${col.key === 'client_name' ? 'text-left' : 'text-center'} ${col.sortable ? 'cursor-pointer hover:text-slate-200 select-none' : ''}`}
                   >
                     {col.label}<SortIcon col={col} />
                   </th>

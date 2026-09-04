@@ -72,16 +72,11 @@ const EDITABLE_COLS = [
   },
   { key: 'canonical_key', label: 'Chave Canônica', type: 'text' },
   { key: 'dfc_classification', label: 'DFC', type: 'text' },
-  {
-    key: 'sign_rule',
-    label: 'Sinal',
-    type: 'select',
-    options: [
-      { value: '', label: '— limpar —' },
-      { value: 'normal', label: 'normal' },
-      { value: 'inverted', label: 'inverted' },
-    ],
-  },
+  // Coluna "Sinal" (sign_rule) removida propositalmente: o sinal apresentado nas
+  // demonstrações é 100% automático (ver applySign() em buildFinancialStatements),
+  // derivado do sinal original do balancete + do demonstrativo (Ativo mantém,
+  // Passivo/PL e DRE invertem). Não existe controle manual por conta — expor esse
+  // campo aqui sugeria (incorretamente) que ele era editável e usado no cálculo.
 ];
 
 // ─── Célula editável ──────────────────────────────────────────────────────────
@@ -584,15 +579,15 @@ export default function PlanLinesView({ plan, tenantId, onBack, onImportTab }) {
       ) : (
         <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid var(--fal-border-soft)' }}>
           <table className="w-full text-xs whitespace-nowrap">
-            <thead style={{ background: 'var(--fal-bg-muted)' }}>
+            <thead style={{ background: 'var(--table-header-bg)' }}>
               {/* Títulos */}
               <tr>
-                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--fal-text-muted)' }}>Código</th>
-                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--fal-text-muted)' }}>Tipo</th>
-                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--fal-text-muted)', minWidth: 180 }}>Descrição</th>
+                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--table-header-fg)' }}>Código</th>
+                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--table-header-fg)' }}>Tipo</th>
+                <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--table-header-fg)', minWidth: 180 }}>Descrição</th>
                 {EDITABLE_COLS.map((col) => (
                   <th key={col.key} className="text-left px-2 py-2 font-semibold"
-                    style={{ color: 'var(--fal-text-muted)', minWidth: col.type === 'text' ? 140 : 130 }}>
+                    style={{ color: 'var(--table-header-fg)', minWidth: col.type === 'text' ? 140 : 130 }}>
                     {col.label}
                   </th>
                 ))}

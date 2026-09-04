@@ -29,6 +29,7 @@ import KanbanTab from '@/components/actionplan/KanbanTab';
 import ActionPlanReviewTimeline from '@/components/fal/ActionPlanReviewTimeline';
 import AddManualTaskModal from '@/components/fal/AddManualTaskModal';
 import RecommendationsTab from '@/components/actionplan/RecommendationsTab';
+import { useTaxReformMethodVersion } from '@/lib/hooks/useTaxReformMethodVersion';
 
 const PLAN_TABS = [
   { key: 'dashboard',       label: 'Dashboard',         icon: TrendingUp },
@@ -234,25 +235,33 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
  * @param {any=} props.onGo8D
  */
 export default function GroupActionPlanCentral({ groupId, tenantId, onGo8D }) {
+  // Esta aba é a Central do Plano de Ação do FAL 8D clássico. Precisa excluir
+  // diagnósticos de métodos com banco de perguntas próprio (ex.: Reforma
+  // Tributária 8D) do mesmo grupo, senão o predicado de seleção abaixo não
+  // tem como desempatar entre os dois métodos. Não dá pra filtrar por
+  // "method_version_id: null" porque o Assessment do FAL 8D normalmente já
+  // aponta pra um MethodVersion real (via useTenant().methodVersion).
+  const { methodVersion: taxReformMethodVersion, isLoading: loadingTaxReformMethod } = useTaxReformMethodVersion();
   const { data: byTarget = [], isLoading: l1 } = useQuery({
-    queryKey: tenantKey(tenantId, 'aplan-by-target', groupId),
+    queryKey: tenantKey(tenantId, 'aplan-by-target', groupId, 'fal8d'),
     queryFn: () => base44.entities.Assessment.filter(
       { target_type: 'group', target_id: groupId, tenant_id: tenantId }, '-created_date', 10
     ),
     enabled: !!groupId && !!tenantId,
   });
   const { data: byGroup = [], isLoading: l2 } = useQuery({
-    queryKey: tenantKey(tenantId, 'aplan-by-group', groupId),
+    queryKey: tenantKey(tenantId, 'aplan-by-group', groupId, 'fal8d'),
     queryFn: () => base44.entities.Assessment.filter(
       { group_id: groupId, tenant_id: tenantId }, '-created_date', 10
     ),
     enabled: !!groupId && !!tenantId,
   });
 
-  const isLoading = l1 || l2;
+  const isLoading = l1 || l2 || loadingTaxReformMethod;
 
   const allAssessments = [...byTarget, ...byGroup];
-  const unique = Array.from(new Map(allAssessments.map(a => [a.id, a])).values());
+  const unique = Array.from(new Map(allAssessments.map(a => [a.id, a])).values())
+    .filter(a => (a.method_version_id || null) !== (taxReformMethodVersion?.id || '__none__'));
   const assessment =
     unique.find(a => a.status !== 'archived' && (a.assessment_mode === 'multi_entity_master' || a.target_type === 'group')) ||
     unique.find(a => a.status !== 'archived') ||

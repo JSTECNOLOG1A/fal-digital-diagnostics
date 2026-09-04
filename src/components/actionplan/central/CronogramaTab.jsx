@@ -42,7 +42,7 @@ function TaskRow({ task, onOpenTask, variant }) {
             daysLeft !== null && daysLeft <= 7 ? 'text-amber-600' :
             'text-slate-500'
           }`}>
-            {format(new Date(task.due_date + 'T12:00'), 'dd/MM/yyyy')}
+            {format(new Date(String(task.due_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy')}
             {variant === 'overdue' && ` (${Math.abs(daysLeft)}d atrás)`}
             {variant !== 'overdue' && daysLeft !== null && daysLeft <= 7 && ` (${daysLeft}d)`}
           </span>

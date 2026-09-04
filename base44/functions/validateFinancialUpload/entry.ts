@@ -86,8 +86,11 @@ const REQUIRED_SHEETS = [
 
 // Colunas da aba Balancete (alinhadas com blueprint V1)
 // Obrigatórias (blocking: true): account_code | account_description | classification | closing_balance
-// Recomendadas (blocking: false): statement_code | statement_group | sign_rule | opening_balance | debits | credits
+// Recomendadas (blocking: false): statement_code | statement_group | opening_balance | debits | credits
 // Opcionais (optional: true): display_order | note_reference | classification_source | cash_flow_tag
+// Nota: "sign_rule" (Sinal) não é mais solicitado — o sinal é sempre derivado
+// automaticamente pelo motor (statement_code + sinal original do balancete),
+// nunca informado manualmente pelo usuário.
 const REQUIRED_COLUMNS_PATTERNS = [
   { key: 'account_code',          patterns: ['account_code','conta','codigo','cod','code','account'],                 blocking: true,  message: 'Coluna obrigatória de código da conta não encontrada (account_code).' },
   { key: 'account_description',   patterns: ['account_description','descricao','description','nome','name'],          blocking: true,  message: 'Coluna obrigatória de descrição da conta não encontrada (account_description).' },
@@ -96,7 +99,6 @@ const REQUIRED_COLUMNS_PATTERNS = [
   // Recomendadas
   { key: 'statement_code',        patterns: ['statement_code','demonstracao','demonstração','statement'],              blocking: false, message: 'Coluna "statement_code" (BP ou DRE) não encontrada. Recomendada para definir explicitamente em qual demonstrativo cada rubrica entra.' },
   { key: 'statement_group',       patterns: ['statement_group','grupo_demonstracao','grupo gerencial','section'],      blocking: false, message: 'Coluna "statement_group" não encontrada. Recomendada para definir o bloco visual (ex: Ativo circulante, Receita operacional).' },
-  { key: 'sign_rule',             patterns: ['sign_rule','regra_sinal','regrasinal','sinal','sign'],                   blocking: false, message: 'Coluna "sign_rule" não encontrada. Recomendada para contas que exigem inversão de sinal na composição (valores: normal | invert).' },
   { key: 'opening_balance',       patterns: ['opening_balance','saldo inicial','saldoinicial','opening'],              blocking: false, message: 'Coluna de saldo inicial (opening_balance) não encontrada. Recomendada para conferência de integridade.' },
   { key: 'debits',                patterns: ['debits','débitos','debitos','debit'],                                    blocking: false, message: 'Coluna de débitos (debits) não encontrada. Recomendada para conferência de integridade.' },
   { key: 'credits',               patterns: ['credits','créditos','creditos','credit'],                                blocking: false, message: 'Coluna de créditos (credits) não encontrada. Recomendada para conferência de integridade.' },
@@ -280,9 +282,9 @@ Deno.serve(async (req) => {
   // Usar cópia local para não mutar a constante global (evita bugs em chamadas concorrentes)
   const columnsToCheck = REQUIRED_COLUMNS_PATTERNS.map(c => ({ ...c }));
   if (hasAccountPlan) {
-    // Com plano vinculado: classification, statement_code, statement_group e sign_rule
+    // Com plano vinculado: classification, statement_code e statement_group
     // são todos opcionais — o plano de contas fornece essa informação automaticamente
-    ['classification', 'statement_code', 'statement_group', 'sign_rule'].forEach(k => {
+    ['classification', 'statement_code', 'statement_group'].forEach(k => {
       const col = columnsToCheck.find(c => c.key === k);
       if (col) {
         col.blocking = false;
@@ -307,7 +309,7 @@ Deno.serve(async (req) => {
       category: CATEGORY.MAPEAMENTO,
       code: 'ACCOUNT_PLAN_LINKED',
       title: 'Plano de contas gerencial vinculado',
-      message: 'A classificação gerencial será feita automaticamente pelo plano de contas vinculado. As colunas "classification", "statement_code", "statement_group" e "sign_rule" são opcionais neste modo.',
+      message: 'A classificação gerencial será feita automaticamente pelo plano de contas vinculado. As colunas "classification", "statement_code" e "statement_group" são opcionais neste modo.',
       blocking: false,
     });
   }

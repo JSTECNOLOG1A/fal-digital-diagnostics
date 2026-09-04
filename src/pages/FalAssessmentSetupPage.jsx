@@ -24,6 +24,7 @@ import {
   validateDimensionTargetMapping,
 } from '@/lib/falAssessmentScopeUtils.js';
 import { DIMENSION_KEYS_ORDERED } from '@/lib/falDimensionScopePolicy.js';
+import { useTaxReformMethodVersion } from '@/lib/hooks/useTaxReformMethodVersion';
 
 // ─── Wizard steps ─────────────────────────────────────────────────────────────
 const STEPS = [
@@ -90,6 +91,7 @@ function StepIndicator({ steps, currentStep }) {
 function FalAssessmentSetupPageInner() {
   const navigate = useNavigate();
   const { tenantId, user, methodVersion } = useTenant();
+  const { methodVersion: taxReformMethodVersion } = useTaxReformMethodVersion();
   const queryClient = useQueryClient();
 
   const [step, setStep] = useState('general');
@@ -103,16 +105,30 @@ function FalAssessmentSetupPageInner() {
   // Pre-fill group from URL param if available
   const urlParams = new URLSearchParams(window.location.search);
   const urlGroupId = urlParams.get('group_id') || '';
+  // ?method=reforma_tributaria abre este mesmo wizard apontando pro banco de
+  // perguntas da Reforma Tributária 8D em vez do FAL 8D clássico — mesmo
+  // layout, dimension_target_mapping e AssessmentScopes, método diferente.
+  const isTaxReform = urlParams.get('method') === 'reforma_tributaria';
+  const activeMethodVersion = isTaxReform ? taxReformMethodVersion : methodVersion;
+  const diagnosticLabel = isTaxReform ? 'Reforma Tributária 8D' : 'FAL';
 
   const [form, setForm] = useState({
     title: '',
     group_id: urlGroupId,
     group_name: '',
     diagnostic_cycle: String(new Date().getFullYear()),
-    method_version_id: methodVersion?.id || '',
+    method_version_id: activeMethodVersion?.id || '',
     config_type: 'recommended',
     diagnostic_depth: 'standard',
   });
+
+  // O MethodVersion certo pode ainda não ter chegado no primeiro render
+  // (query assíncrona) — sincroniza assim que resolver.
+  React.useEffect(() => {
+    if (activeMethodVersion?.id && !form.method_version_id) {
+      setForm(prev => ({ ...prev, method_version_id: activeMethodVersion.id }));
+    }
+  }, [activeMethodVersion?.id]);
 
   // Load group name if pre-filled from URL
   useQuery({
@@ -131,14 +147,17 @@ function FalAssessmentSetupPageInner() {
     return d;
   });
 
-  // Existing assessments for cycle_number computation
+  // Existing assessments for cycle_number computation — escopado ao mesmo
+  // método sendo criado (FAL 8D vs Reforma Tributária 8D), senão um
+  // diagnóstico de um tipo conta como "ciclo" do outro e a checagem de
+  // duplicidade dispara para o tipo errado.
   const { data: existingAssessments = [] } = useQuery({
-    queryKey: ['setup-existing-assessments', form.group_id],
+    queryKey: ['setup-existing-assessments', form.group_id, isTaxReform ? 'reforma_tributaria' : 'fal8d'],
     queryFn: () => base44.entities.Assessment.filter(
-      { group_id: form.group_id, assessment_mode: 'multi_entity_master' },
+      { group_id: form.group_id, assessment_mode: 'multi_entity_master', method_version_id: activeMethodVersion?.id ?? null },
       '-created_date', 100
     ),
-    enabled: !!form.group_id,
+    enabled: !!form.group_id && (isTaxReform ? !!taxReformMethodVersion : true),
   });
 
   // Load group entities when group is selected
@@ -244,7 +263,7 @@ function FalAssessmentSetupPageInner() {
       target_type: 'group',
       target_id: form.group_id,
       group_id: form.group_id,
-      method_version_id: form.method_version_id || methodVersion?.id || '',
+      method_version_id: form.method_version_id || activeMethodVersion?.id || '',
       diagnostic_cycle: form.diagnostic_cycle,
       dimension_target_mapping: mapping,
       linked_entities,
@@ -289,7 +308,7 @@ function FalAssessmentSetupPageInner() {
       <div className="bg-slate-900 text-white px-6 py-3 flex items-center justify-between flex-shrink-0">
         <div>
           <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">FAL® Digital</p>
-          <h1 className="text-sm font-bold">Novo Diagnóstico FAL</h1>
+          <h1 className="text-sm font-bold">Novo Diagnóstico {diagnosticLabel}</h1>
         </div>
         <button
           onClick={() => navigate(-1)}
@@ -370,6 +389,8 @@ function FalAssessmentSetupPageInner() {
                     form={form}
                     onChange={patch => setForm(prev => ({ ...prev, ...patch }))}
                     onForceCreate={allowed => setCanProceed(allowed)}
+                    diagnosticLabel={diagnosticLabel}
+                    methodVersionId={activeMethodVersion?.id ?? null}
                   />
                 )}
 
@@ -442,12 +463,12 @@ function FalAssessmentSetupPageInner() {
               ) : (
                 <Button
                   onClick={handleSave}
-                  disabled={saving || !canAdvance}
+                  disabled={saving || !canAdvance || !activeMethodVersion?.id}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 min-w-40"
                 >
                   {saving
                     ? <><Loader2 className="w-4 h-4 animate-spin" /> Criando...</>
-                    : <><CheckCircle2 className="w-4 h-4" /> Criar Diagnóstico FAL</>
+                    : <><CheckCircle2 className="w-4 h-4" /> Criar Diagnóstico {diagnosticLabel}</>
                   }
                 </Button>
               )}

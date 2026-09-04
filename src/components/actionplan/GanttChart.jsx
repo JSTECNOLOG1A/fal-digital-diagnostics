@@ -60,7 +60,7 @@ export default function GanttChart({ tasks, reviews = [], onOpenTask }) {
       .filter(r => r.review_date)
       .map(r => ({
         id: r.id,
-        date: parseISO(r.review_date + 'T12:00'),
+        date: parseISO(String(r.review_date).slice(0, 10) + 'T12:00'),
         label: `Revisão #${r.review_number}`,
         type: r.status === 'completed' ? 'review_done' : 'review',
         status: r.status,

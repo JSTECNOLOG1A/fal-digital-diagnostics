@@ -132,7 +132,7 @@ export default function ActionPlanReviewTimeline({ planId, tenantId, expanded: _
                       )}
                     </span>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {review.review_date ? new Date(review.review_date + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
+                      {review.review_date ? new Date(String(review.review_date).slice(0, 10) + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       {review.consultant_name ? ` · ${review.consultant_name}` : ''}
                     </p>
                   </div>

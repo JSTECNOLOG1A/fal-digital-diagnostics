@@ -18,10 +18,7 @@ const SCOPE_LABEL = {
 };
 
 export function getFindingKeyFromRecommendation(rec) {
-  const tag = (rec.related_indicator_codes || []).find(c =>
-    typeof c === 'string' && c.startsWith('__fk__:')
-  );
-  return tag ? tag.replace('__fk__:', '') : null;
+  return rec.financial_finding_id || null;
 }
 
 /**
@@ -109,7 +106,7 @@ export default function FinancialRecommendationsTab({ diagnosisId, tenantId }) {
 
   const findingByKey = {};
   for (const f of findings) {
-    if (f.finding_key) findingByKey[f.finding_key] = f;
+    if (f.id) findingByKey[f.id] = f;
   }
 
   const groups = { period_snapshot: [], period_comparison: [], structural_validation: [], other: [] };

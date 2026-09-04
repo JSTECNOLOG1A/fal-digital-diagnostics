@@ -129,7 +129,7 @@ export default function ReviewEvolutionChart({ baselineSnapshot, reviews = [] })
     dataPoints.push({
       label: `R${rev.review_number}`,
       dateLabel: rev.review_date
-        ? format(new Date(rev.review_date + 'T12:00'), "dd/MM/yyyy", { locale: ptBR })
+        ? format(new Date(String(rev.review_date).slice(0, 10) + 'T12:00'), "dd/MM/yyyy", { locale: ptBR })
         : `Revisão ${rev.review_number}`,
       score,
       level: rev.fal_level_snapshot ?? null,

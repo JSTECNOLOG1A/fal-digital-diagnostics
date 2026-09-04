@@ -56,10 +56,10 @@ export default function PortfolioRiskMap({ rankings = [] }) {
       <CardContent className="p-0 overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-slate-100">
-              <th className="text-left p-3 text-slate-500 font-medium bg-slate-50 sticky left-0 z-10 min-w-[140px]">Cliente</th>
+            <tr className="bg-slate-800">
+              <th className="text-left p-3 text-white font-medium bg-slate-800 sticky left-0 z-10 min-w-[140px]">Cliente</th>
               {dimList.map(d => (
-                <th key={d} className="p-2 text-slate-500 font-medium text-center whitespace-nowrap">
+                <th key={d} className="p-2 text-white font-medium text-center whitespace-nowrap">
                   {DIMENSION_LABELS[d] || d}
                 </th>
               ))}

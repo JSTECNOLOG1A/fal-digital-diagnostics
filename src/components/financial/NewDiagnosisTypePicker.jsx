@@ -11,7 +11,7 @@
  */
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ClipboardList, BarChart3, ArrowRight } from 'lucide-react';
+import { ClipboardList, BarChart3, Scale, ArrowRight } from 'lucide-react';
 
 const TYPES = [
   {
@@ -40,6 +40,20 @@ const TYPES = [
     badge: 'Novo',
     badgeCls: 'bg-blue-600',
   },
+  {
+    key: 'tax_reform',
+    icon: Scale,
+    iconColor: 'text-orange-600',
+    bgColor: 'bg-orange-50',
+    borderColor: 'border-orange-200 hover:border-orange-400',
+    title: 'Reforma Tributária 8D',
+    subtitle: 'Prontidão para a transição do IBS/CBS',
+    description: 'Mesmo questionário 8D do Método FAL™, com banco de perguntas próprio para medir a prontidão da empresa para a Reforma Tributária: governança, jurídico, controles, financeiro, contábil, tributário, operacional e sistemas.',
+    descriptionComplement: 'Gera plano de ação de migração organizacional separado, com recomendações por empresa/unidade pendentes de aprovação.',
+    tags: ['Questionário', '8 dimensões', 'Múltiplas entidades', 'Plano de ação'],
+    badge: 'Novo',
+    badgeCls: 'bg-orange-600',
+  },
 ];
 
 /**
@@ -48,11 +62,13 @@ const TYPES = [
  * @param {any=} props.onClose
  * @param {any=} props.onSelectFal
  * @param {any=} props.onSelectFinancial
+ * @param {any=} props.onSelectTaxReform
  */
-export default function NewDiagnosisTypePicker({ open, onClose, onSelectFal, onSelectFinancial }) {
+export default function NewDiagnosisTypePicker({ open, onClose, onSelectFal, onSelectFinancial, onSelectTaxReform }) {
   function handleSelect(key) {
     if (key === 'fal') onSelectFal?.();
     else if (key === 'financial') onSelectFinancial?.();
+    else if (key === 'tax_reform') onSelectTaxReform?.();
   }
 
   return (

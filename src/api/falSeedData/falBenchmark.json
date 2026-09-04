@@ -1,0 +1,326 @@
+[
+  {
+    "cluster_key": "acompanhamento_resultados_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster acompanhamento resultados."
+  },
+  {
+    "cluster_key": "apuracao_tributos_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster apuracao tributos."
+  },
+  {
+    "cluster_key": "ativo_biologico_cpc29_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster ativo biologico cpc29."
+  },
+  {
+    "cluster_key": "carteira_clientes_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster carteira clientes."
+  },
+  {
+    "cluster_key": "compliance_contabil_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster compliance contabil."
+  },
+  {
+    "cluster_key": "compras_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster compras."
+  },
+  {
+    "cluster_key": "contencioso_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster contencioso."
+  },
+  {
+    "cluster_key": "contratos_comerciais_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster contratos comerciais."
+  },
+  {
+    "cluster_key": "contratos_operacionais_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster contratos operacionais."
+  },
+  {
+    "cluster_key": "controle_estoques_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster controle estoques."
+  },
+  {
+    "cluster_key": "custos_agricolas_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster custos agricolas."
+  },
+  {
+    "cluster_key": "demonstracoes_financeiras_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster demonstracoes financeiras."
+  },
+  {
+    "cluster_key": "endividamento_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster endividamento."
+  },
+  {
+    "cluster_key": "enquadramento_tributario_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster enquadramento tributario."
+  },
+  {
+    "cluster_key": "estrategia_comercial_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster estrategia comercial."
+  },
+  {
+    "cluster_key": "estrutura_capital_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster estrutura capital."
+  },
+  {
+    "cluster_key": "estrutura_governanca_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster estrutura governanca."
+  },
+  {
+    "cluster_key": "estrutura_societaria_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster estrutura societaria."
+  },
+  {
+    "cluster_key": "financas_agro_cpr_barter_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster financas agro cpr barter."
+  },
+  {
+    "cluster_key": "folha_admissao_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster folha admissao."
+  },
+  {
+    "cluster_key": "folha_demissao_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster folha demissao."
+  },
+  {
+    "cluster_key": "folha_promocoes_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster folha promocoes."
+  },
+  {
+    "cluster_key": "gestao_caixa_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao caixa."
+  },
+  {
+    "cluster_key": "gestao_imobilizado_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao imobilizado."
+  },
+  {
+    "cluster_key": "gestao_insumos_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao insumos."
+  },
+  {
+    "cluster_key": "gestao_pessoas_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao pessoas."
+  },
+  {
+    "cluster_key": "gestao_producao_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao producao."
+  },
+  {
+    "cluster_key": "gestao_riscos_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao riscos."
+  },
+  {
+    "cluster_key": "gestao_safra_e_logistica_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster gestao safra e logistica."
+  },
+  {
+    "cluster_key": "indicadores_comerciais_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster indicadores comerciais."
+  },
+  {
+    "cluster_key": "indicadores_financeiros_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster indicadores financeiros."
+  },
+  {
+    "cluster_key": "indicadores_operacionais_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster indicadores operacionais."
+  },
+  {
+    "cluster_key": "infraestrutura_tecnologica_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster infraestrutura tecnologica."
+  },
+  {
+    "cluster_key": "inteligencia_mercado_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster inteligencia mercado."
+  },
+  {
+    "cluster_key": "modelo_negocio_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster modelo negocio."
+  },
+  {
+    "cluster_key": "obrigacoes_acessorias_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster obrigacoes acessorias."
+  },
+  {
+    "cluster_key": "organizacao_contabil_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster organizacao contabil."
+  },
+  {
+    "cluster_key": "planejamento_estrategico_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster planejamento estrategico."
+  },
+  {
+    "cluster_key": "planejamento_financeiro_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster planejamento financeiro."
+  },
+  {
+    "cluster_key": "planejamento_produtivo_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster planejamento produtivo."
+  },
+  {
+    "cluster_key": "posicionamento_mercado_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster posicionamento mercado."
+  },
+  {
+    "cluster_key": "processo_decisorio_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster processo decisorio."
+  },
+  {
+    "cluster_key": "receitas_faturamento_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster receitas faturamento."
+  },
+  {
+    "cluster_key": "regularidade_ambiental_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster regularidade ambiental."
+  },
+  {
+    "cluster_key": "regularidade_fundiaria_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster regularidade fundiaria."
+  },
+  {
+    "cluster_key": "relacionamento_bancario_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster relacionamento bancario."
+  },
+  {
+    "cluster_key": "riscos_fiscais_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster riscos fiscais."
+  },
+  {
+    "cluster_key": "riscos_trabalhistas_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster riscos trabalhistas."
+  },
+  {
+    "cluster_key": "segregacao_funcoes_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster segregacao funcoes."
+  },
+  {
+    "cluster_key": "seguranca_informacao_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster seguranca informacao."
+  },
+  {
+    "cluster_key": "sistemas_gestao_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster sistemas gestao."
+  },
+  {
+    "cluster_key": "tesouraria_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster tesouraria."
+  },
+  {
+    "cluster_key": "transparencia_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster transparencia."
+  },
+  {
+    "cluster_key": "tributario_agro_especifico_cluster",
+    "sector": "agronegocio",
+    "benchmark_value": "maturidade_nivel_4",
+    "benchmark_description": "Empresas maduras possuem governança e controle consolidados no cluster tributario agro especifico."
+  }
+]

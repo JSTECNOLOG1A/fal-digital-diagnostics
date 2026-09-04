@@ -58,7 +58,7 @@ export default function PreparationPanel({ diagnosisId, diagnosis }) {
   const handleBuildAll = async () => {
     const preparedRuns = runs.filter((r) => r.status === 'prepared' && !r.superseded_by_run_id);
     if (preparedRuns.length === 0) {
-      setMessage({ type: 'error', text: 'Nenhum run preparado. Execute "Preparar Dataset" primeiro.' });
+      setMessage({ type: 'error', text: 'Nenhum run preparado. Execute "Preparar dataset" primeiro.' });
       return;
     }
     setBuilding(true);
@@ -140,7 +140,7 @@ export default function PreparationPanel({ diagnosisId, diagnosis }) {
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <div className="flex items-center gap-3 flex-wrap">
           <Button onClick={handlePrepare} disabled={preparing || building || scopeEntities.length === 0} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-            {preparing ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparando...</> : <><Play className="w-4 h-4" /> Preparar Dataset</>}
+            {preparing ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparando...</> : <><Play className="w-4 h-4" /> Preparar dataset</>}
           </Button>
           {activeRun && (
             <Button onClick={() => handleBuildAll()} disabled={preparing || building} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">

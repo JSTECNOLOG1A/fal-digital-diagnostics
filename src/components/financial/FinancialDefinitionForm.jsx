@@ -504,7 +504,7 @@ export default function FinancialDefinitionForm({ diagnosis, diagnosisId, tenant
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-slate-500">
                       Vigência: {selectedPlan.valid_from ?
-                    new Date(selectedPlan.valid_from + 'T12:00').toLocaleDateString('pt-BR') :
+                    new Date(String(selectedPlan.valid_from).slice(0, 10) + 'T12:00').toLocaleDateString('pt-BR') :
                     '—'} em diante
                     </p>
                     <Link

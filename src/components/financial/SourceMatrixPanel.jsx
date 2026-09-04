@@ -108,12 +108,12 @@ export default function SourceMatrixPanel({ diagnosis, scopeEntities = [], uploa
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-4 py-2.5 text-xs font-semibold text-slate-500">Entidade</th>
+            <tr className="bg-slate-800">
+              <th className="text-left px-4 py-2.5 text-xs font-semibold text-white">Entidade</th>
               {periods.map((p) => (
-                <th key={p.key} className="text-center px-3 py-2.5 text-xs font-semibold text-slate-500 whitespace-nowrap">{p.label}</th>
+                <th key={p.key} className="text-center px-3 py-2.5 text-xs font-semibold text-white whitespace-nowrap">{p.label}</th>
               ))}
-              <th className="text-center px-3 py-2.5 text-xs font-semibold text-slate-500">Status</th>
+              <th className="text-center px-3 py-2.5 text-xs font-semibold text-white">Status</th>
             </tr>
           </thead>
           <tbody>

@@ -94,11 +94,11 @@ function ColumnGuide() {
       <div className="overflow-x-auto text-xs">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-slate-50">
-              <th className="px-3 py-2 text-left font-semibold text-slate-500 border border-slate-200">Cabeçalho (col. Excel)</th>
-              <th className="px-3 py-2 text-left font-semibold text-slate-500 border border-slate-200">Campo</th>
-              <th className="px-3 py-2 text-left font-semibold text-slate-500 border border-slate-200">Exemplo</th>
-              <th className="px-3 py-2 text-left font-semibold text-slate-500 border border-slate-200">Obrig.</th>
+            <tr className="bg-slate-800">
+              <th className="px-3 py-2 text-left font-semibold text-white border border-slate-800">Cabeçalho (col. Excel)</th>
+              <th className="px-3 py-2 text-left font-semibold text-white border border-slate-800">Campo</th>
+              <th className="px-3 py-2 text-left font-semibold text-white border border-slate-800">Exemplo</th>
+              <th className="px-3 py-2 text-left font-semibold text-white border border-slate-800">Obrig.</th>
             </tr>
           </thead>
           <tbody>
@@ -554,15 +554,15 @@ function PlanLinesView({ plan, tenantId }) {
             <div className="overflow-x-auto rounded-xl border border-slate-200">
               <div className="overflow-x-auto">
                 <table className="w-full text-xs whitespace-nowrap">
-                  <thead className="bg-slate-50 sticky top-0">
+                  <thead className="bg-slate-800 sticky top-0">
                     <tr>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">account_code</th>
-                      <th className="text-center px-3 py-2.5 font-semibold text-slate-500">account_type</th>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">account_description</th>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">classification</th>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">statement_code</th>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">ebitda_component</th>
-                      <th className="text-left px-3 py-2.5 font-semibold text-slate-500">dfc_classification</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">account_code</th>
+                      <th className="text-center px-3 py-2.5 font-semibold text-white">account_type</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">account_description</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">classification</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">statement_code</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">ebitda_component</th>
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">dfc_classification</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -685,7 +685,7 @@ export default function FinancialAccountPlanManager() {
 
   if (!selectedPlan) {
     return (
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Planos de Contas Gerenciais</h1>
@@ -751,7 +751,7 @@ export default function FinancialAccountPlanManager() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => setSelectedPlan(null)}
