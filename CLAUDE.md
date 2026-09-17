@@ -32,7 +32,7 @@ Siga `docs/deploy/UPDATE.md`. Prompt completo: `docs/deploy/PROMPT-AGENTE-DEPLOY
 
 ### Produção
 - Host: https://metodofal.clarityib.com.br
-- Containers: `fal-prod-web`, `fal-prod-api`, `fal-prod-postgres`, `fal-prod-redis`
+- Containers: `fal-prod-web`, `fal-prod-api`, `fal-prod-postgres`, `fal-prod-redis`, `fal-prod-minio`
 - Aguardar healthy antes de declarar sucesso
 - Relatar hash do commit deployado
 
