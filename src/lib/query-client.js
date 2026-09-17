@@ -68,6 +68,18 @@ export const invalidateFinancialQueries = async (queryClient, diagnosisId = null
         if (Array.isArray(key) && key[0] === 'tenant' && key[2] === 'financial') {
           return !tenantId || key[1] === tenantId;
         }
+        // useCurrentFinancialOutputScope usa uma chave própria (não passa
+        // pela factory financialKey), formato ['financial-current-output-scope',
+        // tenantId, diagnosisId] — sem isso ela nunca cai no fallback legado
+        // abaixo (que é pulado de propósito quando tenantId existe, por
+        // segurança multi-tenant) e fica permanentemente desatualizada: a
+        // tela de demonstrações lê um processing_run_id antigo depois de
+        // reprocessar, que não bate com nenhuma linha ativa nova, e mostra
+        // "Demonstrações ainda não disponíveis" mesmo com os dados certos
+        // já salvos no banco.
+        if (Array.isArray(key) && key[0] === 'financial-current-output-scope') {
+          return !tenantId || key[1] === tenantId;
+        }
         // SEC-015: Legacy fallback — ONLY when tenantId is null (global admin context).
         // When tenantId is provided, do NOT touch legacy keys (prevents cross-tenant invalidation).
         if (tenantId) return false;

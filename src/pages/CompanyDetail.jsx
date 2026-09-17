@@ -24,6 +24,8 @@ import NewDiagnosisTypePicker from '@/components/financial/NewDiagnosisTypePicke
 import CreateFinancialDiagnosisDialog from '@/components/financial/CreateFinancialDiagnosisDialog.jsx';
 import { DIAGNOSIS_STATUS_CONFIG } from '@/lib/financialConstants';
 import PermissionGuard from '@/components/shared/PermissionGuard';
+import { OFFICIAL_DIMENSIONS } from '@/components/fal/entityNatureDimensionMap';
+import { useTaxReformMethodVersion } from '@/lib/hooks/useTaxReformMethodVersion';
 
 const UNIT_TYPES = ['Fazenda', 'Revenda', 'Indústria', 'Armazém', 'Logística', 'Administrativa', 'Outro'];
 
@@ -36,6 +38,7 @@ export default function CompanyDetail() {
   const params = new URLSearchParams(window.location.search);
   const companyId = params.get('id');
   const { user, methodVersion } = useTenant();
+  const { methodVersion: taxReformMethodVersion } = useTaxReformMethodVersion();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [tab, setTab] = useState('units');
@@ -44,6 +47,7 @@ export default function CompanyDetail() {
   const [editDialog, setEditDialog] = useState(false);
   const [typePicker, setTypePicker] = useState(false);
   const [financialDialog, setFinancialDialog] = useState(false);
+  const [taxReformDialog, setTaxReformDialog] = useState(false);
   const [unitForm, setUnitForm] = useState({ name: '', unit_type: 'Fazenda', location_state: '' });
 
   const tabContentRef = useRef(null);
@@ -137,7 +141,7 @@ export default function CompanyDetail() {
   ];
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <div className="flex items-center gap-2 text-sm text-slate-500 mb-6">
         {group && (
           <>
@@ -382,7 +386,25 @@ export default function CompanyDetail() {
         onClose={() => setTypePicker(false)}
         onSelectFal={() => { setTypePicker(false); setAssessmentDialog(true); }}
         onSelectFinancial={() => { setTypePicker(false); setFinancialDialog(true); }}
+        onSelectTaxReform={() => { setTypePicker(false); setTaxReformDialog(true); }}
       />
+
+      {taxReformDialog && (
+        <CreateAssessmentDialog
+          open={taxReformDialog}
+          onClose={() => setTaxReformDialog(false)}
+          targetType="company"
+          targetId={companyId}
+          groupId={company.group_id}
+          companyId={companyId}
+          tenantId={user?.tenant_id}
+          methodVersionId={taxReformMethodVersion?.id}
+          activeDimensionsOverride={OFFICIAL_DIMENSIONS}
+          userName={user?.email}
+          targetName={company?.name}
+          onCreated={(a) => window.location.href = createPageUrl(`AssessmentDetail?id=${a.id}`)}
+        />
+      )}
 
       {financialDialog && (
         <CreateFinancialDiagnosisDialog

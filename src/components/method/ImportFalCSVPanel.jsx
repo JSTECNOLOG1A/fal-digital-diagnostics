@@ -10,23 +10,15 @@ const DIM_LABELS = {
   juridico: 'Jurídico / Societário', operacional: 'Operacional', sistemas: 'Tecnologia / Sistemas',
 };
 
-const EXAMPLE_CSV = `id,dimension,subdimension,question_text,sector_applicability,weight,trigger_condition
-GOV-01,governanca,Estrutura de governança,"Existe instância formal de tomada de decisão estratégica?",all,3,
-GOV-02,governanca,Planejamento estratégico,"Há relatórios periódicos de gestão compartilhados com sócios/diretores?",all,2,
-GOV-03,governanca,Gestão de riscos,"A empresa possui mapeamento formal de riscos estratégicos?",all,2,
-JUR-01,juridico,Estrutura societária,"O contrato social está atualizado e registrado?",all,3,
-CI-01,controles_internos,Segregação de funções,"Existe separação formal entre quem autoriza e quem executa pagamentos?",all,3,
-FIN-01,financeiro,Fluxo de caixa,"A empresa possui fluxo de caixa projetado (mínimo 3 meses)?",all,3,
-FIN-02,financeiro,Planejamento financeiro,"Existe orçamento anual formalizado e acompanhado mensalmente?",all,2,
-FIN-03,financeiro,Endividamento e relação bancária,"A empresa conhece seu custo médio de capital?",all,2,
-FIN-04,financeiro,Indicadores financeiros,"São calculados indicadores de liquidez mensalmente?",all,1,
-CTB-01,contabil,Escrituração contábil,"A contabilidade está em dia e sem pendências fiscais?",all,3,
-TRB-01,tributario,Apuração tributária,"A empresa possui análise de enquadramento tributário atualizada?",all,3,
-TRB-02,tributario,Planejamento tributário,"Há planejamento tributário preventivo realizado anualmente?",all,2,
-OPR-01,operacional,Comercial,"Existem metas comerciais formalizadas e acompanhadas?",all,2,
-OPR-S01,operacional,Produção / operação,"Existe planejamento formal de safra com metas de produtividade?","agriculture;agro_livestock",2,agro_harvest
-SIS-01,sistemas,Sistemas de gestão,"A empresa utiliza ERP ou sistema integrado de gestão?",all,3,
-SIS-02,sistemas,Segurança da informação,"Existem políticas de backup e segurança de dados implementadas?",all,2,`;
+const EXAMPLE_CSV = `question_id,dimension_key,subdimension_key,cluster_key,process_stage,sequence_order,diagnostic_depth,level_applicability,question_text,question_weight,dependency
+governanca_estrutura_governanca_001,governanca,estrutura_governanca,estrutura_governanca_cluster,existence,1,"rapid,standard,deep","group,company,unit","Existe instância formal de tomada de decisão estratégica?",1,
+juridico_estrutura_societaria_001,juridico,estrutura_societaria,estrutura_societaria_cluster,existence,1,"rapid,standard,deep","group,company,unit","O contrato social está atualizado e registrado?",1,
+controles_internos_segregacao_funcoes_001,controles_internos,segregacao_funcoes,segregacao_funcoes_cluster,control,1,"standard,deep","company,unit","Existe separação formal entre quem autoriza e quem executa pagamentos?",1.15,
+financeiro_gestao_caixa_001,financeiro,gestao_caixa,gestao_caixa_cluster,existence,1,"rapid,standard,deep","group,company,unit","A empresa possui fluxo de caixa projetado (mínimo 3 meses)?",1,
+contabil_organizacao_contabil_001,contabil,organizacao_contabil,organizacao_contabil_cluster,existence,1,"rapid,standard,deep","company,unit","A contabilidade está em dia e sem pendências fiscais?",1,
+tributario_apuracao_tributos_001,tributario,apuracao_tributos,apuracao_tributos_cluster,existence,1,"rapid,standard,deep","group,company,unit","Existe procedimento formal definido para apuração dos tributos federais, estaduais e municipais?",1,
+operacional_gestao_producao_001,operacional,gestao_producao,gestao_producao_cluster,existence,1,"standard,deep","company,unit","Existe planejamento formal de safra com metas de produtividade?",1,
+sistemas_sistemas_gestao_001,sistemas,sistemas_gestao,sistemas_gestao_cluster,existence,1,"rapid,standard,deep","group,company,unit","A empresa utiliza ERP ou sistema integrado de gestão?",1,`;
 
 export default function ImportFalCSVPanel() {
   const [csvText, setCsvText] = useState('');
@@ -53,7 +45,7 @@ export default function ImportFalCSVPanel() {
     setLoading(true);
     setError(null);
     setPreview(null);
-    const res = await base44.functions.invoke('importFalQuestions', { csv_text: csvText, dry_run: true });
+    const res = await base44.functions.invoke('importFalQuestionBankV3', { csv_text: csvText, dry_run: true });
     if (res.data?.success === false || res.data?.errors) setError(res.data);
     else setPreview(res.data);
     setLoading(false);
@@ -63,7 +55,7 @@ export default function ImportFalCSVPanel() {
     setLoading(true);
     setError(null);
     setResult(null);
-    const res = await base44.functions.invoke('importFalQuestions', { csv_text: csvText, dry_run: false });
+    const res = await base44.functions.invoke('importFalQuestionBankV3', { csv_text: csvText, dry_run: false });
     if (res.data?.success === false || res.data?.errors) setError(res.data);
     else { setResult(res.data); setPreview(null); }
     setLoading(false);
@@ -92,7 +84,7 @@ export default function ImportFalCSVPanel() {
           <div>
             <p className="font-semibold mb-1">Colunas do CSV (na ordem):</p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
-              {['id', 'dimension', 'subdimension', 'question_text', 'sector_applicability', 'weight', 'trigger_condition'].map((col, i) => (
+              {['question_id', 'dimension_key', 'subdimension_key', 'cluster_key', 'process_stage', 'sequence_order', 'diagnostic_depth', 'level_applicability', 'question_text', 'question_weight (opc.)', 'dependency (opc.)'].map((col, i) => (
                 <span key={col} className="font-mono text-[11px]">{i + 1}. {col}</span>
               ))}
             </div>

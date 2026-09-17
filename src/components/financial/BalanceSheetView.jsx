@@ -44,6 +44,16 @@ const hasAnyValue = (valuesByPeriod, periods) =>
   });
 
 const COL_VALUE = 'w-32 shrink-0';
+/**
+ * Largura fixa da coluna de texto — antes era flex-1 (preenchia o espaço
+ * sobrando e truncava sem aviso quando a janela era estreita: rótulos como
+ * "Total do Passivo e Patrimônio Líquido" ou "Caixa Líquido das Atividades
+ * de Financiamento" cortavam com "…"). Calibrada medindo o rótulo real mais
+ * largo entre BP/DRE/DFC em negrito 13px ("Caixa Líquido das Atividades de
+ * Financiamento", ~287px) com folga — mesma régua fixa nas três telas,
+ * padrão auditoria (não redistribui conforme o conteúdo da linha).
+ */
+const COL_LABEL = 'w-80 shrink-0';
 
 /**
  * ValueCell — alinhamento contábil padrão.
@@ -76,7 +86,7 @@ function ValueCell({ value, className = '' }) {
 function GroupHeaderRow({ label, subtotalValues, periods }) {
   return (
     <div className="flex items-center px-5 py-[3px] mt-1 bg-slate-200 rounded-md">
-      <span className="flex-1 min-w-0 text-[12px] font-bold text-slate-700 uppercase tracking-wide truncate pr-2">{label}</span>
+      <span className={`${COL_LABEL} text-[12px] font-bold text-slate-700 uppercase tracking-wide truncate pr-2`}>{label}</span>
       {periods.map(p => (
         <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
           <ValueCell value={subtotalValues?.[p] ?? null} className="text-[12px] font-bold text-slate-700" />
@@ -98,7 +108,7 @@ function ComposedRow({ label, noteRef, valuesByPeriod, periods }) {
   if (!hasAnyValue(valuesByPeriod, periods)) return null;
   return (
     <div className="flex items-center px-5 py-[3px] hover:bg-slate-50">
-      <span className="flex-1 min-w-0 text-[13px] text-slate-700 pl-4 leading-snug truncate">
+      <span className={`${COL_LABEL} text-[13px] text-slate-700 pl-4 leading-snug truncate`}>
         {label}
         {noteRef && <sup className="text-[9px] text-slate-400 ml-0.5">{noteRef}</sup>}
       </span>
@@ -123,8 +133,8 @@ function ComposedRow({ label, noteRef, valuesByPeriod, periods }) {
 function ColHeader({ sideLabel, periods, periodLabelMap = {} }) {
   const showComparative = periods.length > 1;
   return (
-    <div className="flex items-center bg-slate-700 px-5 py-1.5">
-      <span className="flex-1 min-w-0 text-[11px] font-bold text-white uppercase tracking-widest truncate">{sideLabel}</span>
+    <div className="flex items-center bg-slate-800 px-5 py-1.5">
+      <span className={`${COL_LABEL} text-[11px] font-bold text-white uppercase tracking-widest truncate`}>{sideLabel}</span>
       {periods.map((p, idx) => {
         const label = periodLabelMap[p] || fmtPeriod(p);
         return (
@@ -175,7 +185,7 @@ function SidePanel({ sideLabel, groups, groupedLines, periods, periodLabelMap = 
   }
 
   return (
-    <div className="flex-1 min-w-0 flex flex-col">
+    <div className="flex flex-col">
       <ColHeader sideLabel={sideLabel} periods={periods} periodLabelMap={periodLabelMap} />
 
       {groups.map(groupDef => {
@@ -205,7 +215,7 @@ function SidePanel({ sideLabel, groups, groupedLines, periods, periodLabelMap = 
           <div className="h-2" />
           <div className="flex bg-slate-800 border-t-2 border-slate-600">
             <div className="flex-1 flex items-center px-5 py-1.5">
-              <span className="flex-1 min-w-0 text-[13px] font-bold text-white truncate pr-2">{totalLabel || `Total ${sideLabel}`}</span>
+              <span className={`${COL_LABEL} text-[13px] font-bold text-white truncate pr-2`}>{totalLabel || `Total ${sideLabel}`}</span>
               {periods.map(p => (
                 <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
                   <ValueCell value={sideSubtotals[p] ?? null} className="text-[13px] font-bold text-white" />
@@ -221,7 +231,7 @@ function SidePanel({ sideLabel, groups, groupedLines, periods, periodLabelMap = 
           <div className="h-2" />
           <div className="flex bg-slate-800 border-t-2 border-slate-600">
           <div className="flex-1 flex items-center px-5 py-2">
-            <span className="flex-1 min-w-0 text-[13px] font-bold text-white truncate pr-2">{totalLabel}</span>
+            <span className={`${COL_LABEL} text-[13px] font-bold text-white truncate pr-2`}>{totalLabel}</span>
             {periods.map(p => (
               <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
                 <ValueCell value={totalValues?.[p] ?? null} className="text-[13px] font-bold text-white" />
@@ -243,7 +253,7 @@ function TotalFooter({ ativoData, passivoData, periods }) {
     <div className="flex bg-slate-800 border-t-2 border-slate-600">
       {/* Lado Ativo */}
       <div className="flex-1 flex items-center px-5 py-1.5">
-        <span className="flex-1 min-w-0 text-[13px] font-bold text-white truncate pr-2">{ativoData.label}</span>
+        <span className={`${COL_LABEL} text-[13px] font-bold text-white truncate pr-2`}>{ativoData.label}</span>
         {periods.map(p => (
           <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
             <ValueCell value={ativoData.valuesByPeriod?.[p] ?? null} className="text-[13px] font-bold text-white" />
@@ -254,7 +264,7 @@ function TotalFooter({ ativoData, passivoData, periods }) {
       <div className="w-px bg-slate-600" />
       {/* Lado Passivo+PL */}
       <div className="flex-1 flex items-center px-5 py-1.5">
-        <span className="flex-1 min-w-0 text-[13px] font-bold text-white truncate pr-2">{passivoData.label}</span>
+        <span className={`${COL_LABEL} text-[13px] font-bold text-white truncate pr-2`}>{passivoData.label}</span>
         {periods.map(p => (
           <div key={p} className={`${COL_VALUE} flex justify-end shrink-0 pr-2`}>
             <ValueCell value={passivoData.valuesByPeriod?.[p] ?? null} className="text-[13px] font-bold text-white" />
@@ -358,15 +368,15 @@ export default function BalanceSheetView({ lines, periods, periodLabelMap = {}, 
   if (!isAnnual) {
     return (
       <div className="font-sans space-y-3">
-        <div className="border border-slate-200 rounded-xl overflow-hidden">
+        <div className="border border-slate-200 rounded-xl overflow-hidden w-fit">
           <SidePanel sideLabel="ATIVO" groups={ativoGroups} groupedLines={groupedLines}
             periods={sortedPeriods} periodLabelMap={periodLabelMap}
-            totalValues={ativoTotalValues} totalLabel="Total do Ativo" />
+            totalValues={ativoTotalValues} totalLabel="Total do ativo" />
         </div>
-        <div className="border border-slate-200 rounded-xl overflow-hidden">
+        <div className="border border-slate-200 rounded-xl overflow-hidden w-fit">
           <SidePanel sideLabel="PASSIVO E PATRIMÔNIO LÍQUIDO" groups={passivoGroups} groupedLines={groupedLines}
             periods={sortedPeriods} periodLabelMap={periodLabelMap}
-            totalValues={passivoTotalValues} totalLabel="Total Passivo e Patrimônio Líquido" />
+            totalValues={passivoTotalValues} totalLabel="Total passivo e patrimônio líquido" />
         </div>
         <p className="text-[10px] text-slate-400 px-1">Valores arredondados. Linhas sem saldo em nenhum período são ocultadas automaticamente.</p>
       </div>
@@ -377,10 +387,10 @@ export default function BalanceSheetView({ lines, periods, periodLabelMap = {}, 
   // totais de cada lado alinhados na base do painel (mt-auto) — sem rodapé duplicado.
   return (
     <div className="font-sans">
-      <div className="border border-slate-200 rounded-xl overflow-hidden w-full">
+      <div className="border border-slate-200 rounded-xl overflow-hidden w-fit">
         <div className="flex divide-x divide-slate-300">
-          <SidePanel sideLabel="ATIVO" groups={ativoGroups} groupedLines={groupedLines} periods={sortedPeriods} periodLabelMap={periodLabelMap} auditorStyle totalLabel="Total do Ativo" />
-          <SidePanel sideLabel="PASSIVO E PATRIMÔNIO LÍQUIDO" groups={passivoGroups} groupedLines={groupedLines} periods={sortedPeriods} periodLabelMap={periodLabelMap} auditorStyle totalLabel="Total do Passivo e Patrimônio Líquido" />
+          <SidePanel sideLabel="ATIVO" groups={ativoGroups} groupedLines={groupedLines} periods={sortedPeriods} periodLabelMap={periodLabelMap} auditorStyle totalLabel="Total do ativo" />
+          <SidePanel sideLabel="PASSIVO E PATRIMÔNIO LÍQUIDO" groups={passivoGroups} groupedLines={groupedLines} periods={sortedPeriods} periodLabelMap={periodLabelMap} auditorStyle totalLabel="Total do passivo e patrimônio líquido" />
         </div>
       </div>
     </div>

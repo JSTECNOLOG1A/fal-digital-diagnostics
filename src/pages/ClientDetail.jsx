@@ -31,7 +31,7 @@ export default function ClientDetail() {
   if (!client) return <div className="p-8 text-center text-slate-400">Carregando...</div>;
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <Link to={createPageUrl('Clients')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6">
         <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>

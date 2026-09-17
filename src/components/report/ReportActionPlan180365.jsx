@@ -74,9 +74,9 @@ function HorizonBlock({ title, color, bgColor, description, tasks, limit = 7 }) 
         <>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+              <tr style={{ background: '#1e293b' }}>
                 {['#', 'Ação', 'Prioridade', 'Responsável'].map((h) => (
-                  <th key={h} style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '6px 10px', textAlign: 'left', fontWeight: 700 }}>{h}</th>
+                  <th key={h} style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '6px 10px', textAlign: 'left', fontWeight: 700 }}>{h}</th>
                 ))}
               </tr>
             </thead>

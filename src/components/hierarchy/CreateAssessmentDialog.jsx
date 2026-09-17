@@ -54,13 +54,18 @@ function validateCompetence(value) {
  * @param {any=} props.userName
  * @param {any=} props.targetName
  * @param {any=} props.cycleId
+ * @param {any=} props.activeDimensionsOverride Quando informado, ignora a
+ *   sugestão de dimensões por tipo de alvo/natureza (heurística do FAL 8D
+ *   clássico) e usa essa lista fixa — usado por diagnósticos com banco de
+ *   perguntas próprio (ex.: Reforma Tributária 8D), onde as 8 dimensões
+ *   sempre se aplicam.
  * @param {any=} props.onCreated
  */
 export default function CreateAssessmentDialog({
   open, onClose,
   targetType, targetId, groupId, companyId, unitId,
   tenantId, methodVersionId, userName, targetName,
-  cycleId,
+  cycleId, activeDimensionsOverride,
   onCreated,
 }) {
   const queryClient = useQueryClient();
@@ -76,11 +81,15 @@ export default function CreateAssessmentDialog({
   const [duplicateConflict, setDuplicateConflict] = useState(null); // existing assessment in same competence
   const [resolvedName, setResolvedName] = useState(targetName || '');
 
-  // Check existing assessments for this target
+  // Check existing assessments for this target — escopado ao mesmo método
+  // (method_version_id) sendo criado, senão um diagnóstico de outro tipo
+  // (ex.: Reforma Tributária 8D) apareceria como "conflito de duplicidade"
+  // contra o FAL 8D clássico do mesmo alvo, quando na verdade são diagnósticos
+  // independentes.
   const { data: existingAssessments = [] } = useQuery({
-    queryKey: assessmentKey(tenantId, null, 'check', targetType, targetId),
+    queryKey: assessmentKey(tenantId, null, 'check', targetType, targetId, methodVersionId || 'fal8d'),
     queryFn: () => base44.entities.Assessment.filter(
-      { target_type: targetType, target_id: targetId },
+      { target_type: targetType, target_id: targetId, method_version_id: methodVersionId ?? null },
       '-created_date', 50
     ),
     enabled: !!targetType && !!targetId && open,
@@ -161,8 +170,12 @@ export default function CreateAssessmentDialog({
       if (u?.name) { resolvedTargetName = u.name; setResolvedName(u.name); }
     }
 
-    activeDimensions = sanitizeDimensions(activeDimensions);
-    if (activeDimensions.length === 0) activeDimensions = sanitizeDimensions(getSuggestedDimensions(targetType));
+    if (activeDimensionsOverride?.length) {
+      activeDimensions = sanitizeDimensions(activeDimensionsOverride);
+    } else {
+      activeDimensions = sanitizeDimensions(activeDimensions);
+      if (activeDimensions.length === 0) activeDimensions = sanitizeDimensions(getSuggestedDimensions(targetType));
+    }
 
     return { resolvedTenantId, resolvedTargetName, activeDimensions };
   }

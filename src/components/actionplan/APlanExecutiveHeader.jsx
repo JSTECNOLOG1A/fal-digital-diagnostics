@@ -25,7 +25,7 @@ export default function APlanExecutiveHeader({ tasks, recommendations, reviews }
     { label: 'Atrasadas', value: overdue, sub: 'tarefas', icon: Clock, cls: 'text-amber-600', bg: 'bg-amber-50' },
     { label: 'Bloqueadas', value: blocked, sub: 'tarefas', icon: Lock, cls: 'text-orange-600', bg: 'bg-orange-50' },
     { label: 'Sugestões', value: pendingRecs, sub: 'pendentes', icon: Lightbulb, cls: 'text-violet-600', bg: 'bg-violet-50' },
-    { label: 'Última revisão', value: lastReview ? format(new Date(lastReview.review_date + 'T12:00'), 'dd/MM') : '—', sub: lastReview ? `Rev. Nº${lastReview.review_number}` : 'Nenhuma', icon: Calendar, cls: 'text-slate-600', bg: 'bg-slate-50' },
+    { label: 'Última revisão', value: lastReview ? format(new Date(String(lastReview.review_date).slice(0, 10) + 'T12:00'), 'dd/MM') : '—', sub: lastReview ? `Rev. Nº${lastReview.review_number}` : 'Nenhuma', icon: Calendar, cls: 'text-slate-600', bg: 'bg-slate-50' },
   ];
 
   return (

@@ -30,6 +30,8 @@ const fmtPeriod = (p) => {
 };
 
 const COL_VALUE = 'w-32 shrink-0';
+/** Régua fixa de largura de texto — mesma calibração do BalanceSheetView.jsx (ver comentário lá). */
+const COL_LABEL = 'w-80 shrink-0';
 
 const BP_ORDER_MAP = {};
 for (const rubrics of Object.values(BP_RUBRICS)) {
@@ -69,6 +71,7 @@ const DFC_ORDER = [
 'dfc_aumento_reducao_liquida_caixa',
 'dfc_caixa_inicial',
 'dfc_caixa_final',
+'dfc_movimentacoes_nao_identificadas',
 'dfc_diferenca_validacao'];
 
 
@@ -167,7 +170,7 @@ function AnalyticalRubricRow({ rubric, sortedPeriods }) {
   const valuesByPeriod = rubric._valuesByPeriod || { [colKey]: rubric.impact_on_dfc };
   return (
     <div className="flex items-center px-5 py-[2px] hover:bg-slate-50/70">
-      <span className="flex-1 text-[12px] pl-10 truncate text-slate-600 flex items-center gap-1.5" title={rubric.rubric_label}>
+      <span className={`${COL_LABEL} text-[12px] pl-10 truncate text-slate-600 flex items-center gap-1.5`} title={rubric.rubric_label}>
         {rubric.rubric_label || rubric.rubric_key}
       </span>
       {sortedPeriods.map((p) =>
@@ -190,8 +193,8 @@ function ManualAdjustmentRow({ adjustment, sortedPeriods }) {
   const valuesByPeriod = adjustment._valuesByPeriod || { [colKey]: adjustment.value };
   return (
     <div className="flex items-center px-5 py-[2px] hover:bg-slate-50/70">
-      <span className="flex-1 text-[12px] pl-10 truncate text-slate-600 flex items-center gap-1.5" title={adjustment.label}>
-        
+      <span className={`${COL_LABEL} text-[12px] pl-10 truncate text-slate-600 flex items-center gap-1.5`} title={adjustment.label}>
+
         {adjustment.label}
       </span>
       {sortedPeriods.map((p) =>
@@ -212,7 +215,7 @@ function ManualAdjustmentRow({ adjustment, sortedPeriods }) {
 function SectionLabelRow({ label, sortedPeriods }) {
   return (
     <div className="flex items-center px-5 py-[3px] mt-1 bg-slate-200 rounded-md">
-      <span className="flex-1 text-[12px] font-bold text-slate-700 uppercase tracking-wide pl-4">{label}</span>
+      <span className={`${COL_LABEL} text-[12px] font-bold text-slate-700 uppercase tracking-wide pl-4 truncate`}>{label}</span>
       {sortedPeriods.map((p) =>
       <div key={p} className={`${COL_VALUE} shrink-0 pr-2`} />
       )}
@@ -350,14 +353,12 @@ export default function CashFlowStatementView({ lines, periods, periodLabelMap =
 
   const renderableLines = orderedLines.filter((l) => l.canonical_key !== 'dfc_diferenca_validacao');
 
-  const maxW = sortedPeriods.length === 1 ? 'max-w-2xl' : sortedPeriods.length === 2 ? 'max-w-3xl' : '';
-
   return (
     <div className="font-sans">
-      <div className={`border border-slate-200 rounded-xl overflow-hidden ${maxW}`}>
-        <div className="flex items-center bg-slate-700 px-5 py-1.5">
-          <div className="flex-1 min-w-0 flex items-center gap-3">
-            <span className="block text-[11px] font-bold text-white uppercase tracking-widest">descrição de rubricas</span>
+      <div className="border border-slate-200 rounded-xl overflow-hidden w-fit">
+        <div className="flex items-center bg-slate-800 px-5 py-1.5">
+          <div className={`${COL_LABEL} flex items-center gap-3`}>
+            <span className="block text-[11px] font-bold text-white uppercase tracking-widest truncate">descrição de rubricas</span>
           </div>
           {sortedPeriods.map((p) =>
           <div key={p} className={`${COL_VALUE} flex items-center justify-center shrink-0 pr-2`}>
@@ -376,16 +377,28 @@ export default function CashFlowStatementView({ lines, periods, periodLabelMap =
           const afterRubrics = afterBucket ? compByBucket[afterBucket] || [] : [];
           const manualActivity = MANUAL_ADJUSTMENT_ACTIVITY[line.canonical_key];
           const manualRows = manualActivity ? manualByActivity[manualActivity] || [] : [];
+          // Não é somada a nenhuma atividade de caixa (ver financial-statements.
+          // service.ts::buildDfc) — destaque em âmbar quando não-zero pra não
+          // ficar escondida como uma linha qualquer: precisa de classificação
+          // manual (aporte/dividendo com efeito caixa vs. ajuste sem efeito
+          // caixa vs. reclassificação interna) antes da versão definitiva.
+          const isUnidentifiedPending =
+            line.canonical_key === 'dfc_movimentacoes_nao_identificadas' &&
+            sortedPeriods.some((p) => Math.abs(line.valuesByPeriod?.[p] ?? 0) >= 0.01);
 
           const lineBg = isDarkTotal ?
           'bg-slate-800 border-t-2 border-slate-600 mt-2' :
           isTotal ?
           'bg-slate-100 border-t border-slate-300' :
+          isUnidentifiedPending ?
+          'bg-amber-50 border-t border-amber-200' :
           'hover:bg-slate-50';
           const lineTextClass = isDarkTotal ?
           'font-bold text-white' :
           isTotal ?
           'font-bold text-slate-800' :
+          isUnidentifiedPending ?
+          'font-semibold text-amber-800' :
           'text-slate-700';
 
           return (
@@ -404,7 +417,7 @@ export default function CashFlowStatementView({ lines, periods, periodLabelMap =
               }
 
               <div className={`flex items-center px-5 py-1.5 ${lineBg}`}>
-                <span className={`flex-1 text-[13px] pl-4 truncate ${lineTextClass}`}>
+                <span className={`${COL_LABEL} text-[13px] pl-4 truncate ${lineTextClass}`}>
                   {line.rubric_label}
                 </span>
                 {sortedPeriods.map((p) => {
@@ -430,7 +443,7 @@ export default function CashFlowStatementView({ lines, periods, periodLabelMap =
           if (!caixaFinal) return null;
           return (
             <div className="flex items-center px-5 py-1.5 bg-slate-800 border-t-2 border-slate-600">
-              <span className="flex-1 text-[13px] pl-4 truncate font-bold text-white">
+              <span className={`${COL_LABEL} text-[13px] pl-4 truncate font-bold text-white`}>
                 Aumento do saldo de caixa e equivalentes de caixa
               </span>
               {sortedPeriods.map((p) => {

@@ -35,8 +35,11 @@ export default function KanitzInsolvencyCard({ diagnosisId }) {
 
   const { data: plAlerts = [] } = useQuery({
     queryKey: [...financialKey(tenantId, diagnosisId, 'validations-kanitz'), currentScope?.snapshot_id, currentScope?.processing_run_id],
+    // Mesmo ajuste dos outros consumidores nesta leva — active já é o
+    // critério certo de "vale agora" (ver rawIndicators acima, que já
+    // seguia esse padrão); processing_run_id só aponta pro último build.
     queryFn: () => base44.entities.FinancialValidationResult.filter(
-      { financial_diagnosis_id: diagnosisId, processing_run_id:currentScope.processing_run_id, publication_status:'active', code: 'KANITZ_PL_NON_POSITIVE' }, '-created_date', 5
+      { financial_diagnosis_id: diagnosisId, publication_status:'active', code: 'KANITZ_PL_NON_POSITIVE' }, '-created_date', 5
     ),
     enabled: !!currentScope?.processing_run_id,
   });

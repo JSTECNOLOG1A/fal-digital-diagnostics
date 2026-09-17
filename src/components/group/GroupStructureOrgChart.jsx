@@ -972,7 +972,7 @@ export default function GroupStructureOrgChart({ group, tenantId, onAddCompany }
           <div className="overflow-x-auto rounded-lg border border-slate-200">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-[11px] uppercase tracking-wide text-slate-400">
+                <tr className="bg-slate-800 text-[11px] uppercase tracking-wide text-white">
                   <th className="w-10 px-3 py-2 font-medium" />
                   <th className="px-3 py-2 font-medium">Empresa</th>
                   <th className="px-3 py-2 font-medium">Documento</th>

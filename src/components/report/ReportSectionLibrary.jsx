@@ -133,11 +133,11 @@ export function DimensionProfileSection({ payload }) {
 
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 24 }}>
         <thead>
-          <tr style={{ borderBottom: '2px solid #0f172a' }}>
-            <th style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'left', fontWeight: 700 }}>Dimensão</th>
-            <th style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'center', fontWeight: 700 }}>Score</th>
-            <th style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'center', fontWeight: 700 }}>Nível</th>
-            <th style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'right', fontWeight: 700 }}>Tendência</th>
+          <tr style={{ background: '#1e293b' }}>
+            <th style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'left', fontWeight: 700 }}>Dimensão</th>
+            <th style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'center', fontWeight: 700 }}>Score</th>
+            <th style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'center', fontWeight: 700 }}>Nível</th>
+            <th style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '8px 10px', textAlign: 'right', fontWeight: 700 }}>Tendência</th>
           </tr>
         </thead>
         <tbody>

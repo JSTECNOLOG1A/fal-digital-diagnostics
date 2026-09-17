@@ -124,7 +124,7 @@ export default function DimensionEvolutionChart({ assessmentId, planId, reviews 
       points.push({
         label: `R${rev.review_number}`,
         dateLabel: rev.review_date
-          ? format(new Date(rev.review_date + 'T12:00'), 'dd/MM/yyyy', { locale: ptBR })
+          ? format(new Date(String(rev.review_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy', { locale: ptBR })
           : `Revisão ${rev.review_number}`,
         isBaseline: false,
         reviewNumber: rev.review_number,

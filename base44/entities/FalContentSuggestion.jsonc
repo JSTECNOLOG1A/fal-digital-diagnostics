@@ -1,0 +1,81 @@
+{
+  "name": "FalContentSuggestion",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "null = sugestão para a biblioteca global do Motor FAL"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "question",
+        "recommendation"
+      ],
+      "default": "question",
+      "description": "Tipo de conteúdo sugerido. Recomendações ficam previstas no schema mas a geração v1 cobre apenas perguntas."
+    },
+    "dimension_key": {
+      "type": "string"
+    },
+    "subdimension_key": {
+      "type": "string"
+    },
+    "cluster_key": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "gap_detected"
+      ],
+      "default": "manual",
+      "description": "Origem da geração: pedido manual do consultor, ou lacuna detectada automaticamente (cluster com poucas perguntas/cobertura fraca)."
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "model_used": {
+      "type": "string"
+    },
+    "prompt_context_summary": {
+      "type": "string",
+      "description": "Resumo do contexto enviado à IA (quantidade e amostra das perguntas já existentes consideradas) — mantido para auditoria/rastreabilidade da sugestão."
+    },
+    "draft_payload": {
+      "type": "object",
+      "description": "Conteúdo gerado, já no formato de campos da entity alvo (FalQuestion para content_type=question)."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "edited_approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "review_comment": {
+      "type": "string"
+    },
+    "published_entity_id": {
+      "type": "string",
+      "description": "ID do registro real (ex: FalQuestion.id) criado após aprovação — null enquanto pending/rejected."
+    }
+  },
+  "required": [
+    "content_type",
+    "cluster_key",
+    "draft_payload",
+    "status"
+  ]
+}

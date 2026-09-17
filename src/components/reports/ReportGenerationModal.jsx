@@ -230,7 +230,7 @@ export default function ReportGenerationModal({ open, onClose, assessmentId, ten
                     <SelectContent>
                       {completedReviews.map(r => (
                         <SelectItem key={r.id} value={r.id}>
-                          Revisão Nº{r.review_number} — {r.review_date ? new Date(r.review_date + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
+                          Revisão Nº{r.review_number} — {r.review_date ? new Date(String(r.review_date).slice(0, 10) + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                           {r.consultant_name ? ` · ${r.consultant_name}` : ''}
                         </SelectItem>
                       ))}

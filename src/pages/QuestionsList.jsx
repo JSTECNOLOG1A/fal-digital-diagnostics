@@ -55,7 +55,7 @@ export default function QuestionsList() {
   if (isLoading) return <div className="p-8 text-center">Carregando perguntas...</div>;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-[1600px] mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-4">Perguntas FAL</h1>
         <div className="flex gap-4 flex-wrap">

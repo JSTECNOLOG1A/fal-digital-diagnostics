@@ -110,7 +110,7 @@ export default function ActionPlanPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-5">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto space-y-5">
       {/* Breadcrumb */}
       <Link to={backUrl} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
         <ArrowLeft className="w-4 h-4" /> {assessmentId ? 'Diagnóstico' : 'Grupos'}

@@ -23,11 +23,12 @@ export const REC_STATUS_STYLE = {
 };
 
 export const SOURCE_CFG = {
-  fal_diagnostic:      { label: 'Diagnóstico FAL',      cls: 'bg-blue-100 text-blue-700' },
-  financial_diagnostic:{ label: 'Diagnóstico Financeiro',cls: 'bg-emerald-100 text-emerald-700' },
-  library:             { label: 'Biblioteca FAL',        cls: 'bg-violet-100 text-violet-700' },
-  ai:                  { label: 'IA',                    cls: 'bg-amber-100 text-amber-700' },
-  manual:              { label: 'Consultor',             cls: 'bg-slate-100 text-slate-600' },
+  fal_diagnostic:       { label: 'Diagnóstico FAL',              cls: 'bg-blue-100 text-blue-700' },
+  financial_diagnostic: { label: 'Diagnóstico Financeiro',        cls: 'bg-emerald-100 text-emerald-700' },
+  tax_reform_diagnostic:{ label: 'Diagnóstico Reforma Tributária',cls: 'bg-orange-100 text-orange-700' },
+  library:              { label: 'Biblioteca FAL',                cls: 'bg-violet-100 text-violet-700' },
+  ai:                   { label: 'IA',                            cls: 'bg-amber-100 text-amber-700' },
+  manual:               { label: 'Consultor',                     cls: 'bg-slate-100 text-slate-600' },
 };
 
 export const DIM_LABELS = {

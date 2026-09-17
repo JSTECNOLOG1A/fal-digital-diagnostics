@@ -63,11 +63,11 @@ export default function FalDimensionTable({ dimensionScores, activeDimensions })
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-slate-200 text-left">
-            <th className="pb-2 text-slate-500 font-medium">Dimensão</th>
-            <th className="pb-2 text-slate-500 font-medium text-center">Score</th>
-            <th className="pb-2 text-slate-500 font-medium text-center">Nível</th>
-            <th className="pb-2 text-slate-500 font-medium text-center">Resp.</th>
+          <tr className="bg-slate-800 text-left">
+            <th className="px-2 py-2 text-white font-medium">Dimensão</th>
+            <th className="px-2 py-2 text-white font-medium text-center">Score</th>
+            <th className="px-2 py-2 text-white font-medium text-center">Nível</th>
+            <th className="px-2 py-2 text-white font-medium text-center">Resp.</th>
           </tr>
         </thead>
         <tbody>

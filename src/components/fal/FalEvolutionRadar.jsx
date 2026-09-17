@@ -119,11 +119,11 @@ export default function FalEvolutionRadar({ firstSnapshot, latestSnapshot }) {
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-slate-100">
-              <th className="text-left py-2 px-3 text-slate-500 font-semibold uppercase tracking-wide">Dimensão</th>
-              <th className="text-center py-2 px-3 text-blue-500 font-semibold">Inicial</th>
-              <th className="text-center py-2 px-3 text-emerald-600 font-semibold">Atual</th>
-              <th className="text-center py-2 px-3 text-slate-500 font-semibold">Variação</th>
+            <tr className="bg-slate-800">
+              <th className="text-left py-2 px-3 text-white font-semibold uppercase tracking-wide">Dimensão</th>
+              <th className="text-center py-2 px-3 text-white font-semibold">Inicial</th>
+              <th className="text-center py-2 px-3 text-white font-semibold">Atual</th>
+              <th className="text-center py-2 px-3 text-white font-semibold">Variação</th>
             </tr>
           </thead>
           <tbody>

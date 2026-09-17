@@ -612,9 +612,13 @@ export function getSubdimLabel(subdimKey) {
   const mapped = SUBDIM_MIGRATION_MAP[subdimKey];
   if (mapped) {
     const mappedFound = FAL_SUBDIMENSIONS.find(s => s.key === mapped);
-    return mappedFound?.label || subdimKey;
+    if (mappedFound?.label) return mappedFound.label;
   }
-  return subdimKey;
+  // Fallback pra chaves fora da matriz oficial do FAL 8D (ex.: subdimensões
+  // de outro diagnóstico, como a Reforma Tributária 8D) — humaniza em vez de
+  // mostrar o slug cru.
+  if (!subdimKey) return subdimKey;
+  return subdimKey.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function getClusterLabel(clusterKey) {

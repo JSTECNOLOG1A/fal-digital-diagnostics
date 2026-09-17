@@ -82,7 +82,7 @@ export default function Tenants() {
   if (!isHQ) return <div className="p-8 text-center text-slate-400">Acesso restrito ao HQ Admin.</div>;
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Tenants</h1>

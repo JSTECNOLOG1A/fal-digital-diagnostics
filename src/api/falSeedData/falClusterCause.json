@@ -1,0 +1,434 @@
+[
+  {
+    "cluster_key": "ativo_biologico_cpc29_cluster",
+    "dimension_key": "contabil",
+    "cause_key": "causa_ativo_biologico_cpc29",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster ativo biologico cpc29.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "compliance_contabil_cluster",
+    "dimension_key": "contabil",
+    "cause_key": "causa_compliance_contabil",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster compliance contabil.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "demonstracoes_financeiras_cluster",
+    "dimension_key": "contabil",
+    "cause_key": "causa_demonstracoes_financeiras",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster demonstracoes financeiras.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "organizacao_contabil_cluster",
+    "dimension_key": "contabil",
+    "cause_key": "causa_organizacao_contabil",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster organizacao contabil.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "compras_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_compras",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster compras.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "controle_estoques_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_controle_estoques",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster controle estoques.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "custos_agricolas_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_custos_agricolas",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster custos agricolas.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "endividamento_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_endividamento",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster endividamento.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "folha_admissao_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_folha_admissao",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster folha admissao.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "folha_demissao_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_folha_demissao",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster folha demissao.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "folha_promocoes_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_folha_promocoes",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster folha promocoes.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_imobilizado_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_gestao_imobilizado",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao imobilizado.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "receitas_faturamento_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_receitas_faturamento",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster receitas faturamento.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "segregacao_funcoes_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_segregacao_funcoes",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster segregacao funcoes.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "tesouraria_cluster",
+    "dimension_key": "controles_internos",
+    "cause_key": "causa_tesouraria",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster tesouraria.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "acompanhamento_resultados_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_acompanhamento_resultados",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster acompanhamento resultados.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "carteira_clientes_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_carteira_clientes",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster carteira clientes.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "estrategia_comercial_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_estrategia_comercial",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster estrategia comercial.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "estrutura_capital_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_estrutura_capital",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster estrutura capital.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "financas_agro_cpr_barter_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_financas_agro_cpr_barter",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster financas agro cpr barter.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_caixa_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_gestao_caixa",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao caixa.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "indicadores_comerciais_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_indicadores_comerciais",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster indicadores comerciais.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "indicadores_financeiros_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_indicadores_financeiros",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster indicadores financeiros.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "indicadores_operacionais_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_indicadores_operacionais",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster indicadores operacionais.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "inteligencia_mercado_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_inteligencia_mercado",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster inteligencia mercado.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "modelo_negocio_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_modelo_negocio",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster modelo negocio.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "planejamento_estrategico_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_planejamento_estrategico",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster planejamento estrategico.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "planejamento_financeiro_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_planejamento_financeiro",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster planejamento financeiro.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "posicionamento_mercado_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_posicionamento_mercado",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster posicionamento mercado.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "relacionamento_bancario_cluster",
+    "dimension_key": "financeiro",
+    "cause_key": "causa_relacionamento_bancario",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster relacionamento bancario.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "estrutura_governanca_cluster",
+    "dimension_key": "governanca",
+    "cause_key": "causa_estrutura_governanca",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster estrutura governanca.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_riscos_cluster",
+    "dimension_key": "governanca",
+    "cause_key": "causa_gestao_riscos",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao riscos.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "processo_decisorio_cluster",
+    "dimension_key": "governanca",
+    "cause_key": "causa_processo_decisorio",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster processo decisorio.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "transparencia_cluster",
+    "dimension_key": "governanca",
+    "cause_key": "causa_transparencia",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster transparencia.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "contencioso_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_contencioso",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster contencioso.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "contratos_comerciais_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_contratos_comerciais",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster contratos comerciais.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "contratos_operacionais_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_contratos_operacionais",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster contratos operacionais.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "estrutura_societaria_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_estrutura_societaria",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster estrutura societaria.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "regularidade_ambiental_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_regularidade_ambiental",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster regularidade ambiental.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "regularidade_fundiaria_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_regularidade_fundiaria",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster regularidade fundiaria.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "riscos_trabalhistas_cluster",
+    "dimension_key": "juridico",
+    "cause_key": "causa_riscos_trabalhistas",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster riscos trabalhistas.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_insumos_cluster",
+    "dimension_key": "operacional",
+    "cause_key": "causa_gestao_insumos",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao insumos.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_pessoas_cluster",
+    "dimension_key": "operacional",
+    "cause_key": "causa_gestao_pessoas",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao pessoas.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_producao_cluster",
+    "dimension_key": "operacional",
+    "cause_key": "causa_gestao_producao",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao producao.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "gestao_safra_e_logistica_cluster",
+    "dimension_key": "operacional",
+    "cause_key": "causa_gestao_safra_e_logistica",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster gestao safra e logistica.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "planejamento_produtivo_cluster",
+    "dimension_key": "operacional",
+    "cause_key": "causa_planejamento_produtivo",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster planejamento produtivo.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "infraestrutura_tecnologica_cluster",
+    "dimension_key": "sistemas",
+    "cause_key": "causa_infraestrutura_tecnologica",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster infraestrutura tecnologica.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "seguranca_informacao_cluster",
+    "dimension_key": "sistemas",
+    "cause_key": "causa_seguranca_informacao",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster seguranca informacao.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "sistemas_gestao_cluster",
+    "dimension_key": "sistemas",
+    "cause_key": "causa_sistemas_gestao",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster sistemas gestao.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "apuracao_tributos_cluster",
+    "dimension_key": "tributario",
+    "cause_key": "causa_apuracao_tributos",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster apuracao tributos.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "enquadramento_tributario_cluster",
+    "dimension_key": "tributario",
+    "cause_key": "causa_enquadramento_tributario",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster enquadramento tributario.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "obrigacoes_acessorias_cluster",
+    "dimension_key": "tributario",
+    "cause_key": "causa_obrigacoes_acessorias",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster obrigacoes acessorias.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "riscos_fiscais_cluster",
+    "dimension_key": "tributario",
+    "cause_key": "causa_riscos_fiscais",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster riscos fiscais.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  },
+  {
+    "cluster_key": "tributario_agro_especifico_cluster",
+    "dimension_key": "tributario",
+    "cause_key": "causa_tributario_agro_especifico",
+    "cause_description": "Ausência de processo formal, rotina padronizada e acompanhamento gerencial para o cluster tributario agro especifico.",
+    "probability_weight": 4,
+    "trigger_score_below": 2
+  }
+]

@@ -589,7 +589,7 @@ export default function Integrations() {
   const inbound = eventsQ.data ?? [];
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
+    <div className="p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl fal-title">Integrações</h1>
@@ -781,8 +781,8 @@ export default function Integrations() {
                   </div>
                   <div className="overflow-x-auto max-h-80 rounded-lg border">
                     <table className="w-full text-sm">
-                      <thead className="bg-slate-50 sticky top-0">
-                        <tr className="text-left text-xs text-slate-500">
+                      <thead className="bg-slate-800 sticky top-0">
+                        <tr className="text-left text-xs text-white">
                           <th className="p-2 font-medium">Código</th>
                           <th className="p-2 font-medium">Descrição</th>
                           <th className="p-2 font-medium">Classe</th>

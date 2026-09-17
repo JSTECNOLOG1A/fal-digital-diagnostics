@@ -11,6 +11,9 @@ import { UsersModule } from './users/users.module';
 import { AuditModule } from './audit/audit.module';
 import { ProtheusModule } from './integrations/protheus/protheus.module';
 import { IntegrationsModule } from './integrations/core/integrations.module';
+import { FinancialModule } from './financial/financial.module';
+import { FalModule } from './fal/fal.module';
+import { FinancialReportModule } from './financial-report/financial-report.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { TenantRlsInterceptor } from './common/interceptors/tenant-rls.interceptor';
 
@@ -35,6 +38,9 @@ import { TenantRlsInterceptor } from './common/interceptors/tenant-rls.intercept
     AuditModule,
     ProtheusModule,
     IntegrationsModule,
+    FinancialModule,
+    FalModule,
+    FinancialReportModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

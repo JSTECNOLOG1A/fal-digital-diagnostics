@@ -30,6 +30,13 @@ async function bootstrap() {
       'X-Tenant-Id',
       'X-Api-Key',
     ],
+    // Content-Disposition não está na lista "safelisted" de headers de
+    // resposta que fetch() pode ler entre origens diferentes por padrão —
+    // sem isso, res.headers.get('Content-Disposition') no frontend sempre
+    // retorna null mesmo o backend enviando o header certinho, e o
+    // download de PDF cai no nome genérico de fallback (bug real visto no
+    // "Baixar PDF" do Relatório da Análise, ex.: "relatorio-<uuid>.pdf").
+    exposedHeaders: ['Content-Disposition'],
   });
 
   // CSP padrão do Helmet quebra o Swagger UI (tela branca).

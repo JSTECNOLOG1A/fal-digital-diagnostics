@@ -365,7 +365,7 @@ export default function GroupCockpit({ groupId, tenantId, group, aggSnap, financ
             label="Revisões"
             sublabel={
             !hasReviews ? 'Nenhuma revisão registrada' :
-            `${completedReviews.length} revisão(ões) · Última: ${lastReview?.review_date ? format(new Date(lastReview.review_date + 'T12:00'), 'dd/MM/yyyy') : '—'}`
+            `${completedReviews.length} revisão(ões) · Última: ${lastReview?.review_date ? format(new Date(String(lastReview.review_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy') : '—'}`
             }
             badge={hasReviews ? `${completedReviews.length}` : null}
             badgeStyle={{ background: 'var(--fal-current-bg)', color: 'var(--fal-current-text)' }}

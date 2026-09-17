@@ -104,6 +104,46 @@ const DEPTH_CONFIG = {
 
 const STAGE_ORDER = ['existence','request','analysis','approval','execution','record','control','monitoring','audit'];
 
+// Máximo de clusters por rodada de montagem que podem disparar geração
+// automática — limita custo/latência mesmo se muitos clusters estiverem rasos.
+const GAP_MAX_CLUSTERS_PER_RUN = 3;
+
+/**
+ * Varre os clusters das dimensões ativas com menos perguntas elegíveis do
+ * que o alvo de cobertura (CORE_PER_SUBDIM) e dispara o copiloto de IA
+ * (generateFalContentSuggestions) com trigger="gap_detected" para os mais
+ * rasos, evitando duplicar se já existir sugestão pendente para o mesmo
+ * cluster.
+ */
+async function triggerGapDetectedSuggestions(base44, { eligible, activeDimensions, corePerSubdim, requestedBy }) {
+  const byCluster = {};
+  for (const q of eligible) {
+    if (!activeDimensions.includes(q.dimension_key) || !q.cluster_key) continue;
+    (byCluster[q.cluster_key] ||= []).push(q);
+  }
+
+  const gaps = Object.entries(byCluster)
+    .filter(([, qs]) => qs.length < corePerSubdim)
+    .sort((a, b) => a[1].length - b[1].length)
+    .slice(0, GAP_MAX_CLUSTERS_PER_RUN);
+
+  for (const [clusterKey, qs] of gaps) {
+    const alreadyPending = await base44.asServiceRole.entities.FalContentSuggestion.filter({
+      cluster_key: clusterKey, content_type: 'question', trigger: 'gap_detected', status: 'pending',
+    }, 'id', 1);
+    if (alreadyPending.length > 0) continue;
+
+    const needed = Math.min(Math.max(corePerSubdim - qs.length, 1), 5);
+    await base44.asServiceRole.functions.invoke('generateFalContentSuggestions', {
+      cluster_key: clusterKey,
+      content_type: 'question',
+      count: needed,
+      trigger: 'gap_detected',
+      requested_by: requestedBy,
+    });
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -356,6 +396,16 @@ Deno.serve(async (req) => {
     }
 
     await base44.asServiceRole.entities.Assessment.update(assessment_id, { question_set: finalSet });
+
+    // ── Detecção de lacunas → dispara o copiloto de IA automaticamente ──
+    // Não bloqueia nem falha a montagem do questionário se der erro — só
+    // fica sem sugestão automática dessa vez (consultor ainda pode gerar
+    // manualmente depois pelo Motor FAL).
+    try {
+      await triggerGapDetectedSuggestions(base44, { eligible, activeDimensions, corePerSubdim: CORE_PER_SUBDIM, requestedBy: user.email });
+    } catch (gapErr) {
+      console.warn('[buildFalQuestionSet] gap detection falhou (não bloqueante):', gapErr.message);
+    }
 
     console.log(`[buildFalQuestionSet] OK — assessment=${assessment_id} total=${finalSet.length} dims=${activeDimensions.length} empty=${emptyDimensions.length} depth=${depth}`);
 

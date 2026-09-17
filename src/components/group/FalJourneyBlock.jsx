@@ -276,7 +276,7 @@ export default function FalJourneyBlock({
                     <div className="text-right">
                       <p className="text-xs font-semibold" style={{color:'var(--fal-text-primary)'}}>Última revisão</p>
                       <p className="text-xs fal-muted">
-                        {lastReview.review_date ? format(new Date(lastReview.review_date + 'T12:00'), 'dd/MM/yyyy') : '—'}
+                        {lastReview.review_date ? format(new Date(String(lastReview.review_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy') : '—'}
                       </p>
                       {lastReview.overall_progress_before != null && lastReview.overall_progress_after != null && (
                         <p className="text-[10px] font-medium" style={{color:'var(--fal-success-text)'}}>

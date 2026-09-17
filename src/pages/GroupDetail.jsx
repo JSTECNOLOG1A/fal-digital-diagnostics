@@ -10,7 +10,7 @@ import {
   Hash, BarChart3, Network, TrendingUp,
   MoreVertical, PencilIcon, MapPin,
   LayoutDashboard, CheckSquare, FileText, Settings,
-  Archive, Trash2 } from
+  Archive, Trash2, Scale } from
 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -22,6 +22,7 @@ import PermissionGuard from '@/components/shared/PermissionGuard';
 import { invalidateStructureQueries, groupKey } from '@/lib/query-client';
 import GroupCockpit from '@/components/group/GroupCockpit';
 import GroupDiagnostic8DTab from '@/components/group/GroupDiagnostic8DTab';
+import GroupTaxReformTab from '@/components/group/GroupTaxReformTab';
 import GroupFinancialAnalysesTab from '@/components/group/GroupFinancialAnalysesTab';
 import GroupActionPlanCentral from '@/components/group/GroupActionPlanCentral';
 import GroupReportsCentral from '@/components/group/GroupReportsCentral';
@@ -42,6 +43,7 @@ const TABS = [
 { key: 'visao-geral', label: 'Visão Geral', icon: LayoutDashboard },
 { key: 'estrutura', label: 'Estrutura', icon: Network },
 { key: 'diagnostico-8d', label: 'Diagnóstico 8D', icon: BarChart3 },
+{ key: 'reforma-tributaria', label: 'Reforma Tributária 8D', icon: Scale },
 { key: 'analise-financeira', label: 'Análise Financeira', icon: TrendingUp },
 { key: 'plano-acao', label: 'Plano de Ação', icon: CheckSquare },
 { key: 'relatorios', label: 'Relatórios', icon: FileText },
@@ -329,6 +331,15 @@ export default function GroupDetail() {
       {/* ── Diagnóstico 8D ── */}
       {tab === 'diagnostico-8d' &&
       <GroupDiagnostic8DTab
+        groupId={groupId}
+        tenantId={tenantId}
+        onGoToActionPlan={() => goToTab('plano-acao')} />
+
+      }
+
+      {/* ── Reforma Tributária 8D ── */}
+      {tab === 'reforma-tributaria' &&
+      <GroupTaxReformTab
         groupId={groupId}
         tenantId={tenantId}
         onGoToActionPlan={() => goToTab('plano-acao')} />

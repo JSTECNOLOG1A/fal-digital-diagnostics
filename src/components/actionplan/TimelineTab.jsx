@@ -53,7 +53,7 @@ export default function TimelineTab({ tasks, reviews }) {
                 {r.executive_summary && <p className="text-[10px] text-slate-400 line-clamp-1">{r.executive_summary}</p>}
               </div>
               <span className="text-[10px] text-slate-400">
-                {r.review_date ? format(new Date(r.review_date + 'T12:00'), 'dd/MM/yyyy') : '—'}
+                {r.review_date ? format(new Date(String(r.review_date).slice(0, 10) + 'T12:00'), 'dd/MM/yyyy') : '—'}
               </span>
             </div>
           ))}

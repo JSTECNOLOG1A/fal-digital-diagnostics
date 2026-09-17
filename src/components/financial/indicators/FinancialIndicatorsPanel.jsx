@@ -16,6 +16,7 @@ import { TrendingUp } from "lucide-react";
 import FinancialIndicatorsToolbar from "./FinancialIndicatorsToolbar";
 import FinancialIndicatorsToday from "./FinancialIndicatorsToday";
 import FinancialIndicatorsHistory from "./FinancialIndicatorsHistory";
+import FinancialIndicatorsInsights from "./FinancialIndicatorsInsights";
 import FinancialIndicatorHelpDrawer from "./FinancialIndicatorHelpDrawer";
 import FinancialIndicatorChartDialog from "./FinancialIndicatorChartDialog";
 import { financialIndicatorRegistry } from "./financialIndicatorRegistry";
@@ -227,6 +228,8 @@ export default function FinancialIndicatorsPanel({
           onChart={setChartIndicator}
         />
       )}
+
+      <FinancialIndicatorsInsights diagnosisId={diagnosisId} tenantId={tenantId} />
 
       <FinancialIndicatorHelpDrawer
         open={drawerOpen}

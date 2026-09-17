@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   CheckCircle2, Loader2, ClipboardList,
   Activity, BarChart3, AlertCircle, GitBranch, Layers,
@@ -156,7 +157,10 @@ export default function AssessmentWorkflowStepper({
   hasValidQuestionSet = false,
   crossings = [],
 }) {
-  const [activeModule, setActiveModule] = useState('questionario');
+  // CrossingQuestionnaire navega de volta pra cá passando state:{tab:'mqe'}
+  // pra reabrir direto na aba MQE (em vez de sempre cair no Questionário).
+  const location = useLocation();
+  const [activeModule, setActiveModule] = useState(location.state?.tab === 'mqe' ? 'mqe' : 'questionario');
   // Fase expandida: null = todas recolhidas, 'entrada'|'analise'|'saida' = aberta
   const [expandedPhase, setExpandedPhase] = useState('entrada');
 

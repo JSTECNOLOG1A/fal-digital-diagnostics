@@ -100,7 +100,7 @@ function GroupCompaniesList({
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/80 text-[11px] uppercase tracking-wide text-slate-400">
+            <tr className="bg-slate-800 text-[11px] uppercase tracking-wide text-white">
               <th className="w-10 px-4 py-2.5 font-medium" />
               <th className="px-3 py-2.5 font-medium">Empresa</th>
               <th className="px-3 py-2.5 font-medium">Documento</th>
@@ -631,6 +631,7 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
   const { toast } = useToast();
   const { loading: tenantLoading, error: tenantError, tenantId: ctxTenantId } = useTenant();
   const [step, setStep]             = useState(1);
+  const [mode, setMode]             = useState('group'); // 'group' | 'single'
   const [groupName, setGroupName]   = useState('');
   const [structureType, setStructureType] = useState('');
   const [entityNature, setEntityNature] = useState('');
@@ -683,10 +684,16 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
     onSuccess: (group) => {
       setCreatedGroup(group);
       invalidateStructureQueries(queryClient, tenantId);
+      if (mode === 'single') {
+        setCompanyForm((f) => ({ ...f, name: f.name || group.name }));
+      }
       setStep(2);
       toast({
-        title: 'Grupo criado',
-        description: `“${group.name}” foi criado com sucesso.`,
+        title: mode === 'single' ? 'Empresa iniciada' : 'Grupo criado',
+        description:
+          mode === 'single'
+            ? 'Complete os dados abaixo para finalizar o cadastro.'
+            : `“${group.name}” foi criado com sucesso.`,
       });
     },
     onError: (err) => {
@@ -730,9 +737,15 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
       setEditingCompanyId(null);
       setCompanyForm(EMPTY_COMPANY);
       toast({
-        title: 'Empresa adicionada',
-        description: `“${cf.name.trim()}” entrou na lista do grupo.`,
+        title: mode === 'single' ? 'Empresa cadastrada' : 'Empresa adicionada',
+        description:
+          mode === 'single'
+            ? `“${cf.name.trim()}” foi cadastrada com sucesso.`
+            : `“${cf.name.trim()}” entrou na lista do grupo.`,
       });
+      if (mode === 'single') {
+        handleDone();
+      }
     },
     onError: (err) => {
       toast({
@@ -866,7 +879,11 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
     onOpenChange(false);
     onCreated?.({ type: 'group', id: createdGroup?.id, name: createdGroup?.name });
     setStep(1);
+    setMode('group');
     setGroupName('');
+    setStructureType('');
+    setEntityNature('');
+    setMainSector('');
     setCompanyForm(EMPTY_COMPANY);
     setAddedCompanies([]);
     setSelectedCompanyId(null);
@@ -884,7 +901,16 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
       });
       return;
     }
-    if (!groupName.trim() || !structureType || !entityNature || !mainSector) {
+    if (mode === 'single') {
+      if (!groupName.trim()) {
+        toast({
+          title: 'Campo obrigatório',
+          description: 'Preencha o nome da empresa.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    } else if (!groupName.trim() || !structureType || !entityNature || !mainSector) {
       toast({
         title: 'Campos obrigatórios',
         description: 'Preencha nome, estrutura, natureza e setor.',
@@ -902,14 +928,15 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
     }
     groupMutation.mutate({
       name: groupName.trim(),
-      structure_type: structureType,
-      entity_nature: entityNature,
-      main_sector: mainSector,
+      structure_type: mode === 'single' ? 'Outro' : structureType,
+      entity_nature: mode === 'single' ? 'Não operacional' : entityNature,
+      main_sector: mode === 'single' ? 'Diversificado' : mainSector,
     });
   }
 
   function handleReset() {
     setStep(1);
+    setMode('group');
     setGroupName('');
     setStructureType('');
     setEntityNature('');
@@ -971,17 +998,25 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                 Cadastro · DataHub
               </p>
               <DialogTitle className="mt-0.5 flex items-center gap-2 text-xl font-semibold text-slate-900">
-                {step === 2 ? (
+                {mode === 'single' ? (
+                  <Building2 className="h-5 w-5 text-blue-600" />
+                ) : step === 2 ? (
                   <Building2 className="h-5 w-5 text-blue-600" />
                 ) : (
                   <Layers className="h-5 w-5 text-indigo-500" />
                 )}
-                {step === 2 ? 'Estrutura do Grupo' : 'Criar Grupo / Cliente'}
+                {mode === 'single'
+                  ? (step === 2 ? 'Dados da Empresa' : 'Cadastrar Empresa')
+                  : (step === 2 ? 'Estrutura do Grupo' : 'Criar Grupo / Cliente')}
               </DialogTitle>
               <p className="mt-1 text-sm text-slate-500">
-                {step === 2
-                  ? `Inclua empresas e filiais em “${createdGroup?.name || 'grupo'}”.`
-                  : 'Preencha os dados do grupo para iniciar a estrutura societária.'}
+                {mode === 'single'
+                  ? (step === 2
+                      ? 'Complete os dados cadastrais — sem estrutura de grupo, sem agregação.'
+                      : 'Cadastro direto de uma empresa avulsa, sem vínculo a um grupo.')
+                  : step === 2
+                    ? `Inclua empresas e filiais em “${createdGroup?.name || 'grupo'}”.`
+                    : 'Preencha os dados do grupo para iniciar a estrutura societária.'}
               </p>
             </div>
 
@@ -1020,15 +1055,44 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
             ) : step === 1 ? (
               <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
                 <div className="space-y-6">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setMode('group')}
+                      className={`rounded-xl border p-4 text-left transition-colors ${
+                        mode === 'group' ? 'border-indigo-400 bg-indigo-50/60 ring-1 ring-indigo-300' : 'border-slate-200 bg-white hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                        <Layers className="h-4 w-4 text-indigo-500" /> Grupo com várias empresas
+                      </div>
+                      <p className="mt-1 text-xs text-slate-500">Estrutura societária com múltiplas empresas/filiais.</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode('single')}
+                      className={`rounded-xl border p-4 text-left transition-colors ${
+                        mode === 'single' ? 'border-blue-400 bg-blue-50/60 ring-1 ring-blue-300' : 'border-slate-200 bg-white hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                        <Building2 className="h-4 w-4 text-blue-600" /> Empresa única
+                      </div>
+                      <p className="mt-1 text-xs text-slate-500">Empresa avulsa, sem vínculo a um grupo. Aparece no DataHub como Empresa.</p>
+                    </button>
+                  </div>
+
                   <section className="rounded-xl border border-slate-200 bg-white p-5 space-y-4 sm:p-6">
                     <div>
                       <h3 className="text-sm font-semibold text-slate-800">Identificação</h3>
-                      <p className="text-xs text-slate-400 mt-0.5">Nome oficial do grupo no DataHub</p>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {mode === 'single' ? 'Nome oficial da empresa no DataHub' : 'Nome oficial do grupo no DataHub'}
+                      </p>
                     </div>
                     <div>
-                      <Label className="text-xs text-slate-600">Nome do Grupo *</Label>
+                      <Label className="text-xs text-slate-600">{mode === 'single' ? 'Nome da Empresa *' : 'Nome do Grupo *'}</Label>
                       <Input
-                        placeholder="Ex: Grupo Cangaia"
+                        placeholder={mode === 'single' ? 'Ex: Agro Cangaia Ltda.' : 'Ex: Grupo Cangaia'}
                         value={groupName}
                         onChange={(e) => setGroupName(e.target.value)}
                         className={`mt-1.5 h-11 ${
@@ -1061,6 +1125,7 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                     </div>
                   </section>
 
+                  {mode === 'single' ? null : (
                   <section className="rounded-xl border border-slate-200 bg-white p-5 space-y-4 sm:p-6">
                     <div>
                       <h3 className="text-sm font-semibold text-slate-800">Estrutura e segmento</h3>
@@ -1117,6 +1182,7 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                       </div>
                     </div>
                   </section>
+                  )}
                 </div>
 
                 <aside className="h-fit rounded-xl border border-slate-200 bg-white p-5">
@@ -1126,6 +1192,8 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                       <dt className="text-xs text-slate-400">Nome</dt>
                       <dd className="font-medium text-slate-800">{groupName.trim() || '—'}</dd>
                     </div>
+                    {mode === 'single' ? null : (
+                    <>
                     <div>
                       <dt className="text-xs text-slate-400">Estrutura</dt>
                       <dd className="font-medium text-slate-800">{structureType || '—'}</dd>
@@ -1134,13 +1202,19 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                       <dt className="text-xs text-slate-400">Natureza</dt>
                       <dd className="font-medium text-slate-800">{entityNature || '—'}</dd>
                     </div>
+                    </>
+                    )}
+                    {mode === 'single' ? null : (
                     <div>
                       <dt className="text-xs text-slate-400">Setor</dt>
                       <dd className="font-medium text-slate-800">{mainSector || '—'}</dd>
                     </div>
+                    )}
                   </dl>
                   <p className="mt-5 text-xs leading-relaxed text-slate-400">
-                    Depois de criar o grupo, você poderá incluir empresas, filiais e a composição societária.
+                    {mode === 'single'
+                      ? 'Na próxima etapa você preenche os dados cadastrais da empresa.'
+                      : 'Depois de criar o grupo, você poderá incluir empresas, filiais e a composição societária.'}
                   </p>
                 </aside>
               </div>
@@ -1148,8 +1222,12 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
               <div className="space-y-6">
                 <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                   <p className="text-sm text-slate-600">
-                    Grupo <strong className="text-slate-900">{createdGroup?.name}</strong> criado.
-                    Cadastre empresas abaixo — a lista do grupo é atualizada a cada inclusão.
+                    {mode === 'single' ? (
+                      <>Preencha os dados cadastrais de <strong className="text-slate-900">{createdGroup?.name}</strong>.</>
+                    ) : (
+                      <>Grupo <strong className="text-slate-900">{createdGroup?.name}</strong> criado.
+                      Cadastre empresas abaixo — a lista do grupo é atualizada a cada inclusão.</>
+                    )}
                   </p>
                 </div>
 
@@ -1207,17 +1285,23 @@ export default function CreateFirstClientDialog({ open, onOpenChange, tenantId: 
                     onClick={handleSubmitGroup}
                     disabled={
                       !groupName.trim() ||
-                      !structureType ||
-                      !entityNature ||
-                      !mainSector ||
+                      (mode === 'group' && (!structureType || !entityNature || !mainSector)) ||
                       groupMutation.isPending ||
                       !!dupGroup.exact
                     }
                     className="bg-blue-600 text-white hover:bg-blue-700"
                   >
-                    {groupMutation.isPending ? 'Criando...' : 'Criar Grupo e continuar'}
+                    {groupMutation.isPending
+                      ? 'Criando...'
+                      : mode === 'single'
+                        ? 'Continuar'
+                        : 'Criar Grupo e continuar'}
                   </Button>
                 </>
+              ) : mode === 'single' ? (
+                <Button variant="outline" onClick={handleDone} className="text-slate-500">
+                  Cancelar
+                </Button>
               ) : (
                 <>
                   <Button variant="ghost" onClick={handleDone} className="text-slate-500">

@@ -215,7 +215,7 @@ function ActionPlanManagementPageInner() {
           )}
 
           {activeTab === 'kanban' && (
-            <KanbanTab tasks={tasks} planId={planId} onOpenTask={setSelectedTask} readOnly={!canWrite} />
+            <KanbanTab tasks={tasks} planId={planId} assessmentId={assessmentId} onOpenTask={setSelectedTask} readOnly={!canWrite} />
           )}
 
           {activeTab === 'lista' && (

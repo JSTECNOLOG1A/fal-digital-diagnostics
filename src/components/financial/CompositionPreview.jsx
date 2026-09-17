@@ -21,8 +21,12 @@ export default function CompositionPreview({ uploadId, diagnosisId }) {
 
   const { data: statements = [], isLoading: loadingStmt } = useQuery({
     queryKey: ['fin-composition-stmts', uploadId, currentScope?.snapshot_id, currentScope?.processing_run_id],
+    // Já filtra por financial_upload_id (este upload específico); somar
+    // processing_run_id em cima disso quebrava a pré-visualização de
+    // QUALQUER upload que não fosse o último processado no diagnóstico
+    // inteiro (currentScope aponta só pro build mais recente).
     queryFn: () => base44.entities.FinancialStatementLine.filter(
-      { financial_diagnosis_id:diagnosisId, financial_upload_id:uploadId, processing_run_id:currentScope.processing_run_id, publication_status:'active' }, 'period', 1000
+      { financial_diagnosis_id:diagnosisId, financial_upload_id:uploadId, publication_status:'active' }, 'period', 1000
     ),
     enabled: !!uploadId && !!currentScope?.processing_run_id
   });
@@ -30,7 +34,7 @@ export default function CompositionPreview({ uploadId, diagnosisId }) {
   const { data: mappings = [], isLoading: loadingMap } = useQuery({
     queryKey: ['fin-composition-maps', uploadId, currentScope?.snapshot_id, currentScope?.processing_run_id],
     queryFn: () => base44.entities.FinancialMappingResolution.filter(
-      { financial_diagnosis_id:diagnosisId, financial_upload_id:uploadId, processing_run_id:currentScope.processing_run_id, publication_status:'active' }, 'account_code', 1000
+      { financial_diagnosis_id:diagnosisId, financial_upload_id:uploadId, publication_status:'active' }, 'account_code', 1000
     ),
     enabled: !!uploadId && !!currentScope?.processing_run_id
   });
@@ -153,10 +157,10 @@ export default function CompositionPreview({ uploadId, diagnosisId }) {
           {expandUnmapped &&
         <div className="mt-2 rounded-xl border border-amber-200 overflow-hidden">
               <table className="w-full text-xs">
-                <thead className="bg-amber-50">
+                <thead className="bg-slate-800">
                   <tr>
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-amber-700">Código</th>
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-amber-700">Descrição</th>
+                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-white">Código</th>
+                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-white">Descrição</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-amber-100">

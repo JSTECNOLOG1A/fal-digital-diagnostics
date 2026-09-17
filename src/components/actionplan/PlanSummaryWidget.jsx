@@ -109,7 +109,7 @@ export default function PlanSummaryWidget({ assessmentId, tenantId, onGenerate, 
             <h3 className="text-sm font-bold text-slate-800">Plano de Ação</h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {active.length} tarefas · {pct}% concluído
-              {lastReview ? ` · Última revisão: ${new Date(lastReview.review_date + 'T12:00').toLocaleDateString('pt-BR')}` : ''}
+              {lastReview ? ` · Última revisão: ${new Date(String(lastReview.review_date).slice(0, 10) + 'T12:00').toLocaleDateString('pt-BR')}` : ''}
             </p>
           </div>
           <span className="text-lg font-black text-slate-800">{pct}%</span>

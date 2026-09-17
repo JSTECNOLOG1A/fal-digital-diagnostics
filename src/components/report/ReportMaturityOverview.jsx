@@ -188,9 +188,9 @@ export default function ReportMaturityOverview({ payload }) {
           </p>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+              <tr style={{ background: '#1e293b' }}>
                 {['Dimensão', 'Score', 'Classificação'].map((h) => (
-                  <th key={h} style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>
+                  <th key={h} style={{ fontSize: 9, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1, padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>
                     {h}
                   </th>
                 ))}

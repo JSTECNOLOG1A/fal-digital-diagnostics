@@ -37,6 +37,7 @@ chmod 600 .env.production
 | `POSTGRES_PASSWORD` / `FAL_APP_PASSWORD` | Fortes e **diferentes** |
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | ≥32 chars cada, diferentes |
 | `CREDENTIALS_ENCRYPTION_KEY` | 64 chars hex (32 bytes) |
+| `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` | Fortes e **diferentes**; usados pelo storage de uploads/relatórios financeiros |
 | `SEED_HQ_PASSWORD` | ≥12 chars; anote em local seguro |
 | `CORS_ORIGINS` | `https://metodofal.clarityib.com.br` |
 | `RUN_SEED_ON_BOOT` | `true` só no primeiro boot |

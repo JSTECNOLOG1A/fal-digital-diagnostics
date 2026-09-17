@@ -42,6 +42,19 @@ services:
     networks:
       - fal-net
 
+  minio:
+    image: minio/minio:latest
+    container_name: fal-prod-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - fal_prod_minio:/data
+    networks:
+      - fal-net
+
   api:
     build:
       context: ./backend
@@ -53,6 +66,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      minio:
+        condition: service_started
     environment:
       NODE_ENV: production
       API_PORT: 3001
@@ -65,6 +80,10 @@ services:
       JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
       CORS_ORIGINS: ${CORS_ORIGINS}
       REDIS_URL: redis://redis:6379
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       CREDENTIALS_ENCRYPTION_KEY: ${CREDENTIALS_ENCRYPTION_KEY}
       RUN_SEED_ON_BOOT: ${RUN_SEED_ON_BOOT:-false}
       SEED_HQ_EMAIL: ${SEED_HQ_EMAIL:-}
@@ -123,6 +142,7 @@ services:
 volumes:
   fal_prod_pgdata:
   fal_prod_redis:
+  fal_prod_minio:
 
 networks:
   fal-net:

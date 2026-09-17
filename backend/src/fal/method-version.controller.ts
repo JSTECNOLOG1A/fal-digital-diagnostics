@@ -1,0 +1,25 @@
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { TenantGuard } from '../auth/guards/tenant.guard';
+import { AuthUser } from '../auth/auth.types';
+import { MethodVersionService } from './method-version.service';
+
+@ApiTags('method-versions')
+@ApiBearerAuth()
+@UseGuards(RolesGuard, TenantGuard)
+@Controller('fal/method-versions')
+export class MethodVersionController {
+  constructor(private readonly methodVersions: MethodVersionService) {}
+
+  @Get()
+  list(@CurrentUser() user: AuthUser, @Query('status') status?: string) {
+    return this.methodVersions.list(user, status);
+  }
+
+  @Get(':id')
+  get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.methodVersions.get(user, id);
+  }
+}

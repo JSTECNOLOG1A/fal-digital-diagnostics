@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, GitBranch, Plus } from 'lucide-react';
+import { ArrowLeft, GitBranch, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { isAfter } from 'date-fns';
 import { base44 } from '@/api/base44Client';
@@ -36,6 +36,7 @@ export default function APlanHeader({ assessment, plan, tasks, reviews, onAddTas
   const lastReview = (reviews || []).filter(r => r.status === 'completed').at(-1);
 
   const handleStartReview = async () => {
+    if (!assessment?.id) return;
     setCreatingReview(true);
     try {
       const res = await base44.functions.invoke('createActionPlanReviewWithSnapshot', {
@@ -46,8 +47,10 @@ export default function APlanHeader({ assessment, plan, tasks, reviews, onAddTas
 
       const data = res.data || res;
       if (data?.review?.id) {
-        // Redireciona seja revisão existente ou nova
-        navigate(`/assessment/${assessment.id}/action-plan/review/${data.review.id}`);
+        // Redireciona seja revisão existente ou nova — leva a revisão já
+        // carregada via router state, pra ReviewModeContext não precisar
+        // buscá-la de novo (e, sem router state, cair no fallback de rede).
+        navigate(`/assessment/${assessment.id}/action-plan/review/${data.review.id}`, { state: { review: data.review } });
       } else {
         alert('Não foi possível criar ou localizar a revisão. Tente novamente.');
       }
@@ -61,7 +64,7 @@ export default function APlanHeader({ assessment, plan, tasks, reviews, onAddTas
 
   const backUrl = assessment?.id ? `/AssessmentDetail?id=${assessment.id}` : '/Groups';
 
-  const targetName = assessment?.display_name || assessment?.title || 'Diagnóstico';
+  const targetName = assessment?.display_name || assessment?.title || 'Gestão de Projeto (sem diagnóstico)';
   const planStatus = plan?.status || 'active';
   const planStatusLabel = { draft: 'Rascunho', active: 'Ativo', completed: 'Concluído', archived: 'Arquivado' }[planStatus] || planStatus;
   const planStatusCls = { active: 'bg-emerald-100 text-emerald-700', draft: 'bg-amber-100 text-amber-700', completed: 'bg-blue-100 text-blue-700', archived: 'bg-slate-100 text-slate-500' }[planStatus] || 'bg-slate-100 text-slate-600';
@@ -84,21 +87,40 @@ export default function APlanHeader({ assessment, plan, tasks, reviews, onAddTas
         </div>
 
         <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+          {onRegenerate && (
+            <PermissionGuard area="actionplan">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  if (window.confirm('Reprocessar o plano vai gerar/atualizar as recomendações sugeridas a partir do diagnóstico atual. Tarefas e recomendações já aprovadas/rejeitadas não são afetadas. Continuar?')) {
+                    onRegenerate();
+                  }
+                }}
+                disabled={isRegenerating}
+                className="gap-1.5 text-slate-600 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? 'animate-spin' : ''}`} /> {isRegenerating ? 'Reprocessando...' : 'Reprocessar'}
+              </Button>
+            </PermissionGuard>
+          )}
           <PermissionGuard area="actionplan">
             <Button size="sm" variant="outline" onClick={onAddTask} className="gap-1.5 text-slate-600">
               <Plus className="w-3.5 h-3.5" /> Nova tarefa
             </Button>
           </PermissionGuard>
-          <PermissionGuard area="reviews">
-            <Button 
-              size="sm" 
-              onClick={handleStartReview}
-              disabled={creatingReview}
-              className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
-            >
-              <GitBranch className="w-3.5 h-3.5" /> {creatingReview ? 'Abrindo...' : 'Nova revisão'}
-            </Button>
-          </PermissionGuard>
+          {assessment?.id && (
+            <PermissionGuard area="reviews">
+              <Button
+                size="sm"
+                onClick={handleStartReview}
+                disabled={creatingReview}
+                className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
+              >
+                <GitBranch className="w-3.5 h-3.5" /> {creatingReview ? 'Abrindo...' : 'Nova revisão'}
+              </Button>
+            </PermissionGuard>
+          )}
         </div>
       </div>
 

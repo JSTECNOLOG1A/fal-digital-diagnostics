@@ -8,7 +8,7 @@ Guia curto para o time (Claude Code / Cursor). Deploy: **manual** no VPS Clarity
 | Código no servidor | `/var/www/html/metodofal` |
 | Compose | `docker-compose.traefik.yml` |
 | Env | `.env.production` (**só no servidor**, nunca no Git) |
-| Containers | `fal-prod-web`, `fal-prod-api`, `fal-prod-postgres`, `fal-prod-redis` |
+| Containers | `fal-prod-web`, `fal-prod-api`, `fal-prod-postgres`, `fal-prod-redis`, `fal-prod-minio` |
 | Rede Traefik | `traefik-net` (externa, já existe no VPS) |
 
 ---

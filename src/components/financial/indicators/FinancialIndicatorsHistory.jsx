@@ -1,7 +1,10 @@
 /**
  * FinancialIndicatorsHistory
  * Tela HISTÓRICO — tabela full scope por grupos, no padrão Status Invest.
- * Coluna ATUAL destacada em verde. Períodos históricos em colunas.
+ * Primeira coluna de dado = ano real da data-base; períodos históricos nas
+ * colunas seguintes. Régua de coluna fixa (mesma largura de valor em todos
+ * os quadros — 30mm, mesma calibração do Relatório da Análise) para os
+ * quadros ficarem alinhados entre si quando empilhados na mesma tela.
  */
 import React from "react";
 import { HelpCircle, LineChart } from "lucide-react";
@@ -53,19 +56,19 @@ export default function FinancialIndicatorsHistory({
           <div className="overflow-x-auto bg-white">
             <table className="table-fixed border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-300">
-                  <th className="w-64 px-2 py-0.5 text-left font-bold uppercase tracking-wide text-[#3D9A94]">
+                <tr className="bg-slate-800">
+                  <th className="w-80 px-2 py-1.5 text-left font-bold uppercase tracking-wide text-white">
                     {group.groupLabel}
                   </th>
-                  <th className="w-8 px-1 py-0.5" />
-                  <th className="w-8 px-1 py-0.5" />
-                  <th className="w-24 bg-[#00856F] px-2 py-0.5 text-right font-bold uppercase text-white">
-                    Atual
+                  <th className="w-8 px-1 py-1.5" />
+                  <th className="w-8 px-1 py-1.5" />
+                  <th className="w-[30mm] px-2 py-1.5 text-center font-bold uppercase text-white">
+                    {currentPeriod.label}
                   </th>
                   {historicalPeriods.map((period) => (
                     <th
                       key={period.key}
-                      className="w-24 px-2 py-0.5 text-right font-bold text-slate-800"
+                      className="w-[30mm] px-2 py-1.5 text-center font-bold text-white"
                     >
                       {period.label}
                     </th>
@@ -116,7 +119,7 @@ export default function FinancialIndicatorsHistory({
                           <LineChart className="h-3.5 w-3.5" />
                         </button>
                       </td>
-                      <td className="bg-emerald-50 px-2 py-0.5 text-right font-semibold tabular-nums text-slate-900">
+                      <td className="px-2 py-0.5 text-right font-semibold tabular-nums text-slate-900">
                         {formatIndicatorValue(
                           currentSnapshot?.value,
                           indicator

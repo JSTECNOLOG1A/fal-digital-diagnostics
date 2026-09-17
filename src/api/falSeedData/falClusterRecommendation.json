@@ -1,0 +1,488 @@
+[
+  {
+    "cluster_key": "ativo_biologico_cpc29_cluster",
+    "dimension_key": "contabil",
+    "recommendation_key": "rec_ativo_biologico_cpc29",
+    "recommendation_text": "Implantar rotina estruturada para o cluster ativo biologico cpc29, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "compliance_contabil_cluster",
+    "dimension_key": "contabil",
+    "recommendation_key": "rec_compliance_contabil",
+    "recommendation_text": "Implantar rotina estruturada para o cluster compliance contabil, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "demonstracoes_financeiras_cluster",
+    "dimension_key": "contabil",
+    "recommendation_key": "rec_demonstracoes_financeiras",
+    "recommendation_text": "Implantar rotina estruturada para o cluster demonstracoes financeiras, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "organizacao_contabil_cluster",
+    "dimension_key": "contabil",
+    "recommendation_key": "rec_organizacao_contabil",
+    "recommendation_text": "Implantar rotina estruturada para o cluster organizacao contabil, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "compras_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_compras",
+    "recommendation_text": "Implantar rotina estruturada para o cluster compras, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "controle_estoques_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_controle_estoques",
+    "recommendation_text": "Implantar rotina estruturada para o cluster controle estoques, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "custos_agricolas_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_custos_agricolas",
+    "recommendation_text": "Implantar rotina estruturada para o cluster custos agricolas, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "endividamento_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_endividamento",
+    "recommendation_text": "Implantar rotina estruturada para o cluster endividamento, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "folha_admissao_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_folha_admissao",
+    "recommendation_text": "Implantar rotina estruturada para o cluster folha admissao, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "folha_demissao_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_folha_demissao",
+    "recommendation_text": "Implantar rotina estruturada para o cluster folha demissao, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "folha_promocoes_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_folha_promocoes",
+    "recommendation_text": "Implantar rotina estruturada para o cluster folha promocoes, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_imobilizado_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_gestao_imobilizado",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao imobilizado, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "receitas_faturamento_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_receitas_faturamento",
+    "recommendation_text": "Implantar rotina estruturada para o cluster receitas faturamento, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "segregacao_funcoes_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_segregacao_funcoes",
+    "recommendation_text": "Implantar rotina estruturada para o cluster segregacao funcoes, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "tesouraria_cluster",
+    "dimension_key": "controles_internos",
+    "recommendation_key": "rec_tesouraria",
+    "recommendation_text": "Implantar rotina estruturada para o cluster tesouraria, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "acompanhamento_resultados_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_acompanhamento_resultados",
+    "recommendation_text": "Implantar rotina estruturada para o cluster acompanhamento resultados, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "carteira_clientes_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_carteira_clientes",
+    "recommendation_text": "Implantar rotina estruturada para o cluster carteira clientes, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "estrategia_comercial_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_estrategia_comercial",
+    "recommendation_text": "Implantar rotina estruturada para o cluster estrategia comercial, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "estrutura_capital_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_estrutura_capital",
+    "recommendation_text": "Implantar rotina estruturada para o cluster estrutura capital, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "financas_agro_cpr_barter_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_financas_agro_cpr_barter",
+    "recommendation_text": "Implantar rotina estruturada para o cluster financas agro cpr barter, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_caixa_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_gestao_caixa",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao caixa, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "indicadores_comerciais_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_indicadores_comerciais",
+    "recommendation_text": "Implantar rotina estruturada para o cluster indicadores comerciais, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "indicadores_financeiros_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_indicadores_financeiros",
+    "recommendation_text": "Implantar rotina estruturada para o cluster indicadores financeiros, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "indicadores_operacionais_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_indicadores_operacionais",
+    "recommendation_text": "Implantar rotina estruturada para o cluster indicadores operacionais, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "inteligencia_mercado_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_inteligencia_mercado",
+    "recommendation_text": "Implantar rotina estruturada para o cluster inteligencia mercado, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "modelo_negocio_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_modelo_negocio",
+    "recommendation_text": "Implantar rotina estruturada para o cluster modelo negocio, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "planejamento_estrategico_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_planejamento_estrategico",
+    "recommendation_text": "Implantar rotina estruturada para o cluster planejamento estrategico, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "planejamento_financeiro_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_planejamento_financeiro",
+    "recommendation_text": "Implantar rotina estruturada para o cluster planejamento financeiro, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "posicionamento_mercado_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_posicionamento_mercado",
+    "recommendation_text": "Implantar rotina estruturada para o cluster posicionamento mercado, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "relacionamento_bancario_cluster",
+    "dimension_key": "financeiro",
+    "recommendation_key": "rec_relacionamento_bancario",
+    "recommendation_text": "Implantar rotina estruturada para o cluster relacionamento bancario, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "estrutura_governanca_cluster",
+    "dimension_key": "governanca",
+    "recommendation_key": "rec_estrutura_governanca",
+    "recommendation_text": "Implantar rotina estruturada para o cluster estrutura governanca, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_riscos_cluster",
+    "dimension_key": "governanca",
+    "recommendation_key": "rec_gestao_riscos",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao riscos, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "processo_decisorio_cluster",
+    "dimension_key": "governanca",
+    "recommendation_key": "rec_processo_decisorio",
+    "recommendation_text": "Implantar rotina estruturada para o cluster processo decisorio, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "transparencia_cluster",
+    "dimension_key": "governanca",
+    "recommendation_key": "rec_transparencia",
+    "recommendation_text": "Implantar rotina estruturada para o cluster transparencia, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "contencioso_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_contencioso",
+    "recommendation_text": "Implantar rotina estruturada para o cluster contencioso, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "contratos_comerciais_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_contratos_comerciais",
+    "recommendation_text": "Implantar rotina estruturada para o cluster contratos comerciais, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "contratos_operacionais_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_contratos_operacionais",
+    "recommendation_text": "Implantar rotina estruturada para o cluster contratos operacionais, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "estrutura_societaria_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_estrutura_societaria",
+    "recommendation_text": "Implantar rotina estruturada para o cluster estrutura societaria, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "regularidade_ambiental_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_regularidade_ambiental",
+    "recommendation_text": "Implantar rotina estruturada para o cluster regularidade ambiental, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "regularidade_fundiaria_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_regularidade_fundiaria",
+    "recommendation_text": "Implantar rotina estruturada para o cluster regularidade fundiaria, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "riscos_trabalhistas_cluster",
+    "dimension_key": "juridico",
+    "recommendation_key": "rec_riscos_trabalhistas",
+    "recommendation_text": "Implantar rotina estruturada para o cluster riscos trabalhistas, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_insumos_cluster",
+    "dimension_key": "operacional",
+    "recommendation_key": "rec_gestao_insumos",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao insumos, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_pessoas_cluster",
+    "dimension_key": "operacional",
+    "recommendation_key": "rec_gestao_pessoas",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao pessoas, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_producao_cluster",
+    "dimension_key": "operacional",
+    "recommendation_key": "rec_gestao_producao",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao producao, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "gestao_safra_e_logistica_cluster",
+    "dimension_key": "operacional",
+    "recommendation_key": "rec_gestao_safra_e_logistica",
+    "recommendation_text": "Implantar rotina estruturada para o cluster gestao safra e logistica, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "planejamento_produtivo_cluster",
+    "dimension_key": "operacional",
+    "recommendation_key": "rec_planejamento_produtivo",
+    "recommendation_text": "Implantar rotina estruturada para o cluster planejamento produtivo, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "infraestrutura_tecnologica_cluster",
+    "dimension_key": "sistemas",
+    "recommendation_key": "rec_infraestrutura_tecnologica",
+    "recommendation_text": "Implantar rotina estruturada para o cluster infraestrutura tecnologica, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "seguranca_informacao_cluster",
+    "dimension_key": "sistemas",
+    "recommendation_key": "rec_seguranca_informacao",
+    "recommendation_text": "Implantar rotina estruturada para o cluster seguranca informacao, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "sistemas_gestao_cluster",
+    "dimension_key": "sistemas",
+    "recommendation_key": "rec_sistemas_gestao",
+    "recommendation_text": "Implantar rotina estruturada para o cluster sistemas gestao, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "apuracao_tributos_cluster",
+    "dimension_key": "tributario",
+    "recommendation_key": "rec_apuracao_tributos",
+    "recommendation_text": "Implantar rotina estruturada para o cluster apuracao tributos, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "enquadramento_tributario_cluster",
+    "dimension_key": "tributario",
+    "recommendation_key": "rec_enquadramento_tributario",
+    "recommendation_text": "Implantar rotina estruturada para o cluster enquadramento tributario, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "obrigacoes_acessorias_cluster",
+    "dimension_key": "tributario",
+    "recommendation_key": "rec_obrigacoes_acessorias",
+    "recommendation_text": "Implantar rotina estruturada para o cluster obrigacoes acessorias, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "riscos_fiscais_cluster",
+    "dimension_key": "tributario",
+    "recommendation_key": "rec_riscos_fiscais",
+    "recommendation_text": "Implantar rotina estruturada para o cluster riscos fiscais, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  },
+  {
+    "cluster_key": "tributario_agro_especifico_cluster",
+    "dimension_key": "tributario",
+    "recommendation_key": "rec_tributario_agro_especifico",
+    "recommendation_text": "Implantar rotina estruturada para o cluster tributario agro especifico, com responsável definido, procedimento documentado, indicador de acompanhamento e revisão periódica pela gestão.",
+    "impact_level": 4,
+    "implementation_complexity": 2,
+    "estimated_time": "60d"
+  }
+]

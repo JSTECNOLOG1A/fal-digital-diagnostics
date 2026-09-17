@@ -92,6 +92,17 @@ export default function DimensionQuestionnaire() {
   const [swappedIds, setSwappedIds] = useState(new Set());
   const prevResponsesRef = useRef(null);
 
+  // ── Autosave ──────────────────────────────────────────────────────────────
+  // Antes, a resposta só era gravada de verdade quando o consultor clicava
+  // manualmente em "Salvar" — a % de progresso na tela era só estado local
+  // (answersRef), então um F5/fechar aba antes de clicar em "Salvar" perdia
+  // tudo, mesmo já tendo "respondido" várias perguntas. handleSaveRef sempre
+  // aponta pra versão mais recente de handleSave (evita closure velha no
+  // timer de debounce); autoSaveTimerRef debounça pra não salvar a cada
+  // tecla digitada na justificativa.
+  const handleSaveRef = useRef(null);
+  const autoSaveTimerRef = useRef(null);
+
   useEffect(() => {
     const key = existingResponses.map(r => r.id).join(',');
     if (prevResponsesRef.current === key) return;
@@ -120,6 +131,13 @@ export default function DimensionQuestionnaire() {
     answersRef.current = { ...answersRef.current, [qId]: { ...answersRef.current[qId], ...fields } };
     setAnswers({ ...answersRef.current });
     setSaved(false);
+
+    // Autosave debounçado — grava de verdade ~1s depois da última mudança,
+    // sem precisar do clique manual em "Salvar".
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => {
+      handleSaveRef.current?.();
+    }, 1000);
   }, []);
 
   const sortedQuestionsRef = useRef([]);
@@ -130,8 +148,11 @@ export default function DimensionQuestionnaire() {
     }, 300);
   }, []);
 
-  const handleSave = async () => {
-    setSaving(true);
+  // persistAnswers: grava de verdade as respostas pendentes (usado tanto pelo
+  // autosave em segundo plano quanto pelo botão manual "Salvar" — só o botão
+  // manual navega de volta pro assessment depois; o autosave não navega,
+  // senão jogaria o consultor pra fora da tela a cada ~1s enquanto responde.
+  const persistAnswers = async () => {
     const effectiveTenantId = tenantId || assessment?.tenant_id || 'global';
     const currentAnswers    = answersRef.current;
     const questionsToSave   = sortedQuestionsRef.current.filter(q => currentAnswers[q.id]?.score !== undefined);
@@ -178,7 +199,41 @@ export default function DimensionQuestionnaire() {
     queryClient.invalidateQueries({ queryKey: ['fal-responses-dim', assessmentId, dimensionKey] });
     queryClient.invalidateQueries({ queryKey: assessmentKey(tenantId, assessmentId, 'fal-responses') });
     queryClient.invalidateQueries({ queryKey: assessmentKey(tenantId, assessmentId) });
+  };
 
+  // Autosave em segundo plano — sem indicador de "saving", sem navegar,
+  // sem re-disparar se já houver um autosave em andamento.
+  const autoSavingRef = useRef(false);
+  const autoSave = async () => {
+    if (autoSavingRef.current) return;
+    autoSavingRef.current = true;
+    try {
+      await persistAnswers();
+      setSaved(true);
+    } catch (e) {
+      console.warn('[DimensionQuestionnaire] autosave falhou:', e.message);
+    } finally {
+      autoSavingRef.current = false;
+    }
+  };
+
+  useEffect(() => {
+    handleSaveRef.current = autoSave;
+  });
+
+  // Flush final: tenta salvar qualquer coisa pendente ao sair da tela
+  // (trocar de pergunta/dimensão, fechar aba) — best-effort, não bloqueia.
+  useEffect(() => () => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+      persistAnswers().catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSave = async () => {
+    setSaving(true);
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    await persistAnswers();
     setSaving(false);
     navigate(createPageUrl(`AssessmentDetail?id=${assessmentId}`));
   };

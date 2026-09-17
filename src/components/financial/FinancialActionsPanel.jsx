@@ -6,14 +6,15 @@
  */
 import React, { useMemo, useState } from "react";
 import { financialKey, tenantKey } from '@/lib/query-client';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import {
   AlertCircle, Lightbulb, ClipboardList, Plus, Loader2, CheckCircle2,
-  Calendar, User, Flag, Target, ArrowRight, Sparkles,
+  Calendar, User, Flag, Target, ArrowRight, Sparkles, Check, X, EyeOff, Pencil, ChevronDown, ChevronRight, RotateCcw,
 } from "lucide-react";
 import { getFindingKeyFromRecommendation } from "./FinancialRecommendationsTab";
 import { financialIndicatorRegistry } from "./indicators/financialIndicatorRegistry";
+import AddToActionPlanButton from "./AddToActionPlanButton";
 
 // Mapa código → label legível para preencher o cluster_key da tarefa
 const INDICATOR_LABELS = Object.fromEntries(
@@ -34,133 +35,59 @@ const HORIZON_OPTS = [
   { value: "180d", label: "180 dias" },
 ];
 
-const SEVERITY_CLS = {
-  low: "border-slate-200 bg-slate-50 text-slate-700",
-  medium: "border-amber-200 bg-amber-50 text-amber-700",
-  high: "border-orange-200 bg-orange-50 text-orange-700",
-  critical: "border-red-200 bg-red-50 text-red-700",
+// Fallback só usado quando o achado ainda não tem classification (curadoria
+// do consultor) — 3 cores, mesma paleta do semáforo acima.
+const SEVERITY_ACCENT = {
+  low: "#047857",
+  medium: "#FFFF00",
+  high: "#DC2626",
+  critical: "#DC2626",
 };
 
-const PRIORITY_CLS = {
-  critica: "border-red-200 bg-red-50 text-red-700",
-  alta: "border-orange-200 bg-orange-50 text-orange-700",
-  media: "border-amber-200 bg-amber-50 text-amber-700",
-  baixa: "border-slate-200 bg-slate-50 text-slate-700",
+const PRIORITY_ACCENT = {
+  critica: "#DC2626",
+  alta: "#D97706",
+  media: "#D9A420",
+  baixa: "#94a3b8",
 };
+
+const CARD_CLS = "border border-slate-200 bg-white text-slate-700";
 
 const SCOPE_LABEL = {
   period_snapshot: "Data-base",
   period_comparison: "Evolução",
-  structural_validation: "Validações Estruturais",
+  structural_validation: "Validações estruturais",
 };
 
 const SCOPES = ["period_snapshot", "period_comparison", "structural_validation"];
 
-// ── ConvertForm: cria tarefa no plano a partir de uma recomendação ─────────────
-/**
- * @param {Object} props
- * @param {any=} props.rec
- * @param {any=} props.diagnosisId
- * @param {any=} props.tenantId
- * @param {any=} props.onDone
- */
-function ConvertForm({ rec, diagnosisId, tenantId, onDone }) {
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    title: rec.title || "",
-    description: rec.suggested_action || rec.recommendation_text || "",
-    ownerName: rec.suggested_owner_area || "",
-    priority: rec.priority || "medium",
-    horizon: "90d",
-    planId: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+// ── Curadoria pro Relatório da Análise (semáforo, aprovar/editar/excluir) ──
+// Mesma paleta de 3 cores do relatório (financial-report-html.service.ts,
+// semaforoColor — vermelho/âmbar/verde, igual ao termômetro de Kanitz) — um
+// ponto, não um badge cheio de cor, e nunca mais que 3 cores.
+const SEMAFORO_RED = "#DC2626";
+const SEMAFORO_AMBER = "#FFFF00";
+const SEMAFORO_GREEN = "#047857";
+const SEMAFORO_DOT = {
+  critico: SEMAFORO_RED, atencao: SEMAFORO_AMBER, oportunidade: SEMAFORO_GREEN, informativo: SEMAFORO_GREEN,
+};
+const CLASSIFICATION_LABEL = { critico: "Crítico", atencao: "Atenção", oportunidade: "Oportunidade", informativo: "Informativo" };
+const CLASSIFICATION_OPTS = Object.entries(CLASSIFICATION_LABEL);
 
-  const handle = (f, v) => setForm((p) => ({ ...p, [f]: v }));
+const INCLUSION_LABEL = {
+  candidate: "Candidato", approved: "Aprovado", edited: "Editado (aprovado)", excluded: "Excluído", internal_only: "Uso interno",
+};
+const INCLUSION_CLASS = {
+  candidate: "bg-slate-100 text-slate-500",
+  approved: "bg-emerald-100 text-emerald-700",
+  edited: "bg-blue-100 text-blue-700",
+  excluded: "bg-red-50 text-red-600",
+  internal_only: "bg-slate-100 text-slate-500",
+};
 
-  const submit = async () => {
-    setSubmitting(true); setError(null);
-    try {
-      // Extrai o indicador de origem da recomendação para preencher Dimensão/Cluster
-      const recIndicatorCode = (rec.related_indicator_codes || []).find(
-        (c) => typeof c === "string" && !c.startsWith("__fk__:")
-      ) || "";
-      const recIndicatorLabel = recIndicatorCode
-        ? (INDICATOR_LABELS[recIndicatorCode] || recIndicatorCode)
-        : "Análise Financeira";
-
-      await base44.functions.invoke("convertFinancialRecommendation", {
-        financial_recommendation_id: rec.id,
-        task_title: form.title,
-        description: form.description,
-        horizon: form.horizon,
-        owner_name: form.ownerName,
-        priority: form.priority,
-        tenant_id: tenantId,
-        indicator_code: recIndicatorCode,
-        indicator_label: recIndicatorLabel,
-      });
-      queryClient.invalidateQueries({ queryKey: financialKey(tenantId, diagnosisId, 'action-proposals') });
-      queryClient.invalidateQueries({ queryKey: financialKey(tenantId, diagnosisId, 'recommendations') });
-      queryClient.invalidateQueries({ queryKey: tenantKey(tenantId, 'group-action-plan') });
-      onDone?.();
-    } catch (e) {
-      setError(e.message || "Erro ao converter em tarefa.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="mt-2 space-y-2 rounded-lg border border-emerald-200 bg-emerald-50/40 p-2.5">
-      <div className="grid grid-cols-2 gap-2">
-        <input
-          value={form.title}
-          onChange={(e) => handle("title", e.target.value)}
-          placeholder="Título da tarefa"
-          className="col-span-2 border border-slate-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-400"
-        />
-        <input
-          value={form.ownerName}
-          onChange={(e) => handle("ownerName", e.target.value)}
-          placeholder="Responsável"
-          className="border border-slate-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-400"
-        />
-        <select
-          value={form.priority}
-          onChange={(e) => handle("priority", e.target.value)}
-          className="border border-slate-300 rounded-md px-2 py-1.5 text-xs bg-white"
-        >
-          {PRIORITY_OPTS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
-        <select
-          value={form.horizon}
-          onChange={(e) => handle("horizon", e.target.value)}
-          className="col-span-2 border border-slate-300 rounded-md px-2 py-1.5 text-xs bg-white"
-        >
-          {HORIZON_OPTS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
-      </div>
-      <p className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-1 flex items-center gap-1">
-        <CheckCircle2 className="w-3 h-3" /> A tarefa será incluída automaticamente no plano de ação central do grupo.
-      </p>
-      {error && <p className="text-[11px] text-red-600">{error}</p>}
-      <div className="flex gap-2 justify-end">
-        <button onClick={onDone} className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1">
-          Cancelar
-        </button>
-        <button
-          onClick={submit}
-          disabled={submitting}
-          className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
-        >
-          {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-          Criar Tarefa
-        </button>
-      </div>
-    </div>
-  );
+function semaforoDotColor(finding) {
+  if (finding.classification && SEMAFORO_DOT[finding.classification]) return SEMAFORO_DOT[finding.classification];
+  return SEVERITY_ACCENT[finding.severity] || SEVERITY_ACCENT.medium;
 }
 
 // ── RecommendationRow ──────────────────────────────────────────────────────────
@@ -172,51 +99,165 @@ function ConvertForm({ rec, diagnosisId, tenantId, onDone }) {
  * @param {any=} props.tenantId
  */
 function RecommendationRow({ rec, proposals, diagnosisId, tenantId }) {
-  const [showConvert, setShowConvert] = useState(false);
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({
+    title: rec.title || "",
+    diagnostic_thesis: rec.diagnostic_thesis || "",
+    suggested_action: rec.suggested_action || "",
+    expected_impact: rec.expected_impact || "",
+  });
+
+  const manageMutation = useMutation({
+    mutationFn: (data) => base44.entities.FinancialRecommendation.update(rec.id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: financialKey(tenantId, diagnosisId, 'recommendations') }),
+  });
+
+  const status = rec.report_inclusion_status || "candidate";
+
+  const saveEdit = () => {
+    manageMutation.mutate({ report_inclusion_status: "edited", ...draft });
+    setEditing(false);
+  };
+
   const linkedProposals = proposals.filter(
     (p) => p.financial_recommendation_id === rec.id
   );
+  const exportedProposal = linkedProposals.find((p) => p.status === "exported");
+  const alreadyExported = !!exportedProposal;
+  const recIndicatorCode = (rec.related_indicator_codes || []).find(
+    (c) => typeof c === "string" && !c.startsWith("__fk__:")
+  ) || "";
+  const recIndicatorLabel = recIndicatorCode
+    ? (INDICATOR_LABELS[recIndicatorCode] || recIndicatorCode)
+    : "Análise financeira";
 
   return (
     <div className="ml-3 pl-3 border-l-2 border-slate-200">
-      <div className={`rounded-lg border p-2.5 ${PRIORITY_CLS[rec.priority] || PRIORITY_CLS.media}`}>
+      <div className={`${CARD_CLS} p-2.5 border-l-[3px]`} style={{ borderLeftColor: PRIORITY_ACCENT[rec.priority] || PRIORITY_ACCENT.media }}>
         <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-semibold flex-1">{rec.title}</p>
-          <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-white/60 shrink-0">
+          {editing ? (
+            <input
+              value={draft.title}
+              onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
+              className="flex-1 text-xs font-semibold border border-slate-300 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          ) : (
+            <p className="text-xs font-semibold flex-1">{rec.title}</p>
+          )}
+          <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 bg-slate-100 text-slate-600 shrink-0">
             {rec.priority}
           </span>
+          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${INCLUSION_CLASS[status] || INCLUSION_CLASS.candidate}`}>
+            {INCLUSION_LABEL[status] || status}
+          </span>
         </div>
-        {rec.diagnostic_thesis && <p className="text-[11px] mt-1 opacity-80"><strong>Tese:</strong> {rec.diagnostic_thesis}</p>}
-        {rec.suggested_action && <p className="text-[11px] mt-0.5 opacity-80"><strong>Ação:</strong> {rec.suggested_action}</p>}
-        {rec.expected_impact && <p className="text-[11px] mt-0.5 opacity-80"><strong>Impacto:</strong> {rec.expected_impact}</p>}
+
+        {editing ? (
+          <div className="mt-1.5 space-y-1.5">
+            <label className="block text-[11px] text-slate-500">Tese
+              <textarea value={draft.diagnostic_thesis} onChange={(e) => setDraft((d) => ({ ...d, diagnostic_thesis: e.target.value }))} rows={2} className="w-full mt-0.5 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none" />
+            </label>
+            <label className="block text-[11px] text-slate-500">Ação
+              <textarea value={draft.suggested_action} onChange={(e) => setDraft((d) => ({ ...d, suggested_action: e.target.value }))} rows={2} className="w-full mt-0.5 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none" />
+            </label>
+            <label className="block text-[11px] text-slate-500">Impacto
+              <textarea value={draft.expected_impact} onChange={(e) => setDraft((d) => ({ ...d, expected_impact: e.target.value }))} rows={2} className="w-full mt-0.5 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none" />
+            </label>
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setEditing(false)} className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1">Cancelar</button>
+              <button
+                onClick={saveEdit}
+                disabled={manageMutation.isPending}
+                className="inline-flex items-center gap-1 bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-semibold disabled:opacity-60"
+              >
+                {manageMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                Salvar e aprovar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {rec.diagnostic_thesis && <p className="text-[11px] mt-1 text-slate-600"><strong>Tese:</strong> {rec.diagnostic_thesis}</p>}
+            {rec.suggested_action && <p className="text-[11px] mt-0.5 text-slate-600"><strong>Ação:</strong> {rec.suggested_action}</p>}
+            {rec.expected_impact && <p className="text-[11px] mt-0.5 text-slate-600"><strong>Impacto:</strong> {rec.expected_impact}</p>}
+          </>
+        )}
+
+        {!editing && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-2">
+            {status !== "approved" && status !== "edited" && (
+              <button
+                onClick={() => manageMutation.mutate({ report_inclusion_status: "approved" })}
+                disabled={manageMutation.isPending}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded disabled:opacity-50"
+              >
+                <Check className="w-3 h-3" /> Aprovar
+              </button>
+            )}
+            {(status === "approved" || status === "edited") && (
+              <button
+                onClick={() => manageMutation.mutate({ report_inclusion_status: "candidate" })}
+                disabled={manageMutation.isPending}
+                title="Remove da seção 'Recomendações avulsas' do relatório sem excluir a recomendação — não afeta o envio ao Plano de Ação (é uma decisão independente)."
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 border border-amber-300 bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded disabled:opacity-50"
+              >
+                <RotateCcw className="w-3 h-3" /> Desaprovar
+              </button>
+            )}
+            <button
+              onClick={() => setEditing(true)}
+              disabled={manageMutation.isPending}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 border border-slate-300 hover:bg-slate-50 px-2 py-1 rounded disabled:opacity-50"
+            >
+              <Pencil className="w-3 h-3" /> Editar
+            </button>
+            {status !== "excluded" && (
+              <button
+                onClick={() => manageMutation.mutate({ report_inclusion_status: "excluded" })}
+                disabled={manageMutation.isPending}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-red-600 border border-red-200 hover:bg-red-50 px-2 py-1 rounded disabled:opacity-50"
+              >
+                <X className="w-3 h-3" /> Excluir
+              </button>
+            )}
+            {status !== "internal_only" && (
+              <button
+                onClick={() => manageMutation.mutate({ report_inclusion_status: "internal_only" })}
+                disabled={manageMutation.isPending}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 border border-slate-200 hover:bg-slate-50 px-2 py-1 rounded disabled:opacity-50"
+              >
+                <EyeOff className="w-3 h-3" /> Uso interno
+              </button>
+            )}
+          </div>
+        )}
 
         {linkedProposals.length > 0 && (
           <div className="mt-2 space-y-1">
             {linkedProposals.map((p) => (
-              <div key={p.id} className="flex items-center gap-2 text-[11px] bg-white/50 rounded px-2 py-1">
+              <div key={p.id} className="flex items-center gap-2 text-[11px] bg-slate-50 px-2 py-1">
                 <ClipboardList className="w-3 h-3 shrink-0" />
                 <span className="flex-1 truncate">{p.title}</span>
-                <span className="text-[10px] uppercase font-bold opacity-70">{p.status}</span>
+                <span className="text-[10px] uppercase font-bold text-slate-500">{p.status}</span>
               </div>
             ))}
           </div>
         )}
 
-        <button
-          onClick={() => setShowConvert((v) => !v)}
-          className="mt-2 flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800"
-        >
-          {showConvert ? <ArrowRight className="w-3 h-3 rotate-90" /> : <Plus className="w-3 h-3" />}
-          {showConvert ? "Cancelar" : "Converter em Tarefa"}
-        </button>
-        {showConvert && (
-          <ConvertForm
-            rec={rec}
+        <div className="mt-2">
+          <AddToActionPlanButton
             diagnosisId={diagnosisId}
             tenantId={tenantId}
-            onDone={() => setShowConvert(false)}
+            recommendationId={rec.id}
+            defaultTitle={rec.title}
+            defaultDescription={rec.suggested_action || ""}
+            sourceLabel={recIndicatorLabel}
+            indicatorCode={recIndicatorCode}
+            alreadyInPlan={alreadyExported}
+            actionTaskId={exportedProposal?.fal_action_task_id ?? null}
           />
-        )}
+        </div>
       </div>
     </div>
   );
@@ -224,6 +265,13 @@ function RecommendationRow({ rec, proposals, diagnosisId, tenantId }) {
 
 // ── FindingCard (anchor) ──────────────────────────────────────────────────────
 /**
+ * Curadoria completa do achado pro Relatório da Análise: aprovar/editar/
+ * excluir/uso interno (report_inclusion_status — só achados aprovados ou
+ * editados entram no relatório gerado, tela e PDF, mesma fonte de dados) +
+ * envio direto ao Plano de Ação (sem depender de uma FinancialRecommendation
+ * já existir — necessário pros achados de cruzamento automático, que não
+ * têm mapeamento em RECOMMENDATION_MAP e por isso nunca geram recomendação
+ * pelo fluxo automático).
  * @param {Object} props
  * @param {any=} props.finding
  * @param {any=} props.recs
@@ -232,32 +280,143 @@ function RecommendationRow({ rec, proposals, diagnosisId, tenantId }) {
  * @param {any=} props.tenantId
  */
 function FindingCard({ finding, recs, proposals, diagnosisId, tenantId }) {
-  return (
-    <div className={`rounded-lg border p-3 ${SEVERITY_CLS[finding.severity] || SEVERITY_CLS.medium}`}>
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-semibold">{finding.title}</p>
-        <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-white/60 shrink-0">
-          {finding.severity}
-        </span>
-      </div>
-      {finding.description && <p className="text-xs mt-1 opacity-80">{finding.description}</p>}
-      <div className="flex flex-wrap gap-2 mt-1.5 text-[10px] opacity-60">
-        {finding.period && <span>período {finding.period}</span>}
-        {finding.comparison_period && <span>· vs {finding.comparison_period}</span>}
-        {finding.financial_indicator && <span>· {finding.financial_indicator}</span>}
-      </div>
+  const queryClient = useQueryClient();
+  const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draftText, setDraftText] = useState(finding.report_inclusion_edited_text || finding.description || "");
+  const [classification, setClassification] = useState(finding.classification || "atencao");
 
-      {recs.length > 0 && (
-        <div className="mt-3 space-y-2">
-          {recs.map((rec) => (
-            <RecommendationRow
-              key={rec.id}
-              rec={rec}
-              proposals={proposals}
-              diagnosisId={diagnosisId}
-              tenantId={tenantId}
-            />
-          ))}
+  const manageMutation = useMutation({
+    mutationFn: (data) => base44.entities.FinancialFinding.update(finding.id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: financialKey(tenantId, diagnosisId, 'findings') }),
+  });
+
+  const status = finding.report_inclusion_status || "candidate";
+  const displayText = finding.report_inclusion_edited_text || finding.description || "";
+
+  const saveEdit = () => {
+    manageMutation.mutate({ report_inclusion_edited_text: draftText, classification });
+    setEditing(false);
+    setExpanded(true);
+  };
+
+  return (
+    <div className={`${CARD_CLS} rounded-lg overflow-hidden`}>
+      <button type="button" onClick={() => setExpanded((e) => !e)} className="w-full flex items-center gap-2.5 p-3 text-left">
+        {expanded ? <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />}
+        <span className="inline-block w-2.5 h-2.5 rounded-full shrink-0" style={{ background: semaforoDotColor(finding) }} />
+        <p className="text-sm font-semibold flex-1">{finding.title}</p>
+        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${INCLUSION_CLASS[status] || INCLUSION_CLASS.candidate}`}>
+          {INCLUSION_LABEL[status] || status}
+        </span>
+      </button>
+
+      {expanded && (
+        <div className="px-3 pb-3 space-y-2.5 border-t border-slate-100 pt-2.5">
+          {editing ? (
+            <div className="space-y-2">
+              <textarea
+                value={draftText}
+                onChange={(e) => setDraftText(e.target.value)}
+                rows={3}
+                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] text-slate-500">Classificação:</label>
+                <select value={classification} onChange={(e) => setClassification(e.target.value)} className="border border-slate-300 rounded px-2 py-1 text-xs bg-white">
+                  {CLASSIFICATION_OPTS.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button onClick={() => setEditing(false)} className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1">Cancelar</button>
+                <button
+                  onClick={saveEdit}
+                  disabled={manageMutation.isPending}
+                  className="inline-flex items-center gap-1 bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-semibold disabled:opacity-60"
+                >
+                  {manageMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                  Salvar e aprovar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-slate-600">{displayText}</p>
+          )}
+
+          <div className="flex flex-wrap gap-2 text-[10px] text-slate-400">
+            {finding.period && <span>período {finding.period}</span>}
+            {finding.comparison_period && <span>· vs {finding.comparison_period}</span>}
+            {finding.financial_indicator && <span>· {finding.financial_indicator}</span>}
+          </div>
+
+          {!editing && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              {status !== "approved" && status !== "edited" && (
+                <button
+                  onClick={() => manageMutation.mutate({ report_inclusion_status: "approved", classification })}
+                  disabled={manageMutation.isPending}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded disabled:opacity-50"
+                >
+                  <Check className="w-3 h-3" /> Aprovar
+                </button>
+              )}
+              {(status === "approved" || status === "edited") && (
+                <button
+                  onClick={() => manageMutation.mutate({ report_inclusion_status: "candidate" })}
+                  disabled={manageMutation.isPending}
+                  title="Remove do relatório sem excluir o achado — mantém o texto editado, caso exista, pra reaprovar depois. Não afeta o envio ao Plano de Ação (é uma decisão independente)."
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 border border-amber-300 bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded disabled:opacity-50"
+                >
+                  <RotateCcw className="w-3 h-3" /> Desaprovar
+                </button>
+              )}
+              <button
+                onClick={() => setEditing(true)}
+                disabled={manageMutation.isPending}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 border border-slate-300 hover:bg-slate-50 px-2 py-1 rounded disabled:opacity-50"
+              >
+                <Pencil className="w-3 h-3" /> Editar
+              </button>
+              {status !== "excluded" && (
+                <button
+                  onClick={() => manageMutation.mutate({ report_inclusion_status: "excluded" })}
+                  disabled={manageMutation.isPending}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-red-600 border border-red-200 hover:bg-red-50 px-2 py-1 rounded disabled:opacity-50"
+                >
+                  <X className="w-3 h-3" /> Excluir
+                </button>
+              )}
+              {status !== "internal_only" && (
+                <button
+                  onClick={() => manageMutation.mutate({ report_inclusion_status: "internal_only" })}
+                  disabled={manageMutation.isPending}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 border border-slate-200 hover:bg-slate-50 px-2 py-1 rounded disabled:opacity-50"
+                >
+                  <EyeOff className="w-3 h-3" /> Uso interno
+                </button>
+              )}
+              <div className="ml-auto">
+                <AddToActionPlanButton
+                  diagnosisId={diagnosisId}
+                  tenantId={tenantId}
+                  findingId={finding.id}
+                  defaultTitle={finding.title}
+                  defaultDescription={displayText}
+                  sourceLabel={finding.financial_indicator || "Análise Financeira"}
+                  alreadyInPlan={finding.action_plan_status === "converted_to_task"}
+                  actionTaskId={finding.action_task_id ?? null}
+                />
+              </div>
+            </div>
+          )}
+
+          {recs.length > 0 && (
+            <div className="pt-2 space-y-2">
+              {recs.map((rec) => (
+                <RecommendationRow key={rec.id} rec={rec} proposals={proposals} diagnosisId={diagnosisId} tenantId={tenantId} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -295,7 +454,7 @@ function ManualTaskCreator({ diagnosisId, tenantId }) {
         owner_name: form.ownerName,
         priority: form.priority,
         tenant_id: tenantId,
-        indicator_label: "Análise Financeira",
+        indicator_label: "Análise financeira",
       });
       const taskCreated = !!resp?.data?.task;
       setSuccess(taskCreated ? "Tarefa criada no plano de ação do grupo!" : "Não foi possível criar a tarefa.");
@@ -315,7 +474,7 @@ function ManualTaskCreator({ diagnosisId, tenantId }) {
     <div className="mb-4">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors"
+        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors"
       >
         {open ? <ArrowRight className="w-4 h-4 rotate-90" /> : <Plus className="w-4 h-4" />}
         Nova Tarefa / Incursão
@@ -323,17 +482,17 @@ function ManualTaskCreator({ diagnosisId, tenantId }) {
       {open && (
         <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 space-y-2.5 shadow-sm">
           {success && (
-            <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2.5 py-1.5">
+            <div className="flex items-center gap-2 text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5">
               <CheckCircle2 className="w-4 h-4 shrink-0" />{success}
             </div>
           )}
           <div>
             <label className="text-[11px] font-bold text-slate-600 uppercase flex items-center gap-1 mb-1"><Target className="w-3 h-3" />Título</label>
-            <input value={form.title} onChange={(e) => handle("title", e.target.value)} placeholder="Título da tarefa" className="w-full border border-slate-300 rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400" />
+            <input value={form.title} onChange={(e) => handle("title", e.target.value)} placeholder="Título da tarefa" className="w-full border border-slate-300 rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-slate-500" />
           </div>
           <div>
             <label className="text-[11px] font-bold text-slate-600 uppercase mb-1 block">Descrição</label>
-            <textarea value={form.description} onChange={(e) => handle("description", e.target.value)} rows={2} placeholder="Passo a passo..." className="w-full border border-slate-300 rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 resize-none" />
+            <textarea value={form.description} onChange={(e) => handle("description", e.target.value)} rows={2} placeholder="Passo a passo..." className="w-full border border-slate-300 rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-slate-500 resize-none" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -353,11 +512,11 @@ function ManualTaskCreator({ diagnosisId, tenantId }) {
               </select>
             </div>
           </div>
-          <p className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2.5 py-1.5 flex items-center gap-1.5">
+          <p className="text-[11px] text-slate-700 bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> A tarefa será incluída automaticamente no plano de ação central do grupo.
           </p>
           {error && <p className="text-[11px] text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1">{error}</p>}
-          <button onClick={submit} disabled={submitting} className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-60">
+          <button onClick={submit} disabled={submitting} className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-60">
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
             Criar Tarefa no Plano do Grupo
           </button>

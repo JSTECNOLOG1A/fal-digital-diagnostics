@@ -18,11 +18,20 @@ COPY prisma ./prisma
 COPY src ./src
 RUN npx prisma generate && npx nest build
 
+# Runner: precisa de chromium + fonte Carlito porque o Relatório da Análise
+# Financeira (financial-report-pdf.service.ts) usa puppeteer-core apontando
+# pro binário do sistema (mais leve/confiável via apt numa imagem Debian do
+# que o Chromium embutido do puppeteer completo). fonts-crosextra-carlito é
+# metricamente compatível com Calibri (mesma largura de caractere) — sem
+# ela, o container cai no fallback DejaVu Sans, mais largo, e o PDF gerado
+# quebra linha onde a prévia (calibrada medindo Calibri real no navegador)
+# não quebra.
 FROM node:22-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV CHROMIUM_PATH=/usr/bin/chromium
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl wget \
+  && apt-get install -y --no-install-recommends openssl wget chromium fonts-crosextra-carlito \
   && rm -rf /var/lib/apt/lists/* \
   && groupadd --system fal \
   && useradd --system --gid fal --create-home fal

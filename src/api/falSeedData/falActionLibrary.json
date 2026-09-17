@@ -1,0 +1,1298 @@
+[
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_ativo_biologico_cpc29",
+    "title": "Estruturar rotina de ativo biologico cpc29",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster ativo biologico cpc29. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "contabil",
+    "subdimension_key": "ativo_biologico_cpc29",
+    "cluster_key": "ativo_biologico_cpc29_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Contabilidade",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_compliance_contabil",
+    "title": "Estruturar rotina de compliance contabil",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster compliance contabil. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "contabil",
+    "subdimension_key": "compliance_contabil",
+    "cluster_key": "compliance_contabil_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Contabilidade",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_demonstracoes_financeiras",
+    "title": "Estruturar rotina de demonstracoes financeiras",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster demonstracoes financeiras. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "contabil",
+    "subdimension_key": "demonstracoes_financeiras",
+    "cluster_key": "demonstracoes_financeiras_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Contabilidade",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_organizacao_contabil",
+    "title": "Estruturar rotina de organizacao contabil",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster organizacao contabil. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "contabil",
+    "subdimension_key": "organizacao_contabil",
+    "cluster_key": "organizacao_contabil_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Contabilidade",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_compras",
+    "title": "Estruturar rotina de compras",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster compras. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "compras",
+    "cluster_key": "compras_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_controle_estoques",
+    "title": "Estruturar rotina de controle estoques",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster controle estoques. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "controle_estoques",
+    "cluster_key": "controle_estoques_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_custos_agricolas",
+    "title": "Estruturar rotina de custos agricolas",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster custos agricolas. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "custos_agricolas",
+    "cluster_key": "custos_agricolas_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_endividamento",
+    "title": "Estruturar rotina de endividamento",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster endividamento. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "endividamento",
+    "cluster_key": "endividamento_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_folha_admissao",
+    "title": "Estruturar rotina de folha admissao",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster folha admissao. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "folha_admissao_geral",
+    "cluster_key": "folha_admissao_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_folha_demissao",
+    "title": "Estruturar rotina de folha demissao",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster folha demissao. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "folha_demissao_cluster",
+    "cluster_key": "folha_demissao_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_folha_promocoes",
+    "title": "Estruturar rotina de folha promocoes",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster folha promocoes. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "folha_promocoes_cluster",
+    "cluster_key": "folha_promocoes_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_imobilizado",
+    "title": "Estruturar rotina de gestao imobilizado",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao imobilizado. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "gestao_imobilizado",
+    "cluster_key": "gestao_imobilizado_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_receitas_faturamento",
+    "title": "Estruturar rotina de receitas faturamento",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster receitas faturamento. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "receitas_faturamento",
+    "cluster_key": "receitas_faturamento_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_segregacao_funcoes",
+    "title": "Estruturar rotina de segregacao funcoes",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster segregacao funcoes. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "segregacao_funcoes",
+    "cluster_key": "segregacao_funcoes_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_tesouraria",
+    "title": "Estruturar rotina de tesouraria",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster tesouraria. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "controles_internos",
+    "subdimension_key": "tesouraria",
+    "cluster_key": "tesouraria_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Controladoria / Auditoria",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_acompanhamento_resultados",
+    "title": "Estruturar rotina de acompanhamento resultados",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster acompanhamento resultados. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "acompanhamento_resultados",
+    "cluster_key": "acompanhamento_resultados_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_carteira_clientes",
+    "title": "Estruturar rotina de carteira clientes",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster carteira clientes. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "carteira_clientes",
+    "cluster_key": "carteira_clientes_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_estrategia_comercial",
+    "title": "Estruturar rotina de estrategia comercial",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster estrategia comercial. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "estrategia_comercial",
+    "cluster_key": "estrategia_comercial_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_estrutura_capital",
+    "title": "Estruturar rotina de estrutura capital",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster estrutura capital. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "estrutura_capital",
+    "cluster_key": "estrutura_capital_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_financas_agro_cpr_barter",
+    "title": "Estruturar rotina de financas agro cpr barter",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster financas agro cpr barter. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "financas_agro_cpr_barter",
+    "cluster_key": "financas_agro_cpr_barter_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_caixa",
+    "title": "Estruturar rotina de gestao caixa",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao caixa. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "gestao_caixa",
+    "cluster_key": "gestao_caixa_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_indicadores_comerciais",
+    "title": "Estruturar rotina de indicadores comerciais",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster indicadores comerciais. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "indicadores_comerciais",
+    "cluster_key": "indicadores_comerciais_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_indicadores_financeiros",
+    "title": "Estruturar rotina de indicadores financeiros",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster indicadores financeiros. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "indicadores_financeiros",
+    "cluster_key": "indicadores_financeiros_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_indicadores_operacionais",
+    "title": "Estruturar rotina de indicadores operacionais",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster indicadores operacionais. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "indicadores_operacionais",
+    "cluster_key": "indicadores_operacionais_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_inteligencia_mercado",
+    "title": "Estruturar rotina de inteligencia mercado",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster inteligencia mercado. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "inteligencia_mercado",
+    "cluster_key": "inteligencia_mercado_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_modelo_negocio",
+    "title": "Estruturar rotina de modelo negocio",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster modelo negocio. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "modelo_negocio",
+    "cluster_key": "modelo_negocio_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_planejamento_estrategico",
+    "title": "Estruturar rotina de planejamento estrategico",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster planejamento estrategico. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "planejamento_estrategico",
+    "cluster_key": "planejamento_estrategico_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_planejamento_financeiro",
+    "title": "Estruturar rotina de planejamento financeiro",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster planejamento financeiro. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "planejamento_financeiro",
+    "cluster_key": "planejamento_financeiro_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_posicionamento_mercado",
+    "title": "Estruturar rotina de posicionamento mercado",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster posicionamento mercado. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "posicionamento_mercado",
+    "cluster_key": "posicionamento_mercado_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_relacionamento_bancario",
+    "title": "Estruturar rotina de relacionamento bancario",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster relacionamento bancario. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "financeiro",
+    "subdimension_key": "relacionamento_bancario",
+    "cluster_key": "relacionamento_bancario_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "CFO / Financeiro",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_estrutura_governanca",
+    "title": "Estruturar rotina de estrutura governanca",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster estrutura governanca. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "governanca",
+    "subdimension_key": "estrutura_governanca",
+    "cluster_key": "estrutura_governanca_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Direção / Sócios",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_riscos",
+    "title": "Estruturar rotina de gestao riscos",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao riscos. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "governanca",
+    "subdimension_key": "gestao_riscos",
+    "cluster_key": "gestao_riscos_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Direção / Sócios",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_processo_decisorio",
+    "title": "Estruturar rotina de processo decisorio",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster processo decisorio. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "governanca",
+    "subdimension_key": "processo_decisorio",
+    "cluster_key": "processo_decisorio_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Direção / Sócios",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_transparencia",
+    "title": "Estruturar rotina de transparencia",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster transparencia. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "governanca",
+    "subdimension_key": "transparencia",
+    "cluster_key": "transparencia_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Direção / Sócios",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_contencioso",
+    "title": "Estruturar rotina de contencioso",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster contencioso. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "contencioso",
+    "cluster_key": "contencioso_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_contratos_comerciais",
+    "title": "Estruturar rotina de contratos comerciais",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster contratos comerciais. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "contratos_comerciais",
+    "cluster_key": "contratos_comerciais_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_contratos_operacionais",
+    "title": "Estruturar rotina de contratos operacionais",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster contratos operacionais. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "contratos_operacionais",
+    "cluster_key": "contratos_operacionais_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_estrutura_societaria",
+    "title": "Estruturar rotina de estrutura societaria",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster estrutura societaria. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "estrutura_societaria",
+    "cluster_key": "estrutura_societaria_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_regularidade_ambiental",
+    "title": "Estruturar rotina de regularidade ambiental",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster regularidade ambiental. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "regularidade_ambiental",
+    "cluster_key": "regularidade_ambiental_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_regularidade_fundiaria",
+    "title": "Estruturar rotina de regularidade fundiaria",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster regularidade fundiaria. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "regularidade_fundiaria",
+    "cluster_key": "regularidade_fundiaria_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_riscos_trabalhistas",
+    "title": "Estruturar rotina de riscos trabalhistas",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster riscos trabalhistas. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "juridico",
+    "subdimension_key": "riscos_trabalhistas",
+    "cluster_key": "riscos_trabalhistas_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Jurídico",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_insumos",
+    "title": "Estruturar rotina de gestao insumos",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao insumos. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "operacional",
+    "subdimension_key": "gestao_insumos",
+    "cluster_key": "gestao_insumos_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Gerência Operacional",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_pessoas",
+    "title": "Estruturar rotina de gestao pessoas",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao pessoas. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "operacional",
+    "subdimension_key": "gestao_pessoas",
+    "cluster_key": "gestao_pessoas_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Gerência Operacional",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_producao",
+    "title": "Estruturar rotina de gestao producao",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao producao. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "operacional",
+    "subdimension_key": "gestao_producao",
+    "cluster_key": "gestao_producao_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Gerência Operacional",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_gestao_safra_e_logistica",
+    "title": "Estruturar rotina de gestao safra e logistica",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster gestao safra e logistica. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "operacional",
+    "subdimension_key": "gestao_safra_e_logistica",
+    "cluster_key": "gestao_safra_e_logistica_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Gerência Operacional",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_planejamento_produtivo",
+    "title": "Estruturar rotina de planejamento produtivo",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster planejamento produtivo. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "operacional",
+    "subdimension_key": "planejamento_produtivo",
+    "cluster_key": "planejamento_produtivo_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Gerência Operacional",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_infraestrutura_tecnologica",
+    "title": "Estruturar rotina de infraestrutura tecnologica",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster infraestrutura tecnologica. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "sistemas",
+    "subdimension_key": "infraestrutura_tecnologica",
+    "cluster_key": "infraestrutura_tecnologica_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "TI / Sistemas",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_seguranca_informacao",
+    "title": "Estruturar rotina de seguranca informacao",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster seguranca informacao. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "sistemas",
+    "subdimension_key": "seguranca_informacao",
+    "cluster_key": "seguranca_informacao_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "TI / Sistemas",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_sistemas_gestao",
+    "title": "Estruturar rotina de sistemas gestao",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster sistemas gestao. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "sistemas",
+    "subdimension_key": "sistemas_gestao",
+    "cluster_key": "sistemas_gestao_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "TI / Sistemas",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_apuracao_tributos",
+    "title": "Estruturar rotina de apuracao tributos",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster apuracao tributos. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "tributario",
+    "subdimension_key": "apuracao_tributos",
+    "cluster_key": "apuracao_tributos_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Tributário / Fiscal",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_enquadramento_tributario",
+    "title": "Estruturar rotina de enquadramento tributario",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster enquadramento tributario. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "tributario",
+    "subdimension_key": "enquadramento_tributario",
+    "cluster_key": "enquadramento_tributario_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Tributário / Fiscal",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_obrigacoes_acessorias",
+    "title": "Estruturar rotina de obrigacoes acessorias",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster obrigacoes acessorias. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "tributario",
+    "subdimension_key": "obrigacoes_acessorias",
+    "cluster_key": "obrigacoes_acessorias_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Tributário / Fiscal",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_riscos_fiscais",
+    "title": "Estruturar rotina de riscos fiscais",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster riscos fiscais. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "tributario",
+    "subdimension_key": "riscos_fiscais",
+    "cluster_key": "riscos_fiscais_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Tributário / Fiscal",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  },
+  {
+    "tenant_id": null,
+    "active": true,
+    "action_key": "acao_tributario_agro_especifico",
+    "title": "Estruturar rotina de tributario agro especifico",
+    "description": "Definir responsável, documentar procedimento, estabelecer frequência de execução e criar indicador de controle para o cluster tributario agro especifico. Usar as perguntas do diagnóstico dessa frente como checklist inicial de implantação.",
+    "dimension_key": "tributario",
+    "subdimension_key": "tributario_agro_especifico",
+    "cluster_key": "tributario_agro_especifico_cluster",
+    "impact_score": 4,
+    "effort_score": 2,
+    "action_type": "structural",
+    "default_horizon": "60d",
+    "score_trigger_max": 2.5,
+    "typical_owner": "Tributário / Fiscal",
+    "level_applicability": [
+      "company",
+      "unit"
+    ],
+    "sector_tags": [
+      "agronegocio"
+    ],
+    "killer_question_trigger": false
+  }
+]
