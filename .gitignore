@@ -1,6 +1,9 @@
 #env
 .env
 .env.*
+!.env.example
+!.env.production.example
+!backend/.env.example
 
 # Logs
 logs
@@ -36,4 +39,7 @@ coverage/
 backend/coverage/
 *.tsbuildinfo
 backend/*.tsbuildinfo
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+.npm-cache/
