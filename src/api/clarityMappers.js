@@ -50,6 +50,28 @@ export function mapTenantFromApi(t) {
   };
 }
 
+// `role` é o único campo real (AppRole) — `app_role` é só um alias pro mesmo
+// valor, pra telas antigas que ainda esperam esse nome (a distinção
+// "built-in role vs app_role" era um conceito do Base44 legado, não existe
+// mais no schema atual).
+export function mapUserFromApi(u) {
+  if (!u) return null;
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    full_name: u.name,
+    role: u.role,
+    app_role: u.role,
+    tenant_id: u.tenantId ?? null,
+    client_id: u.clientId ?? null,
+    access_status: u.accessStatus,
+    last_login_at: u.lastLoginAt ?? null,
+    created_date: u.createdAt,
+    updated_date: u.updatedAt,
+  };
+}
+
 export function mapGroupFromApi(g) {
   if (!g) return null;
   return {

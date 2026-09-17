@@ -40,6 +40,7 @@ export const ROUTE_POLICIES = {
 
   // ── A. Rotas administrativas (client_viewer + consultant: DENY) ──
   Tenants:        { requireHQ: true },
+  AdminPanel:     { requireHQ: true },
   MethodAdmin:    { requireAdmin: true },
   SystemSettings: { requireAdmin: true },
   Integrations:   { requireAdmin: true },

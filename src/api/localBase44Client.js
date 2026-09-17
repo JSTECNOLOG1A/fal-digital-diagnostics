@@ -44,6 +44,7 @@ import {
   mapGroupFromApi,
   mapTenantFromApi,
   mapUnitFromApi,
+  mapUserFromApi,
   mapAssessmentFromApi,
   mapFalQuestionFromApi,
   mapFalResponseFromApi,
@@ -222,6 +223,32 @@ function createClarityHierarchyEntity(entityName) {
         if (data.is_active !== undefined) body.isActive = data.is_active;
         const updated = await clarity.updateTenant(id, body);
         return mapTenantFromApi(updated);
+      },
+    };
+  }
+
+  if (entityName === 'User') {
+    return {
+      ...local,
+      async list() {
+        const rows = await clarity.listUsers();
+        return rows.map(mapUserFromApi).filter(Boolean);
+      },
+      async filter(query = {}) {
+        let rows = await this.list();
+        if (query.tenant_id) rows = rows.filter((u) => u.tenant_id === query.tenant_id);
+        if (query.access_status) rows = rows.filter((u) => u.access_status === query.access_status);
+        if (query.role || query.app_role) rows = rows.filter((u) => u.role === (query.role || query.app_role));
+        return rows;
+      },
+      async get(id) {
+        const row = (await this.list()).find((u) => u.id === id);
+        if (!row) {
+          const error = new Error('User not found');
+          error.status = 404;
+          throw error;
+        }
+        return row;
       },
     };
   }
@@ -1394,6 +1421,7 @@ export function createLocalBase44Client() {
     'Group',
     'Company',
     'OperationalUnit',
+    'User',
   ]);
 
   const financialEntities = new Set([
@@ -1499,6 +1527,67 @@ export function createLocalBase44Client() {
     functions: {
       async invoke(name, payload = {}) {
         console.info(`[local-base44] function: ${name}`, payload);
+
+        // ── Painel de Administração — usuários/tenants (Admin Panel) ──
+        // Antes destes 5 nomes não terem implementação alguma, toda chamada
+        // caía no stub genérico no fim deste método (retornava
+        // {success:true, local:true} sem fazer nada) — a UI achava que tinha
+        // convidado/revogado/reatribuído um usuário quando na verdade nada
+        // persistia no Postgres.
+        if (name === 'inviteUserWithAccessProfile' && CLARITY_FEATURES.useClarityUsers) {
+          try {
+            const data = await clarity.inviteUser({
+              email: payload.email,
+              name: payload.name || payload.email,
+              role: payload.app_role || payload.role,
+              tenantId: payload.tenant_id || undefined,
+            });
+            return { data: { ok: true, user: mapUserFromApi(data.user), temporary_password: data.temporaryPassword } };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
+        if (name === 'assignUserAccessProfile' && CLARITY_FEATURES.useClarityUsers) {
+          try {
+            const data = await clarity.updateUserRole(payload.user_id, {
+              role: payload.app_role || payload.role,
+              tenantId: payload.tenant_id || undefined,
+            });
+            return { data: { ok: true, user: mapUserFromApi(data) } };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
+        if (name === 'resendUserInvitation' && CLARITY_FEATURES.useClarityUsers) {
+          try {
+            const data = await clarity.resendUserInvite({ userId: payload.user_id || payload.userId });
+            return { data: { ok: true, user: mapUserFromApi(data.user), temporary_password: data.temporaryPassword } };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
+        if (name === 'revokeUserAccess' && CLARITY_FEATURES.useClarityUsers) {
+          try {
+            const data = await clarity.revokeUser({ userId: payload.user_id, reason: payload.reason });
+            return { data: { ok: true, user: mapUserFromApi(data) } };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
+        if (name === 'getTenantUserAdministration' && CLARITY_FEATURES.useClarityUsers) {
+          try {
+            const data = await clarity.getUserAdministration(payload.tenant_id || undefined);
+            return {
+              data: {
+                users: (data.users || []).map(mapUserFromApi),
+                pending: (data.pending || []).map(mapUserFromApi),
+                history: data.history || [],
+              },
+            };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
 
         if (name === 'deleteAccountPlanLines') {
           const planId = payload.account_plan_id;

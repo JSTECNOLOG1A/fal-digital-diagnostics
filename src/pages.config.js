@@ -4,6 +4,7 @@ import { lazy } from 'react';
 // MfisPage e ReportPreview REMOVIDOS daqui pois estavam duplicados em App.jsx
 // Agora apenas as páginas do loop principal ficam aqui
 const ActionPlanPage          = lazy(() => import('./pages/ActionPlanPage'));
+const AdminPanel              = lazy(() => import('./pages/AdminPanel'));
 const Assessments             = lazy(() => import('./pages/Assessments'));
 const AssessmentDetail        = lazy(() => import('./pages/AssessmentDetail'));
 const ClientDetail            = lazy(() => import('./pages/ClientDetail'));
@@ -33,6 +34,7 @@ const __Layout = lazy(() => import('./Layout.jsx'));
 
 export const PAGES = {
   "ActionPlanPage":         ActionPlanPage,
+  "AdminPanel":             AdminPanel,
   "Assessments":            Assessments,
   "AssessmentDetail":       AssessmentDetail,
   "ClientDetail":           ClientDetail,

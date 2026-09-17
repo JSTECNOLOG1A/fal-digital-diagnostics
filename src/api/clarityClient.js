@@ -134,6 +134,19 @@ export class ClarityClient {
     return this.request('GET', '/users');
   }
 
+  updateUserRole(userId, body) {
+    return this.request('PATCH', `/users/${encodeURIComponent(userId)}/role`, body);
+  }
+
+  resendUserInvite(body) {
+    return this.request('POST', '/users/resend-invite', body);
+  }
+
+  getUserAdministration(tenantId) {
+    const qs = tenantId ? `?tenantId=${encodeURIComponent(tenantId)}` : '';
+    return this.request('GET', `/users/administration${qs}`);
+  }
+
   listTenants() {
     return this.request('GET', '/tenants');
   }

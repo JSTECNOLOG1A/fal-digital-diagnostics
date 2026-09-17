@@ -54,3 +54,27 @@ export class RevokeUserDto {
   @MaxLength(500)
   reason?: string;
 }
+
+export class UpdateUserRoleDto {
+  /** Preenchido pelo controller a partir de :id — opcional aqui pois o corpo
+   * da requisição PATCH /users/:id/role não o envia. */
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
+
+  @ApiProperty({ enum: ALL_ROLES })
+  @IsIn(ALL_ROLES)
+  role!: AppRole;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  tenantId?: string;
+}
+
+export class ResendInviteDto {
+  @ApiProperty()
+  @IsUUID()
+  userId!: string;
+}

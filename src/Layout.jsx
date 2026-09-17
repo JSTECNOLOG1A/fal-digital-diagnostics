@@ -6,7 +6,7 @@ import { usePermissions } from '@/lib/hooks/usePermissions';
 import { AppLoader, AppError } from '@/components/shared/AppLoader';
 import TenantPickerDialog from '@/components/shared/TenantPickerDialog';
 import {
-  LayoutDashboard, Briefcase, Layers, LogOut, Menu, Building2, ScrollText, Rocket,
+  LayoutDashboard, Briefcase, Layers, LogOut, Menu, Building2, ScrollText, Rocket, ShieldCheck,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ function SidebarContent({ collapsed, currentPageName, onNavigate, onChangeTenant
     { name: 'Cockpit', icon: Briefcase, page: 'ConsultantCockpit', roles: ['hq_admin', 'tenant_admin', 'consultant'] },
     { name: 'Relatórios', icon: ScrollText, page: 'ReportsCenterPage', roles: ['hq_admin', 'tenant_admin', 'consultant'] },
     { name: 'Lançamentos', icon: Rocket, page: 'SystemLaunches', roles: ['hq_admin'] },
+    { name: 'Administração', icon: ShieldCheck, page: 'AdminPanel', roles: ['hq_admin'] },
   ];
 
   const clientNav = [
