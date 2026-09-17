@@ -37,7 +37,7 @@ function SidebarContent({ collapsed, currentPageName, onNavigate, onChangeTenant
       <div className={`p-4 ${collapsed ? 'px-3' : ''}`} style={{borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
         {!collapsed ? (
           <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">FAL<span style={{color:'var(--fal-green-400)'}}>®</span> Digital</h1>
+            <h1 className="text-lg font-bold text-white tracking-tight">FAL<span style={{color:'var(--fal-green-400)'}}>®</span></h1>
             <p className="text-[10px] mt-0.5" style={{color:'var(--fal-text-inverse-muted)'}}>V1.0</p>
           </div>
         ) : (
@@ -151,7 +151,7 @@ function LayoutInner({ children, currentPageName }) {
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
-          <h1 className="text-sm font-bold" style={{color:'var(--fal-text-strong)'}}>FAL<span style={{color:'var(--fal-green-400)'}}>®</span> Digital</h1>
+          <h1 className="text-sm font-bold" style={{color:'var(--fal-text-strong)'}}>FAL<span style={{color:'var(--fal-green-400)'}}>®</span></h1>
           <div className="w-9" />
         </header>
         <main className="flex-1 overflow-y-auto">
