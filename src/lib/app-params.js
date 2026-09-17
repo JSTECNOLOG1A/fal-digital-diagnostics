@@ -64,15 +64,45 @@ const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl =
 	return null;
 }
 
+/** Evita from_url recursivo (/login?from_url=/login?from_url=...) que estoura em HTTP 414. */
+const sanitizeFromUrl = (raw) => {
+	if (!raw || typeof raw !== 'string') return null;
+	if (raw.length > 2048) return null;
+	try {
+		const u = new URL(raw, typeof window !== 'undefined' ? window.location.origin : 'http://localhost');
+		const path = (u.pathname || '').toLowerCase();
+		if (path === '/login' || path.endsWith('/login')) return null;
+		if (u.searchParams.has('from_url')) {
+			u.searchParams.delete('from_url');
+		}
+		return u.toString();
+	} catch {
+		return null;
+	}
+};
+
 const getAppParams = () => {
 	if (getAppParamValue("clear_access_token") === 'true') {
 		storage.removeItem('base44_access_token');
 		storage.removeItem('token');
 	}
+	// Limpa URL já contaminada por loop de from_url (ex.: bookmark /login?from_url=...).
+	if (!isNode && typeof window !== 'undefined') {
+		const path = (window.location.pathname || '').toLowerCase();
+		const params = new URLSearchParams(window.location.search);
+		if ((path === '/login' || params.has('from_url')) && params.get('from_url')?.includes('from_url')) {
+			window.history.replaceState({}, document.title, '/');
+			storage.removeItem('base44_from_url');
+		}
+	}
+	const rawFromUrl = getAppParamValue("from_url", { defaultValue: undefined, removeFromUrl: true });
+	const fromUrl = sanitizeFromUrl(rawFromUrl) || sanitizeFromUrl(
+		!isNode && typeof window !== 'undefined' ? `${window.location.origin}/` : null,
+	);
 	return {
 		appId: getAppParamValue("app_id", { defaultValue: envAppId }),
 		token: getAppParamValue("access_token", { removeFromUrl: true }),
-		fromUrl: getAppParamValue("from_url", { defaultValue: window.location.href }),
+		fromUrl,
 		functionsVersion: getAppParamValue("functions_version", { defaultValue: envFunctionsVersion }),
 		appBaseUrl: getAppParamValue("app_base_url", { defaultValue: envAppBaseUrl }),
 	}

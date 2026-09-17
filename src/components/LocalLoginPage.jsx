@@ -5,8 +5,9 @@ import { CLARITY_FEATURES } from '@/api/clarityClient';
 
 export default function LocalLoginPage() {
   const { loginLocal, isClarityAuth } = useAuth();
-  const [email, setEmail] = useState(LOCAL_TEST_CREDENTIALS.email);
-  const [password, setPassword] = useState(LOCAL_TEST_CREDENTIALS.password);
+  const usingApiPreview = isClarityAuth || CLARITY_FEATURES.useClarityAuth;
+  const [email, setEmail] = useState(usingApiPreview ? '' : LOCAL_TEST_CREDENTIALS.email);
+  const [password, setPassword] = useState(usingApiPreview ? '' : LOCAL_TEST_CREDENTIALS.password);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -82,13 +83,16 @@ export default function LocalLoginPage() {
           {loading ? 'Entrando…' : 'Entrar'}
         </button>
 
-        <div className="rounded-md border p-3 text-xs fal-muted space-y-1">
-          <p><strong>HQ seed:</strong> {LOCAL_TEST_CREDENTIALS.email}</p>
-          <p><strong>Senha:</strong> {LOCAL_TEST_CREDENTIALS.password}</p>
-          {usingApi ? (
-            <p className="pt-1">Tenant admin: admin@demo.local (mesma senha)</p>
-          ) : null}
-        </div>
+        {!usingApi ? (
+          <div className="rounded-md border p-3 text-xs fal-muted space-y-1">
+            <p><strong>HQ seed:</strong> {LOCAL_TEST_CREDENTIALS.email}</p>
+            <p><strong>Senha:</strong> {LOCAL_TEST_CREDENTIALS.password}</p>
+          </div>
+        ) : (
+          <p className="text-xs fal-muted">
+            Use o usuário HQ criado no seed de produção (ver `.env.production` no servidor).
+          </p>
+        )}
       </form>
     </div>
   );

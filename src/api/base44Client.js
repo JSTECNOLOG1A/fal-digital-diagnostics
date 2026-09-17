@@ -6,12 +6,16 @@ import { createLocalBase44Client } from '@/api/localBase44Client';
 
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
 
-// Mesma condição usada por PASSWORD_LOGIN_ENABLED (AuthContext.jsx): em build
-// de produção, import.meta.env.DEV é sempre false, então LOCAL_TEST_AUTH_ENABLED
-// nunca é true por si só — sem o `|| CLARITY_FEATURES.useClarityAuth`, todo
-// base44.entities.*/functions.invoke cairia no SDK antigo da nuvem Base44
-// mesmo com o usuário autenticado de verdade contra o backend NestJS.
-const USE_REAL_BACKEND = LOCAL_TEST_AUTH_ENABLED || CLARITY_FEATURES.useClarityAuth;
+/**
+ * Em produção, import.meta.env.DEV é false — LOCAL_TEST_AUTH_ENABLED sozinho
+ * nunca liga. Com Clarity auth (ou Base44 desconectado / sem appBaseUrl),
+ * NÃO usar o SDK com requiresAuth:true — ele redireciona para
+ * /login?from_url=... em loop (HTTP 414 no nginx).
+ */
+const USE_REAL_BACKEND =
+  LOCAL_TEST_AUTH_ENABLED ||
+  CLARITY_FEATURES.useClarityAuth ||
+  !appBaseUrl;
 
 // Tipagem frouxa: o client local e o SDK compartilham a mesma superfície de uso no app.
 /** @type {any} */

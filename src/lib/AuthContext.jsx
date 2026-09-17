@@ -298,10 +298,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
+    // Auth própria: a UI já renderiza LocalLoginPage — nunca redirecionar
+    // com from_url (causa loop → HTTP 414 no nginx).
     if (PASSWORD_LOGIN_ENABLED) {
+      if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+        window.history.replaceState({}, document.title, '/');
+      }
       return;
     }
-    base44.auth.redirectToLogin(window.location.href);
+    const safeReturn =
+      typeof window !== 'undefined' && !window.location.pathname.toLowerCase().includes('login')
+        ? `${window.location.origin}/`
+        : undefined;
+    base44.auth.redirectToLogin(safeReturn);
   };
 
   return (
