@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ROLES } from '../shared';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -23,6 +23,11 @@ export class ActionPlanReviewController {
   @Get()
   list(@CurrentUser() user: AuthUser, @Query('actionPlanId') actionPlanId: string) {
     return this.reviews.list(user, actionPlanId);
+  }
+
+  @Get(':id')
+  get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.reviews.get(user, id);
   }
 
   @Roles(ROLES.HQ_ADMIN, ROLES.TENANT_ADMIN, ROLES.CONSULTANT)

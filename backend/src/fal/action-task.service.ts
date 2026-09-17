@@ -34,8 +34,12 @@ export class ActionTaskService {
   }
 
   async list(actor: AuthUser, planId: string) {
+    // Kanban/Lista Executiva pedem '-priority_score' (ver ActionPlanManagementPage.jsx)
+    // — o `orderBy: createdAt` anterior era ignorado pelo bridge local
+    // (ActionTask.filter só repassa o planId, não sort/limit) e a ordem
+    // real nunca batia com o que a tela pedia.
     return this.prisma.withTenantContext(this.rlsOpts(actor), (tx) =>
-      tx.actionTask.findMany({ where: { planId }, orderBy: { createdAt: 'asc' } }),
+      tx.actionTask.findMany({ where: { planId }, orderBy: { priorityScore: 'desc' } }),
     );
   }
 

@@ -26,6 +26,25 @@ export class ActionPlanReviewService {
     );
   }
 
+  /**
+   * Busca de uma revisão por id — não existia antes (só list/open/complete/
+   * cancel); ReviewModeContext.jsx no frontend chamava um `.get(review_id)`
+   * genérico que, sem endpoint real, caía no fallback local (armazenamento
+   * em memória do navegador, nunca populado com dados reais) e sempre
+   * retornava "not found" — bug real: abrir uma revisão direto por URL
+   * (ex.: refresh da página) nunca funcionava. Usado agora só como fallback
+   * quando a navegação não trouxe a revisão já carregada via router state
+   * (ver handleStartReview em APlanHeader.jsx).
+   */
+  async get(actor: AuthUser, id: string) {
+    return this.prisma.withTenantContext(this.rlsOpts(actor), async (tx) => {
+      const review = await tx.actionPlanReview.findFirst({ where: { id } });
+      if (!review) throw new NotFoundException('Review not found');
+      if (!isHQ(actor.role) && review.tenantId !== actor.tenantId) throw new ForbiddenException('Forbidden: tenant mismatch');
+      return review;
+    });
+  }
+
   /** Porta de base44/functions/createActionPlanReviewWithSnapshot. */
   async open(actor: AuthUser, dto: OpenActionPlanReviewDto) {
     return this.prisma.withTenantContext(this.rlsOpts(actor), async (tx) => {
@@ -42,7 +61,10 @@ export class ActionPlanReviewService {
       const existing = reviews.find((r) => r.reviewKey === reviewKey && r.status === 'draft');
       if (existing) return { review: existing, reused: true };
 
-      const tasks = await tx.actionTask.findMany({ where: { planId: plan.id } });
+      const tasks = await tx.actionTask.findMany({
+        where: { planId: plan.id },
+        select: { id: true, taskKey: true, status: true, progressPercentage: true, dueDate: true },
+      });
       const candidate = await tx.actionPlanReview.create({
         data: {
           actionPlanId: plan.id, assessmentId: plan.assessmentId, tenantId: plan.tenantId,
@@ -58,16 +80,14 @@ export class ActionPlanReviewService {
       });
       await tx.actionPlan.update({ where: { id: plan.id }, data: { currentRevisionId: candidate.id, updatedBy: actor.email } });
 
-      // Cancela outros rascunhos concorrentes (equivalente ao antigo lock de "candidate/active").
-      const rivals = await tx.actionPlanReview.findMany({
+      // Cancela outros rascunhos concorrentes (equivalente ao antigo lock de
+      // "candidate/active") — um único updateMany em vez de um update por
+      // rival em série (round trip por linha, quase sempre 0-1 rivais na
+      // prática, mas sem motivo pra pagar N round trips quando 1 basta).
+      await tx.actionPlanReview.updateMany({
         where: { actionPlanId: plan.id, status: 'draft', id: { not: candidate.id } },
+        data: { status: 'cancelled', cancellationReason: 'Concurrent review opening collision' },
       });
-      for (const rival of rivals) {
-        await tx.actionPlanReview.update({
-          where: { id: rival.id },
-          data: { status: 'cancelled', cancellationReason: 'Concurrent review opening collision' },
-        });
-      }
       return { review: candidate, reused: false };
     });
   }
@@ -82,7 +102,10 @@ export class ActionPlanReviewService {
 
       const plan = await tx.actionPlan.findFirst({ where: { id: review.actionPlanId } });
       if (!plan) throw new NotFoundException('Action plan not found');
-      const tasks = await tx.actionTask.findMany({ where: { planId: plan.id, tenantId: plan.tenantId } });
+      const tasks = await tx.actionTask.findMany({
+        where: { planId: plan.id, tenantId: plan.tenantId },
+        select: { id: true, taskKey: true, status: true, progressPercentage: true, dueDate: true, isBlocked: true },
+      });
       const recalculated = await this.plans.recalculate(tx, plan.id);
 
       const closingSnapshot = {

@@ -1,8 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import {
+  DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, useDraggable, useDroppable,
+} from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { base44 } from '@/api/base44Client';
 import { PRIORITY_STYLE, DIM_LABELS } from './APlanConstants';
-import { Calendar, Lock, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Lock, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useReviewMode } from '@/context/ReviewModeContext';
 import ReviewModeOverlay from './ReviewModeOverlay';
@@ -18,8 +22,6 @@ const COLUMNS = [
   { key: 'cancelled',   label: 'Cancelada',    cls: 'bg-slate-50 border-slate-100',     hdr: 'bg-slate-100',     dot: 'bg-slate-300' },
 ];
 
-const COL_KEYS = COLUMNS.map(c => c.key);
-
 /**
  * @param {Object} props
  * @param {any=} props.tasks
@@ -33,6 +35,18 @@ export default function KanbanTab({ tasks, planId, assessmentId, onOpenTask, rea
   const qc = useQueryClient();
   const { isReviewMode, review_id } = useReviewMode();
   const { toast } = useToast();
+  const [activeTask, setActiveTask] = useState(null);
+
+  // PointerSensor cobre mouse E toque em navegadores modernos — arrastar um
+  // card pra qualquer coluna funciona igual no desktop e no celular, sem
+  // precisar de um gesto de swipe separado (a versão anterior só permitia
+  // mover pra coluna adjacente no toque; arrastar já cobre isso e mais).
+  // activationConstraint com distância mínima evita que um toque/clique
+  // simples (abrir o card) seja interpretado como início de arrasto.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } }),
+  );
 
   const handleStatusChange = async (taskId, newStatus) => {
     if (readOnly) return;
@@ -68,30 +82,65 @@ export default function KanbanTab({ tasks, planId, assessmentId, onOpenTask, rea
         review_id: isReviewMode ? review_id : undefined,
       });
       if (res?.data?.error) throw new Error(res.data.error);
-      qc.invalidateQueries({ queryKey });
+      // Grava a tarefa (e o plano recalculado) que a própria resposta já
+      // trouxe, em vez de invalidar e refazer o fetch de TODAS as tarefas
+      // do plano — o update otimista acima já deixou a coluna certa na
+      // tela, isso só reconcilia com o valor real do servidor.
+      const updatedTask = res?.data?.task;
+      if (updatedTask) {
+        qc.setQueryData(queryKey, (/** @type {any} */ prev) =>
+          prev ? prev.map(t => t.id === taskId ? { ...t, ...updatedTask } : t) : prev
+        );
+      }
+      const updatedPlan = res?.data?.plan;
+      if (updatedPlan) {
+        qc.setQueryData(assessmentKey(tenantId, assessmentId, 'action-plan'), (/** @type {any} */ prev) =>
+          prev ? prev.map(p => p.id === updatedPlan.id ? { ...p, ...updatedPlan } : p) : prev
+        );
+      }
     } catch (e) {
       qc.setQueryData(queryKey, previousTasks);
       toast({ title: 'Não foi possível mover a tarefa', description: e.message, variant: 'destructive' });
     }
   };
 
-  const tasksByStatus = {};
-  COLUMNS.forEach(c => { tasksByStatus[c.key] = tasks.filter(t => t.status === c.key); });
+  const tasksByStatus = useMemo(() => {
+    const grouped = {};
+    COLUMNS.forEach(c => { grouped[c.key] = tasks.filter(t => t.status === c.key); });
+    return grouped;
+  }, [tasks]);
+
+  const handleDragStart = (event) => {
+    const task = tasks.find(t => t.id === event.active.id);
+    setActiveTask(task || null);
+  };
+
+  const handleDragEnd = (event) => {
+    setActiveTask(null);
+    const { active, over } = event;
+    if (!over) return;
+    const newStatus = String(over.id);
+    handleStatusChange(active.id, newStatus);
+  };
 
   return (
-    <div className="relative flex gap-3 w-full">
-      {isReviewMode && <ReviewModeOverlay />}
-      {COLUMNS.map(col => (
-        <KanbanColumn
-          key={col.key}
-          col={col}
-          tasks={tasksByStatus[col.key] || []}
-          onDrop={handleStatusChange}
-          onOpenTask={onOpenTask}
-          readOnly={readOnly}
-        />
-      ))}
-    </div>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={() => setActiveTask(null)}>
+      <div className="relative flex gap-3 w-full">
+        {isReviewMode && <ReviewModeOverlay />}
+        {COLUMNS.map(col => (
+          <KanbanColumn
+            key={col.key}
+            col={col}
+            tasks={tasksByStatus[col.key] || []}
+            onOpenTask={onOpenTask}
+            readOnly={readOnly}
+          />
+        ))}
+      </div>
+      <DragOverlay dropAnimation={{ duration: 180, easing: 'cubic-bezier(0.22,1,0.36,1)' }}>
+        {activeTask ? <KanbanCardContent task={activeTask} dragging /> : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
 
@@ -100,31 +149,18 @@ export default function KanbanTab({ tasks, planId, assessmentId, onOpenTask, rea
  * @param {Object} props
  * @param {any=} props.col
  * @param {any=} props.tasks
- * @param {any=} props.onDrop
  * @param {any=} props.onOpenTask
  * @param {boolean=} props.readOnly
  */
-function KanbanColumn({ col, tasks, onDrop, onOpenTask, readOnly = false }) {
-  const [dragOver, setDragOver] = useState(false);
-
-  const handleDragOver  = (e) => { if (readOnly) return; e.preventDefault(); setDragOver(true); };
-  const handleDragLeave = ()  => setDragOver(false);
-  const handleDrop = (e) => {
-    if (readOnly) return;
-    e.preventDefault();
-    setDragOver(false);
-    const taskId = e.dataTransfer.getData('taskId');
-    if (taskId) onDrop(taskId, col.key);
-  };
+function KanbanColumn({ col, tasks, onOpenTask, readOnly = false }) {
+  const { setNodeRef, isOver } = useDroppable({ id: col.key, disabled: readOnly });
 
   return (
     <div
-      className={`flex-1 min-w-0 rounded-xl border-2 transition-all duration-200 ${
-        dragOver ? 'border-blue-400 scale-[1.01] shadow-lg bg-blue-50/60' : col.cls
+      ref={setNodeRef}
+      className={`flex-1 min-w-0 rounded-xl border-2 transition-colors duration-150 ${
+        isOver ? 'border-blue-400 bg-blue-50/60' : col.cls
       }`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
     >
       {/* Header */}
       <div className={`flex items-center justify-between px-3 py-2.5 rounded-t-xl border-b ${col.hdr}`}>
@@ -136,18 +172,16 @@ function KanbanColumn({ col, tasks, onDrop, onOpenTask, readOnly = false }) {
       </div>
 
       {/* Cards */}
-      <div className={`p-2 space-y-2 min-h-[400px] transition-colors ${dragOver ? 'bg-blue-50/30' : ''}`}>
+      <div className={`p-2 space-y-2 min-h-[400px] transition-colors ${isOver ? 'bg-blue-50/30' : ''}`}>
         {tasks.map(task => (
           <KanbanCard
             key={task.id}
             task={task}
-            colKey={col.key}
             onOpenTask={onOpenTask}
-            onStatusChange={onDrop}
             readOnly={readOnly}
           />
         ))}
-        {tasks.length === 0 && !dragOver && (
+        {tasks.length === 0 && !isOver && (
           <div className="flex items-center justify-center h-24 text-[10px] text-slate-300 italic">
             Arraste tarefas aqui
           </div>
@@ -157,171 +191,102 @@ function KanbanColumn({ col, tasks, onDrop, onOpenTask, readOnly = false }) {
   );
 }
 
-/* ── Draggable + Swipeable Card ── */
+/* ── Draggable Card ── */
 /**
  * @param {Object} props
  * @param {any=} props.task
- * @param {any=} props.colKey
  * @param {any=} props.onOpenTask
- * @param {any=} props.onStatusChange
  * @param {boolean=} props.readOnly
  */
-function KanbanCard({ task, colKey, onOpenTask, onStatusChange, readOnly = false }) {
-  const p = PRIORITY_STYLE[task.priority] || PRIORITY_STYLE.medium;
-  const today   = new Date();
-  const isOverdue = task.due_date && task.status !== 'done' && new Date(task.due_date) < today;
-  const isDone    = task.status === 'done';
+function KanbanCard({ task, onOpenTask, readOnly = false }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id, disabled: readOnly });
 
-  // Touch swipe state
-  const touchStartX = useRef(null);
-  const touchStartY = useRef(null);
-  const [swipeOffset, setSwipeOffset] = useState(0);
-  const [swipeDir, setSwipeDir] = useState(null); // 'left' | 'right' | null
-  const isSwiping = useRef(false);
-
-  const currentColIdx = COL_KEYS.indexOf(colKey);
-
-  const handleTouchStart = (e) => {
-    if (readOnly) return;
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    isSwiping.current = false;
-  };
-
-  const handleTouchMove = (e) => {
-    if (!touchStartX.current) return;
-    const dx = e.touches[0].clientX - touchStartX.current;
-    const dy = e.touches[0].clientY - touchStartY.current;
-
-    if (!isSwiping.current && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
-      isSwiping.current = true;
-    }
-    if (!isSwiping.current) return;
-
-    e.preventDefault();
-    const clamped = Math.max(-120, Math.min(120, dx));
-    setSwipeOffset(clamped);
-    setSwipeDir(clamped > 0 ? 'right' : 'left');
-  };
-
-  const handleTouchEnd = () => {
-    if (isSwiping.current && Math.abs(swipeOffset) > 60) {
-      const nextIdx = swipeOffset > 0 ? currentColIdx - 1 : currentColIdx + 1;
-      if (nextIdx >= 0 && nextIdx < COL_KEYS.length) {
-        onStatusChange(task.id, COL_KEYS[nextIdx]);
-      }
-    }
-    setSwipeOffset(0);
-    setSwipeDir(null);
-    isSwiping.current = false;
-    touchStartX.current = null;
-  };
-
-  const prevCol = currentColIdx > 0 ? COLUMNS[currentColIdx - 1] : null;
-  const nextCol = currentColIdx < COL_KEYS.length - 1 ? COLUMNS[currentColIdx + 1] : null;
-
-  // Drag (desktop)
-  const handleDragStart = (e) => {
-    e.dataTransfer.setData('taskId', task.id);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleCardClick = (e) => {
-    if (isSwiping.current) return;
-    onOpenTask(task);
-  };
+  const style = transform ? {
+    transform: CSS.Translate.toString(transform),
+    zIndex: 10,
+  } : undefined;
 
   return (
-    <div className="relative overflow-hidden rounded-xl select-none">
-      {/* Swipe hint backgrounds */}
-      {swipeDir === 'right' && prevCol && (
-        <div className={`absolute inset-0 flex items-center px-3 rounded-xl ${prevCol.hdr} transition-opacity`}
-          style={{ opacity: Math.min(1, Math.abs(swipeOffset) / 60) }}>
-          <ChevronLeft className="w-4 h-4 text-slate-600" />
-          <span className="text-[10px] font-semibold text-slate-600 ml-1">{prevCol.label}</span>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      onClick={() => { if (!isDragging) onOpenTask(task); }}
+      className={isDragging ? 'opacity-30 touch-none' : 'touch-none'}
+    >
+      <KanbanCardContent task={task} />
+    </div>
+  );
+}
+
+/* ── Pure card visual (reused by KanbanCard and DragOverlay) ── */
+/**
+ * @param {Object} props
+ * @param {any} props.task
+ * @param {boolean=} props.dragging
+ */
+function KanbanCardContent({ task, dragging = false }) {
+  const p = PRIORITY_STYLE[task.priority] || PRIORITY_STYLE.medium;
+  const today = new Date();
+  const isOverdue = task.due_date && task.status !== 'done' && new Date(task.due_date) < today;
+  const isDone = task.status === 'done';
+
+  return (
+    <div
+      className={`rounded-xl border select-none bg-white group ${dragging ? 'cursor-grabbing shadow-xl' : 'cursor-grab hover:shadow-md transition-shadow'} ${
+        task.is_blocked ? 'border-amber-300' :
+        isOverdue       ? 'border-red-300' :
+                          'border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      {/* Priority strip */}
+      <div className={`h-1 w-full rounded-t-xl ${p.dot}`} />
+      <div className="px-3 pb-3 pt-2.5 space-y-2">
+        {/* Title + flags */}
+        <div className="flex items-start gap-2">
+          <p className={`text-xs font-semibold leading-snug flex-1 ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}`}>
+            {task.title}
+          </p>
+          {task.is_blocked && <Lock className="w-3 h-3 text-amber-400 flex-shrink-0 mt-0.5" />}
+          {isOverdue        && <AlertTriangle className="w-3 h-3 text-red-500 flex-shrink-0 mt-0.5" />}
         </div>
-      )}
-      {swipeDir === 'left' && nextCol && (
-        <div className={`absolute inset-0 flex items-center justify-end px-3 rounded-xl ${nextCol.hdr} transition-opacity`}
-          style={{ opacity: Math.min(1, Math.abs(swipeOffset) / 60) }}>
-          <span className="text-[10px] font-semibold text-slate-600 mr-1">{nextCol.label}</span>
-          <ChevronRight className="w-4 h-4 text-slate-600" />
-        </div>
-      )}
 
-      {/* Card */}
-      <div
-        draggable={!readOnly}
-        onDragStart={handleDragStart}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={handleCardClick}
-        className={`rounded-xl border cursor-pointer hover:shadow-md transition-all bg-white group ${
-          task.is_blocked ? 'border-amber-300' :
-          isOverdue       ? 'border-red-300' :
-                            'border-slate-200 hover:border-slate-300'
-        }`}
-        style={{
-          transform: `translateX(${swipeOffset}px)`,
-          transition: swipeOffset === 0 ? 'transform 0.25s cubic-bezier(0.22,1,0.36,1)' : 'none',
-          willChange: 'transform',
-        }}
-      >
-        {/* Priority strip */}
-        <div className={`h-1 w-full rounded-t-xl ${p.dot}`} />
-        <div className="px-3 pb-3 pt-2.5 space-y-2">
-          {/* Title + flags */}
-          <div className="flex items-start gap-2">
-            <p className={`text-xs font-semibold leading-snug flex-1 ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}`}>
-              {task.title}
-            </p>
-            {task.is_blocked && <Lock className="w-3 h-3 text-amber-400 flex-shrink-0 mt-0.5" />}
-            {isOverdue        && <AlertTriangle className="w-3 h-3 text-red-500 flex-shrink-0 mt-0.5" />}
-          </div>
+        {/* Dimension badge */}
+        {task.dimension_key && (
+          <span className="inline-block text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+            {DIM_LABELS[task.dimension_key] || task.dimension_key}
+          </span>
+        )}
 
-          {/* Dimension badge */}
-          {task.dimension_key && (
-            <span className="inline-block text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
-              {DIM_LABELS[task.dimension_key] || task.dimension_key}
-            </span>
-          )}
-
-          {/* Progress */}
-          {task.progress_percentage > 0 && !isDone && (
-            <div>
-              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-400 rounded-full transition-all" style={{ width: `${task.progress_percentage}%` }} />
-              </div>
-              <p className="text-[9px] text-slate-400 mt-0.5">{task.progress_percentage}% completo</p>
+        {/* Progress */}
+        {task.progress_percentage > 0 && !isDone && (
+          <div>
+            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-full bg-blue-400 rounded-full transition-all" style={{ width: `${task.progress_percentage}%` }} />
             </div>
-          )}
-
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-0.5">
-            <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${p.badge}`}>{p.label}</span>
-            <div className="flex items-center gap-2 text-[10px]">
-              {task.owner_name && (
-                <span className="flex items-center gap-0.5 text-slate-500 truncate max-w-[60px]">
-                  <span className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-600 flex-shrink-0">
-                    {task.owner_name.charAt(0).toUpperCase()}
-                  </span>
-                  {task.owner_name.split(' ')[0]}
-                </span>
-              )}
-              {task.due_date && (
-                <span className={`flex items-center gap-0.5 font-medium ${isOverdue ? 'text-red-600' : 'text-slate-400'}`}>
-                  <Calendar className="w-2.5 h-2.5" />
-                  {format(new Date(String(task.due_date).slice(0, 10) + 'T12:00'), 'dd/MM')}
-                </span>
-              )}
-            </div>
+            <p className="text-[9px] text-slate-400 mt-0.5">{task.progress_percentage}% completo</p>
           </div>
+        )}
 
-          {/* Swipe nav hint (mobile) */}
-          <div className="flex items-center justify-between text-[8px] text-slate-200 mt-0.5">
-            {prevCol ? <span>← {prevCol.label}</span> : <span />}
-            {nextCol ? <span>{nextCol.label} →</span> : <span />}
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-0.5">
+          <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${p.badge}`}>{p.label}</span>
+          <div className="flex items-center gap-2 text-[10px]">
+            {task.owner_name && (
+              <span className="flex items-center gap-0.5 text-slate-500 truncate max-w-[60px]">
+                <span className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-600 flex-shrink-0">
+                  {task.owner_name.charAt(0).toUpperCase()}
+                </span>
+                {task.owner_name.split(' ')[0]}
+              </span>
+            )}
+            {task.due_date && (
+              <span className={`flex items-center gap-0.5 font-medium ${isOverdue ? 'text-red-600' : 'text-slate-400'}`}>
+                <Calendar className="w-2.5 h-2.5" />
+                {format(new Date(String(task.due_date).slice(0, 10) + 'T12:00'), 'dd/MM')}
+              </span>
+            )}
           </div>
         </div>
       </div>
