@@ -7,7 +7,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { TenantGuard } from '../auth/guards/tenant.guard';
 import { AuthUser } from '../auth/auth.types';
 import { ActionPlanService } from './action-plan.service';
-import { GenerateActionPlanDto, ListActionPlansQueryDto } from './dto/action-plan.dto';
+import { CreateManualActionPlanDto, GenerateActionPlanDto, ListActionPlansQueryDto } from './dto/action-plan.dto';
 
 @ApiTags('action-plans')
 @ApiBearerAuth()
@@ -30,5 +30,11 @@ export class ActionPlanController {
   @Post('generate')
   generate(@CurrentUser() user: AuthUser, @Body() dto: GenerateActionPlanDto) {
     return this.plans.generate(user, dto);
+  }
+
+  @Roles(ROLES.HQ_ADMIN, ROLES.TENANT_ADMIN, ROLES.CONSULTANT)
+  @Post('manual')
+  createManual(@CurrentUser() user: AuthUser, @Body() dto: CreateManualActionPlanDto) {
+    return this.plans.findOrCreateManual(user, dto);
   }
 }

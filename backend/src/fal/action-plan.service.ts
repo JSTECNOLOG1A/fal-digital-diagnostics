@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { isHQ } from '../shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthUser } from '../auth/auth.types';
-import { GenerateActionPlanDto, ListActionPlansQueryDto } from './dto/action-plan.dto';
+import { CreateManualActionPlanDto, GenerateActionPlanDto, ListActionPlansQueryDto } from './dto/action-plan.dto';
 
 const ENGINE_VERSION = '2.0.1-nest';
 const DEFAULT_MAX_TASKS = 20;
@@ -180,12 +180,79 @@ export class ActionPlanService {
   }
 
   /**
+   * Cria (ou reaproveita, se já existir) um ActionPlan sem nenhum Assessment
+   * por trás — "Gestão de Projeto" usada como ferramenta livre, sem
+   * diagnóstico. Idempotente por entidade: uma empresa/grupo/unidade nunca
+   * acumula dois planos — se `generate()` (diagnóstico) rodar depois pra essa
+   * mesma entidade, ele reaproveita este mesmo plano (ver lookup por entidade
+   * em `generate()`).
+   */
+  async findOrCreateManual(actor: AuthUser, dto: CreateManualActionPlanDto) {
+    if (!dto.groupId && !dto.companyId && !dto.unitId) {
+      throw new BadRequestException('Informe groupId, companyId ou unitId.');
+    }
+    return this.prisma.withTenantContext(this.rlsOpts(actor), async (tx) => {
+      let tenantId: string | undefined;
+      if (dto.companyId) {
+        const company = await tx.company.findFirst({ where: { id: dto.companyId, deletedAt: null } });
+        if (!company) throw new NotFoundException('Company not found');
+        tenantId = company.tenantId;
+      } else if (dto.unitId) {
+        const unit = await tx.operationalUnit.findFirst({ where: { id: dto.unitId, deletedAt: null } });
+        if (!unit) throw new NotFoundException('OperationalUnit not found');
+        tenantId = unit.tenantId;
+      } else if (dto.groupId) {
+        const group = await tx.group.findFirst({ where: { id: dto.groupId, deletedAt: null } });
+        if (!group) throw new NotFoundException('Group not found');
+        tenantId = group.tenantId;
+      }
+      if (!isHQ(actor.role) && actor.tenantId && tenantId !== actor.tenantId) {
+        throw new ForbiddenException('Forbidden');
+      }
+      tenantId = tenantId ?? actor.tenantId!;
+
+      const targetWhere: Prisma.ActionPlanWhereInput = dto.companyId
+        ? { companyId: dto.companyId }
+        : dto.unitId
+          ? { unitId: dto.unitId }
+          : { groupId: dto.groupId, companyId: null };
+      const existing = await tx.actionPlan.findFirst({ where: { tenantId, ...targetWhere } });
+      if (existing) return existing;
+
+      const entityTag = dto.companyId ? `company|${dto.companyId}` : dto.unitId ? `unit|${dto.unitId}` : `group|${dto.groupId}`;
+      return tx.actionPlan.create({
+        data: {
+          tenantId,
+          groupId: dto.groupId,
+          companyId: dto.companyId,
+          unitId: dto.unitId,
+          targetType: dto.companyId ? 'company' : dto.unitId ? 'unit' : 'group',
+          targetId: dto.companyId || dto.unitId || dto.groupId,
+          planKey: `manual|${entityTag}`,
+          status: 'active',
+        } as any,
+      });
+    });
+  }
+
+  /**
    * Porta de base44/functions/recalculateActionPlanState. Reconta o estado
    * físico das tarefas e grava no plano — chamado após qualquer mutação de
    * ActionTask (criação, update, geração de plano).
    */
   async recalculate(tx: PrismaClient, planId: string) {
-    const tasks = await tx.actionTask.findMany({ where: { planId } });
+    // select explícito — recalculate só usa esses 6 campos pra agregar
+    // (nunca expõe as linhas fora daqui), mas o findMany sem select ainda
+    // carregava toda a tarefa, textos longos incluídos (description,
+    // how_to_execute, execution_guidance, ...). Chamado após TODA mutação
+    // de tarefa (criação/update/geração de plano), então esse custo se
+    // repete a cada clique — reduzir as colunas carregadas aqui é o ganho
+    // mais barato e mais seguro possível (não muda o resultado, só o que
+    // trafega do banco).
+    const tasks = await tx.actionTask.findMany({
+      where: { planId },
+      select: { status: true, operationStatus: true, isBlocked: true, dueDate: true, priority: true, progressPercentage: true, priorityScore: true },
+    });
     const active = tasks.filter(isActiveActionTask);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -331,8 +398,24 @@ export class ActionPlanService {
       }
 
       // ── Identidade do plano (upsert determinístico por plan_key) ──
+      // Antes de decidir pelo plan_key do assessment, checa se já existe um
+      // plano ancorado na MESMA entidade (ex.: criado antes como "Gestão de
+      // Projeto" manual, via findOrCreateManual) — se existir, esse plano é
+      // reaproveitado/atualizado em vez de criar um segundo, pra uma empresa
+      // nunca acumular dois planos independente da origem (manual ou
+      // diagnóstico).
       const planKey = [dto.assessmentId, targetType, targetId || 'no-target'].join('|');
-      const previousPlan = await tx.actionPlan.findUnique({ where: { tenantId_planKey: { tenantId, planKey } } });
+      const entityWhere: Prisma.ActionPlanWhereInput | null = assessment.companyId
+        ? { companyId: assessment.companyId }
+        : assessment.unitId
+          ? { unitId: assessment.unitId }
+          : assessment.groupId
+            ? { groupId: assessment.groupId, companyId: null }
+            : null;
+      const existingByEntity = entityWhere ? await tx.actionPlan.findFirst({ where: { tenantId, ...entityWhere } }) : null;
+      const previousPlan =
+        existingByEntity ??
+        (await tx.actionPlan.findUnique({ where: { tenantId_planKey: { tenantId, planKey } } }));
 
       // ── Recomendações aprovadas viram candidatos com prioridade absoluta ──
       const recommendationRows = await tx.actionRecommendation.findMany({

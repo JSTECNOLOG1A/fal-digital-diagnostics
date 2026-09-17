@@ -38,6 +38,7 @@ const LEVEL_SCORE_COLOR = {
  */
 function GroupCard({ group, companyCount, aggSnap }) {
   const navigate = useNavigate();
+  const isSoloCompany = group.entity_nature === 'nao_operacional';
   const num = group.group_order_number != null ?
   String(group.group_order_number).padStart(3, '0') :
   null;
@@ -62,7 +63,11 @@ function GroupCard({ group, companyCount, aggSnap }) {
             }
             <h3 className="font-bold text-white truncate text-sm">{group.name}</h3>
           </div>
-          <Layers className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fal-green-400)' }} />
+          {isSoloCompany ? (
+            <Building2 className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fal-blue-400, #60a5fa)' }} />
+          ) : (
+            <Layers className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fal-green-400)' }} />
+          )}
         </div>
         {group.description &&
         <p className="text-xs mt-1 line-clamp-1" style={{ color: 'rgba(255,255,255,0.5)' }}>{group.description}</p>
@@ -72,28 +77,34 @@ function GroupCard({ group, companyCount, aggSnap }) {
       <CardContent className="p-5 flex flex-col gap-4 flex-1">
         {/* Meta row */}
         <div className="flex items-center justify-between gap-3 text-xs fal-muted">
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 -ml-1.5 transition-colors hover:bg-slate-50 hover:text-slate-700"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(createPageUrl(`GroupDetail?id=${group.id}&tab=estrutura`));
-            }}
-            title="Abrir empresas do grupo"
-          >
-            <Building2 className="w-3.5 h-3.5" style={{ color: 'var(--fal-text-light)' }} />
-            <strong style={{ color: 'var(--fal-text-primary)' }}>{companyCount}</strong> empresa(s)
-            <ChevronRight className="w-3 h-3 opacity-40" />
-          </button>
-          {group.structure_type ? (
+          {isSoloCompany ? (
+            <span className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 -ml-1.5 font-semibold" style={{ color: 'var(--fal-blue-600, #2563eb)' }}>
+              <Building2 className="w-3.5 h-3.5" /> Empresa
+            </span>
+          ) : (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 -ml-1.5 transition-colors hover:bg-slate-50 hover:text-slate-700"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(createPageUrl(`GroupDetail?id=${group.id}&tab=estrutura`));
+              }}
+              title="Abrir empresas do grupo"
+            >
+              <Building2 className="w-3.5 h-3.5" style={{ color: 'var(--fal-text-light)' }} />
+              <strong style={{ color: 'var(--fal-text-primary)' }}>{companyCount}</strong> empresa(s)
+              <ChevronRight className="w-3 h-3 opacity-40" />
+            </button>
+          )}
+          {!isSoloCompany && group.structure_type ? (
             <span className="fal-muted truncate">{group.structure_type}</span>
           ) : null}
         </div>
 
-        {/* IFME™ Consolidado */}
+        {/* IFME™ (consolidado só para grupos de verdade; empresa avulsa mostra o score próprio) */}
         <div className="fal-inner-card px-4 py-3">
           <p className="text-[10px] font-semibold uppercase tracking-wider fal-muted mb-1.5">
-            IFME™ Consolidado
+            {isSoloCompany ? 'IFME™' : 'IFME™ Consolidado'}
           </p>
           {hasSnap ?
           <div className="flex items-center justify-between gap-2">
@@ -114,7 +125,7 @@ function GroupCard({ group, companyCount, aggSnap }) {
             </div> :
 
           <div className="flex items-center gap-2">
-              <span className="text-xs fal-muted italic">Consolidado não calculado</span>
+              <span className="text-xs fal-muted italic">Ainda não calculado</span>
               <span className="inline-block w-2 h-2 rounded-full" style={{ background: 'var(--fal-warning-border)' }} />
             </div>
           }
@@ -132,7 +143,7 @@ function GroupCard({ group, companyCount, aggSnap }) {
               navigate(createPageUrl(`GroupDetail?id=${group.id}&tab=diagnostico-8d`));
             }}>
             <BarChart3 className="w-3.5 h-3.5" />
-            Ver Consolidado
+            {isSoloCompany ? 'Ver Diagnóstico' : 'Ver Consolidado'}
           </Button>
         </div>
 

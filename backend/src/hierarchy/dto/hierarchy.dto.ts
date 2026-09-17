@@ -1,12 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsIn,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';
+
+const ENTITY_NATURE_VALUES = ['operacional', 'nao_operacional', 'mista'] as const;
 
 export class CreateGroupDto {
   @ApiProperty()
@@ -19,6 +22,12 @@ export class CreateGroupDto {
   @IsOptional()
   @IsUUID()
   tenantId?: string;
+
+  /** 'nao_operacional' = grupo-casca de uma empresa avulsa (ver Groups.jsx/GroupCard). */
+  @ApiPropertyOptional({ enum: ENTITY_NATURE_VALUES })
+  @IsOptional()
+  @IsIn(ENTITY_NATURE_VALUES)
+  entityNature?: string;
 }
 
 export class UpdateGroupDto {
@@ -34,6 +43,11 @@ export class UpdateGroupDto {
   @IsOptional()
   @IsBoolean()
   isArchived?: boolean;
+
+  @ApiPropertyOptional({ enum: ENTITY_NATURE_VALUES })
+  @IsOptional()
+  @IsIn(ENTITY_NATURE_VALUES)
+  entityNature?: string;
 }
 
 export class CreateCompanyDto {

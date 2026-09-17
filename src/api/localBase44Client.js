@@ -4,6 +4,20 @@ import {
   getLocalTestSession,
 } from '../lib/localTestAuth.js';
 import { clarity, CLARITY_FEATURES } from './clarityClient.js';
+
+// CreateFirstClientDialog.jsx envia o rótulo em PT ("Operacional"/"Não
+// operacional"/"Mista"); o backend guarda o valor canônico usado em toda
+// lógica de agregação de grupo (fal-aggregate.service.ts, GroupCard, etc.).
+function normalizeEntityNature(value) {
+  const map = {
+    operacional: 'operacional',
+    'não operacional': 'nao_operacional',
+    'nao operacional': 'nao_operacional',
+    mista: 'mista',
+  };
+  if (!value) return undefined;
+  return map[String(value).trim().toLowerCase()] ?? undefined;
+}
 import falQuestionsSeed from './falSeedData/falQuestions.json';
 import falRecommendationLibrarySeed from './falSeedData/falRecommendationLibrary.json';
 import falClusterCauseSeed from './falSeedData/falClusterCause.json';
@@ -237,6 +251,7 @@ function createClarityHierarchyEntity(entityName) {
         const created = await clarity.createGroup({
           name: data.name,
           tenantId: data.tenant_id || data.tenantId,
+          entityNature: normalizeEntityNature(data.entity_nature),
         });
         return mapGroupFromApi(created);
       },
@@ -244,6 +259,7 @@ function createClarityHierarchyEntity(entityName) {
         const body = {};
         if (data.name !== undefined) body.name = data.name;
         if (data.is_archived !== undefined) body.isArchived = data.is_archived;
+        if (data.entity_nature !== undefined) body.entityNature = normalizeEntityNature(data.entity_nature);
         const updated = await clarity.updateGroup(id, body);
         return mapGroupFromApi(updated);
       },
@@ -1289,6 +1305,14 @@ function createClarityFalEntity(entityName) {
         if (query.status) rows = rows.filter((r) => r.status === query.status);
         return rows;
       },
+      // Sem isso, cai no fallback genérico (`local.get`, armazenamento em
+      // memória do navegador nunca populado com revisões reais) e sempre
+      // retorna "not found" — bug real: abrir uma revisão direto por URL
+      // (refresh da página em /action-plan/review/:id) nunca funcionava.
+      async get(id) {
+        const row = await clarity.getActionPlanReview(id);
+        return mapActionPlanReviewFromApi(row);
+      },
     };
   }
 
@@ -1799,6 +1823,18 @@ export function createLocalBase44Client() {
                 roadmap: data.roadmap, generation_summary: data.generationSummary, dedup_stats: data.dedupStats,
               },
             };
+          } catch (e) {
+            return { data: { error: e.message } };
+          }
+        }
+        if (name === 'createManualActionPlan' && CLARITY_FEATURES.useClarityFal) {
+          try {
+            const data = await clarity.createManualActionPlan({
+              groupId: payload.group_id || undefined,
+              companyId: payload.company_id || undefined,
+              unitId: payload.unit_id || undefined,
+            });
+            return { data: { ok: true, plan: mapActionPlanFromApi(data) } };
           } catch (e) {
             return { data: { error: e.message } };
           }

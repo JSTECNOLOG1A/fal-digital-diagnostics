@@ -648,6 +648,10 @@ export class ClarityClient {
     return this.request('POST', '/fal/action-plans/generate', body);
   }
 
+  createManualActionPlan(body) {
+    return this.request('POST', '/fal/action-plans/manual', body);
+  }
+
   listActionTasks(planId) {
     return this.request('GET', `/fal/action-tasks?planId=${encodeURIComponent(planId)}`);
   }
@@ -679,6 +683,10 @@ export class ClarityClient {
 
   listActionPlanReviews(actionPlanId) {
     return this.request('GET', `/fal/action-plan-reviews?actionPlanId=${encodeURIComponent(actionPlanId)}`);
+  }
+
+  getActionPlanReview(id) {
+    return this.request('GET', `/fal/action-plan-reviews/${encodeURIComponent(id)}`);
   }
 
   openActionPlanReview(body) {

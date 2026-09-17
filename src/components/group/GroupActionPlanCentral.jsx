@@ -32,25 +32,28 @@ import RecommendationsTab from '@/components/actionplan/RecommendationsTab';
 import { useTaxReformMethodVersion } from '@/lib/hooks/useTaxReformMethodVersion';
 
 const PLAN_TABS = [
-  { key: 'dashboard',       label: 'Dashboard',         icon: TrendingUp },
-  { key: 'recommendations', label: 'Recomendações',     icon: Lightbulb },
+  { key: 'dashboard',       label: 'Dashboard',         icon: TrendingUp,     needsAssessment: true },
+  { key: 'recommendations', label: 'Recomendações',     icon: Lightbulb,      needsAssessment: true },
   { key: 'kanban',          label: 'Kanban',            icon: Columns },
   { key: 'lista',           label: 'Lista Executiva',   icon: List },
   { key: 'cronograma',      label: 'Cronograma',        icon: Clock },
   { key: 'dependencias',    label: 'Dependências',      icon: GitBranch },
-  { key: 'historico',       label: 'Posição Histórica', icon: Clock },
-  { key: 'comparativo',     label: 'Comparativo',       icon: TrendingUp },
-  { key: 'revisoes',        label: 'Revisões',          icon: GitBranch },
+  { key: 'historico',       label: 'Posição Histórica', icon: Clock,          needsAssessment: true },
+  { key: 'comparativo',     label: 'Comparativo',       icon: TrendingUp,     needsAssessment: true },
+  { key: 'revisoes',        label: 'Revisões',          icon: GitBranch,      needsAssessment: true },
   { key: 'pendencias',      label: 'Pendências',        icon: AlertTriangle },
 ];
 
 /**
  * @param {Object} props
- * @param {any=} props.assessmentId
+ * @param {any=} props.assessmentId Null quando o plano é "Gestão de Projeto"
+ *   livre, sem diagnóstico por trás — nesse caso use `directPlanId`.
+ * @param {any=} props.directPlanId Id do ActionPlan a abrir direto, usado só
+ *   quando não há assessmentId (ver ManualPlanBootstrap).
  * @param {any=} props.tenantId
  * @param {any=} props.onGo8D
  */
-function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
+function ActionPlanCentralContent({ assessmentId, directPlanId, tenantId, onGo8D }) {
   const qc = useQueryClient();
   const { isReviewMode } = useReviewMode();
   const [activeTab, setActiveTab] = useState('lista');
@@ -64,13 +67,20 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
     enabled: !!assessmentId,
   });
 
-  const { data: plans = [], isLoading: loadingPlan } = useQuery({
+  const { data: plansByAssessment = [], isLoading: loadingPlanByAssessment } = useQuery({
     queryKey: assessmentKey(tenantId, assessmentId, 'action-plan'),
     queryFn: () => base44.entities.ActionPlan.filter({ assessment_id: assessmentId, tenant_id: tenantId }, '-generated_at', 1),
     enabled: !!assessmentId && !!tenantId,
   });
-  const plan = plans[0] || null;
+  const { data: planDirect, isLoading: loadingPlanDirect } = useQuery({
+    queryKey: tenantKey(tenantId, 'action-plan-direct', directPlanId),
+    queryFn: () => base44.entities.ActionPlan.get(directPlanId),
+    enabled: !assessmentId && !!directPlanId && !!tenantId,
+  });
+  const plan = assessmentId ? (plansByAssessment[0] || null) : (planDirect || null);
+  const loadingPlan = assessmentId ? loadingPlanByAssessment : loadingPlanDirect;
   const planId = plan?.id || null;
+  const visibleTabs = assessmentId ? PLAN_TABS : PLAN_TABS.filter((t) => !t.needsAssessment);
 
   const { data: tasks = [] } = useQuery({
     queryKey: tenantKey(tenantId, 'action-tasks', planId),
@@ -109,11 +119,12 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-4">
         <LayoutDashboard className="w-12 h-12 opacity-30" />
-        <p className="text-sm font-semibold text-slate-900">Nenhum Plano de Ação encontrado para este Grupo</p>
-        <p className="text-xs text-slate-500 max-w-xs text-center">O Plano de Ação é gerado a partir do Diagnóstico 8D.</p>
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={onGo8D}>
-          <ArrowRight className="w-3.5 h-3.5" /> Ir para Diagnóstico 8D
-        </Button>
+        <p className="text-sm font-semibold text-slate-900">Não foi possível carregar o plano</p>
+        {assessmentId && (
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={onGo8D}>
+            <ArrowRight className="w-3.5 h-3.5" /> Ir para Diagnóstico 8D
+          </Button>
+        )}
       </div>
     );
   }
@@ -137,7 +148,7 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
       {/* Tab Navigation */}
       <div className="bg-white border-b border-slate-200 overflow-x-auto flex-shrink-0">
         <div className="flex gap-0 min-w-max px-1">
-          {PLAN_TABS.map(tab => {
+          {visibleTabs.map(tab => {
             const Icon = tab.icon;
             const isPendencias = tab.key === 'pendencias';
             return (
@@ -165,7 +176,7 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === 'dashboard' && (
+        {activeTab === 'dashboard' && assessmentId && (
           <div className="space-y-4">
             <DimensionEvolutionChart assessmentId={assessmentId} planId={planId} reviews={reviews} />
             <ReviewEvolutionChart
@@ -174,7 +185,7 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
             />
           </div>
         )}
-        {activeTab === 'recommendations' && (
+        {activeTab === 'recommendations' && assessmentId && (
           <RecommendationsTab planId={planId} assessmentId={assessmentId} tenantId={tenantId} tasks={tasks} />
         )}
         {activeTab === 'kanban' && (
@@ -189,13 +200,13 @@ function ActionPlanCentralContent({ assessmentId, tenantId, onGo8D }) {
         {activeTab === 'dependencias' && (
           <DependenciesTab tasks={tasks} onOpenTask={setSelectedTask} />
         )}
-        {activeTab === 'historico' && (
+        {activeTab === 'historico' && assessmentId && (
           <HistoricalPositionTab plan_id={planId} reviews={reviews} tenant_id={tenantId} />
         )}
-        {activeTab === 'comparativo' && (
+        {activeTab === 'comparativo' && assessmentId && (
           <ReviewComparisonTab plan_id={planId} reviews={reviews} tenant_id={tenantId} />
         )}
-        {activeTab === 'revisoes' && (
+        {activeTab === 'revisoes' && assessmentId && (
           <ActionPlanReviewTimeline planId={planId} tenantId={tenantId} />
         )}
         {activeTab === 'pendencias' && (
@@ -277,16 +288,14 @@ export default function GroupActionPlanCentral({ groupId, tenantId, onGo8D }) {
     );
   }
 
+  // Sem diagnóstico 8D nenhum: ainda assim a "Gestão de Projeto" funciona
+  // como ferramenta livre, 100% manual — cria (ou reaproveita) um ActionPlan
+  // ancorado direto no grupo/empresa, sem precisar de Assessment por trás.
   if (!assessment) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-4">
-        <LayoutDashboard className="w-12 h-12 opacity-30" />
-        <p className="text-sm font-semibold text-slate-900">Nenhum Diagnóstico 8D encontrado para este Grupo</p>
-        <p className="text-xs text-slate-500">Inicie o Diagnóstico 8D antes de acessar o Plano de Ação.</p>
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={onGo8D}>
-          <ArrowRight className="w-3.5 h-3.5" /> Ir para Diagnóstico 8D
-        </Button>
-      </div>
+      <ReviewModeProvider assessment_id={null} review_id={null}>
+        <ManualPlanBootstrap groupId={groupId} tenantId={tenantId} onGo8D={onGo8D} />
+      </ReviewModeProvider>
     );
   }
 
@@ -295,4 +304,44 @@ export default function GroupActionPlanCentral({ groupId, tenantId, onGo8D }) {
       <ActionPlanCentralContent assessmentId={assessment.id} tenantId={tenantId} onGo8D={onGo8D} />
     </ReviewModeProvider>
   );
+}
+
+/**
+ * @param {Object} props
+ * @param {any=} props.groupId
+ * @param {any=} props.tenantId
+ * @param {any=} props.onGo8D
+ */
+function ManualPlanBootstrap({ groupId, tenantId, onGo8D }) {
+  const { data: plan, isLoading, isError, error } = useQuery({
+    queryKey: tenantKey(tenantId, 'manual-action-plan', groupId),
+    queryFn: async () => {
+      const res = await base44.functions.invoke('createManualActionPlan', { group_id: groupId });
+      if (res?.data?.error) throw new Error(res.data.error);
+      return res?.data?.plan || null;
+    },
+    enabled: !!groupId && !!tenantId,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-12 rounded-xl" />
+        <Skeleton className="h-48 rounded-xl" />
+      </div>
+    );
+  }
+
+  if (isError || !plan) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-4">
+        <LayoutDashboard className="w-12 h-12 opacity-30" />
+        <p className="text-sm font-semibold text-slate-900">Não foi possível abrir a Gestão de Projeto</p>
+        <p className="text-xs text-slate-500 max-w-xs text-center">{error?.message || 'Erro inesperado. Tente novamente.'}</p>
+      </div>
+    );
+  }
+
+  return <ActionPlanCentralContent assessmentId={null} directPlanId={plan.id} tenantId={tenantId} onGo8D={onGo8D} />;
 }

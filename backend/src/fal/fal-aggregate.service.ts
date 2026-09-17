@@ -157,6 +157,42 @@ export class FalAggregateService {
 
       const companies = await tx.company.findMany({ where: { groupId, deletedAt: null }, orderBy: { name: 'asc' } });
 
+      // Grupo-casca de empresa avulsa (ver Group.entityNature): não faz
+      // sentido calcular uma "média ponderada de grupo" com 1 empresa só —
+      // isso só reproduziria o score da própria empresa com uma camada
+      // redundante por cima. Espelha o snapshot de nível 'company' direto
+      // como se fosse o 'group', pra manter o restante do sistema (cards,
+      // AggregateResultPanel) funcionando sem saber dessa diferença.
+      if (group.entityNature === 'nao_operacional' && companies.length === 1) {
+        const soloCompany = companies[0];
+        let companyAgg = await tx.falAggregateSnapshot.findFirst({
+          where: { levelType: 'company', levelId: soloCompany.id }, orderBy: { computedAt: 'desc' },
+        });
+        if (!companyAgg) {
+          const res = await this.computeCompanyAggregate(actor, soloCompany.id);
+          companyAgg = (res as any).aggregate === null ? null : (res as any);
+        }
+        if (!companyAgg) {
+          return { aggregate: null, message: 'Nenhum dado disponível para agregação' };
+        }
+        const saved = await tx.falAggregateSnapshot.upsert({
+          where: { levelType_levelId: { levelType: 'group', levelId: groupId } },
+          update: {
+            computedAt: new Date(), computedBy: actor.email,
+            overallScore: companyAgg.overallScore, overallLevel: companyAgg.overallLevel,
+            dimensionScores: companyAgg.dimensionScores, radarPoints: companyAgg.radarPoints,
+            sourceAssessments: companyAgg.sourceAssessments, aggregationRule: 'mirror_single_company',
+          } as any,
+          create: {
+            tenantId: group.tenantId, levelType: 'group', levelId: groupId,
+            computedBy: actor.email, overallScore: companyAgg.overallScore, overallLevel: companyAgg.overallLevel,
+            dimensionScores: companyAgg.dimensionScores, radarPoints: companyAgg.radarPoints,
+            sourceAssessments: companyAgg.sourceAssessments, aggregationRule: 'mirror_single_company',
+          } as any,
+        });
+        return { ...saved, overallScore: Number(companyAgg.overallScore), companiesCount: 1 };
+      }
+
       const companyAggregates: { company: any; agg: any }[] = [];
       for (const company of companies) {
         let agg = await tx.falAggregateSnapshot.findFirst({

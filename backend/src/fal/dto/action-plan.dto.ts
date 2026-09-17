@@ -12,6 +12,24 @@ import {
   Min,
 } from 'class-validator';
 
+export class CreateManualActionPlanDto {
+  /** Pelo menos um de groupId/companyId/unitId é obrigatório (validado no service). */
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  groupId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  companyId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  unitId?: string;
+}
+
 export class GenerateActionPlanDto {
   @ApiPropertyOptional()
   @IsUUID()

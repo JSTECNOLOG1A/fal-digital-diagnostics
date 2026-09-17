@@ -56,6 +56,7 @@ export function mapGroupFromApi(g) {
     id: g.id,
     name: g.name,
     tenant_id: g.tenantId,
+    entity_nature: g.entityNature ?? 'operacional',
     is_archived: !!g.deletedAt,
     created_date: g.createdAt,
     updated_date: g.updatedAt,

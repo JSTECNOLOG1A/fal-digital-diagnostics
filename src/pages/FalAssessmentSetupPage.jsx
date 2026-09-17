@@ -135,7 +135,7 @@ function FalAssessmentSetupPageInner() {
     queryKey: ['setup-group-prefill', urlGroupId],
     queryFn: async () => {
       const g = await base44.entities.Group.get(urlGroupId);
-      setForm(prev => ({ ...prev, group_name: g.name }));
+      setForm(prev => ({ ...prev, group_name: g.name, group_entity_nature: g.entity_nature }));
       return g;
     },
     enabled: !!urlGroupId && !form.group_name,
@@ -219,6 +219,20 @@ function FalAssessmentSetupPageInner() {
   function updateDimension(key, config) {
     setDimensions(prev => ({ ...prev, [key]: config }));
   }
+
+  // Empresa avulsa (grupo-casca não-operacional, ver Group.entityNature): só
+  // existe 1 alvo possível, então aplica a configuração recomendada sozinho
+  // ao entrar na etapa de cobertura — o usuário não precisa vincular
+  // manualmente dimensão por dimensão numa entidade que já sabemos ser a
+  // única.
+  const isSoloCompany = form.group_entity_nature === 'nao_operacional';
+  React.useEffect(() => {
+    if (step !== 'coverage' || !isSoloCompany || companies.length === 0) return;
+    const alreadyConfigured = DIMENSION_KEYS_ORDERED.some(k => (dimensions[k]?.targets || []).length > 0);
+    if (alreadyConfigured) return;
+    applyRecommended();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, isSoloCompany, companies.length]);
 
   // ─── Save ───────────────────────────────────────────────────────────────────
   async function handleSave() {
@@ -398,14 +412,18 @@ function FalAssessmentSetupPageInner() {
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <p className="text-sm text-slate-500">
-                        Clique nas células para vincular dimensões às entidades do grupo.
+                        {isSoloCompany
+                          ? 'Configuração aplicada automaticamente — esta empresa é o único alvo do diagnóstico.'
+                          : 'Clique nas células para vincular dimensões às entidades do grupo.'}
                       </p>
-                      <button
-                        onClick={applyRecommended}
-                        className="flex items-center gap-1.5 text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap"
-                      >
-                        ✨ Aplicar configuração FAL recomendada
-                      </button>
+                      {!isSoloCompany && (
+                        <button
+                          onClick={applyRecommended}
+                          className="flex items-center gap-1.5 text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap"
+                        >
+                          ✨ Aplicar configuração FAL recomendada
+                        </button>
+                      )}
                     </div>
                     <CoverageMapInteractive
                       dimensions={dimensions}

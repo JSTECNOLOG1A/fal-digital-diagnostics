@@ -61,7 +61,14 @@ export class HierarchyService {
     const tenantId = this.resolveTenantId(actor, dto.tenantId);
     const group = await this.prisma.withTenantContext(
       this.rlsOpts(actor, tenantId),
-      (tx) => tx.group.create({ data: { name: dto.name, tenantId } }),
+      (tx) =>
+        tx.group.create({
+          data: {
+            name: dto.name,
+            tenantId,
+            entityNature: dto.entityNature ?? 'operacional',
+          },
+        }),
     );
     await this.audit.log({
       actorId: actor.id,
@@ -216,6 +223,7 @@ export class HierarchyService {
       );
       const data: Record<string, unknown> = {};
       if (dto.name !== undefined) data.name = dto.name;
+      if (dto.entityNature !== undefined) data.entityNature = dto.entityNature;
       if (dto.isArchived === true) data.deletedAt = new Date();
       if (dto.isArchived === false) data.deletedAt = null;
       const group = await tx.group.update({ where: { id }, data });

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useTenant } from '@/components/shared/TenantContext';
-import { Search, Layers, Sparkles, Info, ExternalLink, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Search, Layers, Building2, Sparkles, Info, ExternalLink, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -66,8 +66,16 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
     );
 
   function handleGroupSelect(group) {
-    onChange({ group_id: group.id, group_name: group.name, title: '', _auto_title: false });
+    onChange({
+      group_id: group.id,
+      group_name: group.name,
+      group_entity_nature: group.entity_nature,
+      title: '',
+      _auto_title: false,
+    });
   }
+
+  const isSoloCompany = form.group_entity_nature === 'nao_operacional';
 
   // Notify parent about block state so footer buttons can be hidden
   // Only fires after the loading check is complete (avoids footer flash)
@@ -231,23 +239,23 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
         </div>
       </div>
 
-      {/* Group selector */}
+      {/* Group/Company selector */}
       <div>
         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-          Grupo <span className="text-red-500">*</span>
+          {form.group_id ? (isSoloCompany ? 'Empresa' : 'Grupo') : 'Grupo / Empresa'} <span className="text-red-500">*</span>
         </label>
 
         {form.group_id && form.group_name ? (
           <div className="flex items-center gap-3 p-3 bg-blue-50 border-2 border-blue-400 rounded-xl">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-              <Layers className="w-4 h-4 text-white" />
+              {isSoloCompany ? <Building2 className="w-4 h-4 text-white" /> : <Layers className="w-4 h-4 text-white" />}
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-blue-900">{form.group_name}</p>
-              <p className="text-[11px] text-blue-500">Grupo selecionado</p>
+              <p className="text-[11px] text-blue-500">{isSoloCompany ? 'Empresa selecionada' : 'Grupo selecionado'}</p>
             </div>
             <button
-              onClick={() => onChange({ group_id: '', group_name: '' })}
+              onClick={() => onChange({ group_id: '', group_name: '', group_entity_nature: '' })}
               className="text-xs text-blue-500 hover:text-blue-700 underline"
             >
               Trocar
@@ -283,23 +291,27 @@ export default function AssessmentGeneralInfoStep({ form, onChange, onForceCreat
               <p className="text-sm text-slate-400 py-4 text-center">Nenhum grupo encontrado para "{groupSearch}".</p>
             ) : (
               <div className="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
-                {filteredGroups.map(group => (
+                {filteredGroups.map(group => {
+                  const solo = group.entity_nature === 'nao_operacional';
+                  return (
                   <button
                     key={group.id}
                     onClick={() => handleGroupSelect(group)}
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-left transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                      <Layers className="w-4 h-4 text-indigo-600" />
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${solo ? 'bg-blue-100' : 'bg-indigo-100'}`}>
+                      {solo ? <Building2 className="w-4 h-4 text-blue-600" /> : <Layers className="w-4 h-4 text-indigo-600" />}
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-800">{group.name}</p>
-                      {group.group_order_number != null && (
-                        <p className="text-[11px] text-slate-400">#{String(group.group_order_number).padStart(3, '0')}</p>
-                      )}
+                      <p className="text-[11px] text-slate-400">
+                        {solo ? 'Empresa' : 'Grupo'}
+                        {group.group_order_number != null ? ` · #${String(group.group_order_number).padStart(3, '0')}` : ''}
+                      </p>
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
