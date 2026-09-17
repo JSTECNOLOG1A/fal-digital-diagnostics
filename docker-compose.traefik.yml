@@ -1,0 +1,131 @@
+# Deploy no VPS Clarity (Traefik + TLS).
+# Uso no servidor:
+#   docker compose -f docker-compose.traefik.yml --env-file .env.production up -d --build
+#
+# Domínio: https://metodofal.clarityib.com.br
+# Código no VPS: /var/www/html/metodofal
+# Rede externa `traefik-net` já existente no servidor.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fal-prod-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      FAL_APP_PASSWORD: ${FAL_APP_PASSWORD}
+    volumes:
+      - fal_prod_pgdata:/var/lib/postgresql/data
+      - ./backend/docker/init-fal-app-role.sh:/docker-entrypoint-initdb.d/01-fal-app-role.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - fal-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: fal-prod-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - fal_prod_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - fal-net
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fal-prod-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      API_PREFIX: api/v1
+      DATABASE_URL_OWNER: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      DATABASE_URL: postgresql://fal_app:${FAL_APP_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      REDIS_URL: redis://redis:6379
+      CREDENTIALS_ENCRYPTION_KEY: ${CREDENTIALS_ENCRYPTION_KEY}
+      RUN_SEED_ON_BOOT: ${RUN_SEED_ON_BOOT:-false}
+      SEED_HQ_EMAIL: ${SEED_HQ_EMAIL:-}
+      SEED_HQ_PASSWORD: ${SEED_HQ_PASSWORD:-}
+      SEED_TENANT_SLUG: ${SEED_TENANT_SLUG:-demo}
+      SEED_TENANT_NAME: ${SEED_TENANT_NAME:-Tenant Demo}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/v1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
+    networks:
+      - fal-net
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web.prod
+      args:
+        VITE_CLARITY_API_URL: /api/v1
+        VITE_LOCAL_TEST_AUTH: "false"
+        VITE_CLARITY_AUTH: "true"
+        VITE_CLARITY_HIERARCHY: "true"
+        VITE_CLARITY_USERS: "true"
+        VITE_CLARITY_PROTHEUS: "true"
+        VITE_CLARITY_INTEGRATIONS: "true"
+    container_name: fal-prod-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-net
+      - traefik.http.routers.metodofal-web.rule=Host(`metodofal.clarityib.com.br`)
+      - traefik.http.routers.metodofal-web.entrypoints=websecure
+      - traefik.http.routers.metodofal-web.tls.certresolver=myresolver
+      - traefik.http.routers.metodofal-web.tls=true
+      - traefik.http.services.metodofal-web.loadbalancer.server.port=80
+      # HTTP → HTTPS
+      - traefik.http.routers.metodofal-web-http.rule=Host(`metodofal.clarityib.com.br`)
+      - traefik.http.routers.metodofal-web-http.entrypoints=web
+      - traefik.http.routers.metodofal-web-http.middlewares=metodofal-https-redirect
+      - traefik.http.middlewares.metodofal-https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.metodofal-https-redirect.redirectscheme.permanent=true
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fal-net
+      - traefik-net
+
+volumes:
+  fal_prod_pgdata:
+  fal_prod_redis:
+
+networks:
+  fal-net:
+    name: fal-net
+  traefik-net:
+    external: true

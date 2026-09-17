@@ -1,39 +1,32 @@
-**Welcome to your Base44 project** 
+**Welcome to FAL Digital Diagnostics**
 
-**About**
+Diagnóstico financeiro e plano de contas (React/Vite + NestJS).
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+## Desenvolvimento local
 
-This project contains everything you need to run your app locally.
+1. Clone o repositório
+2. `npm install` (raiz) e `npm install` em `backend/`
+3. Frontend: `.env.local` (modo local — `VITE_LOCAL_TEST_AUTH=true`)
+4. Backend: `backend/.env` a partir de `backend/.env.example`, depois `npm run setup --prefix backend`
+5. `npm run dev` + `npm run dev:api`
 
-**Edit the code in your local development environment**
+## Produção (VPS Clarity + Traefik)
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+| Item | Valor |
+|---|---|
+| URL | https://metodofal.clarityib.com.br |
+| Path no VPS | `/var/www/html/metodofal` |
+| Compose | `docker-compose.traefik.yml` |
 
-**Prerequisites:** 
+Documentação completa:
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+- [`docs/deploy/UPDATE.md`](docs/deploy/UPDATE.md) — fluxo de entrega
+- [`docs/deploy/FIRST-DEPLOY.md`](docs/deploy/FIRST-DEPLOY.md) — primeiro deploy
+- [`docs/deploy/PROMPT-AGENTE-DEPLOY.md`](docs/deploy/PROMPT-AGENTE-DEPLOY.md) — prompt Claude Code / Cursor
+- [`CLAUDE.md`](CLAUDE.md) — regras persistentes para Claude Code
 
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
+## Base44 (legado)
 
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
-```
+Este projeto nasceu no Base44. O backend próprio (Nest) é o caminho atual; o Builder Base44 ainda pode refletir pushes se configurado.
 
-Run the app: `npm run dev`
-
-**Publish your changes**
-
-Open [Base44.com](http://Base44.com) and click on Publish.
-
-**Docs & Support**
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Docs Base44: https://docs.base44.com/Integrations/Using-GitHub

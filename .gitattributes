@@ -1,0 +1,3 @@
+*.sh text eol=lf
+backend/docker/entrypoint.sh text eol=lf
+backend/docker/init-fal-app-role.sh text eol=lf
